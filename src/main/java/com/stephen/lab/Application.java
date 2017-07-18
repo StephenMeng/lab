@@ -27,9 +27,9 @@ public class Application {
 //            }else{
             // 配置本地地址
             log4jPath = Application.class.getClassLoader().getResource("").getPath() + "log4j.properties";
-            logger.info("Log4j初始化。。。");
+//            logger.info("Log4j初始化... ...");
 //            }
-            logger.info("初始化Log4j。。。。");
+            logger.info("初始化Log4j......");
             logger.info("path is " + log4jPath);
             PropertyConfigurator.configure(log4jPath);
         } catch (Exception e) {
