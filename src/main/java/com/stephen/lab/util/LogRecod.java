@@ -1,6 +1,7 @@
 package com.stephen.lab.util;
 
 import com.stephen.lab.Application;
+import com.stephen.lab.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,5 +17,12 @@ public class LogRecod {
 
     public static void error(Object e) {
         logger.error(e.toString());
+    }
+
+    public static void print(Object object) {
+        logger.info("************************************");
+        logger.info(object.toString());
+        logger.info("************************************");
+
     }
 }
