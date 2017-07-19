@@ -13,7 +13,7 @@ import java.util.Map;
  */
 @Controller
 public class IndexController {
-    @RequestMapping("/")
+    @RequestMapping("")
     public ModelAndView index(){
         Map<String,Object>result=new HashMap<String, Object>();
         LogRecod.info(result);
