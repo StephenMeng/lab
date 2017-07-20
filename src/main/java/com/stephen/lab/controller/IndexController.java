@@ -13,19 +13,11 @@ import java.util.Map;
 /**
  * Created by stephen on 2017/7/18.
  */
-@RestController
+@Controller
 public class IndexController {
-    @RequestMapping("/")
+
+    @RequestMapping("/index")
     public ModelAndView index(){
-        Map<String,Object>result=new HashMap<String, Object>();
-        LogRecod.info(result);
-        LogRecod.print(Holder.getUser());
-        return  new ModelAndView("detail",result);
+        return  new ModelAndView("index");
     }
-//    @RequestMapping("/error")
-//    public ModelAndView error(){
-//        Map<String,Object>result=new HashMap<String, Object>();
-//        LogRecod.info(result);
-//        return  new ModelAndView("error",result);
-//    }
 }
