@@ -33,6 +33,16 @@ public class JedisAdapter {
         });
     }
 
+    public boolean exists(String key) {
+        JedisTemplate template=new JedisTemplate();
+        return  template.execute(new JedisCallBack<Boolean>() {
+            @Override
+            public Boolean handle(Jedis jedis) {
+                return jedis.exists(key);
+            }
+        });
+    }
+
     class JedisTemplate {
         private Jedis jedis;
 
