@@ -16,8 +16,12 @@ import java.util.Map;
 @Controller
 public class IndexController {
 
-    @RequestMapping("/index")
+    @RequestMapping("/")
     public ModelAndView index(){
+        return  new ModelAndView("index");
+    }
+    @RequestMapping("/index")
+    public ModelAndView indexPage(){
         return  new ModelAndView("index");
     }
 }

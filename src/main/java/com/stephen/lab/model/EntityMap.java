@@ -12,7 +12,9 @@ public class EntityMap {
     private Integer entityA;
     private Integer relation;
     private Integer entityB;
-
+    private Integer entityBType;
+    private String text;
+    private String property;
     public Integer getMapId() {
         return mapId;
     }
@@ -43,8 +45,31 @@ public class EntityMap {
     public Integer getEntityB() {
         return entityB;
     }
+    @Basic
+    @Column(name = "entity_b_type")
+    public Integer getEntityBType() {
+        return entityBType;
+    }
+    @Basic
+    @Column(name = "property")
+    public String getProperty() {
+        return property;
+    }
+    @Basic
+    @Column(name = "text")
+    public String getText() {
+        return text;
+    }
 
     public void setEntityB(Integer entityB) {
         this.entityB = entityB;
+    }
+
+    public void setEntityBType(Integer entityBType) {
+        this.entityBType = entityBType;
+    }
+
+    public void setProperty(String property) {
+        this.property = property;
     }
 }

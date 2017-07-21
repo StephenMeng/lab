@@ -10,7 +10,7 @@ public class EntityRelation {
     @Column(name = "relation_id")
     private Integer relationId;
     private String relationName;
-
+    private Integer relationType;
     public Integer getRelationId() {
         return relationId;
     }
@@ -19,9 +19,18 @@ public class EntityRelation {
     public String getRelationName() {
         return relationName;
     }
+    @Basic
+    @Column(name = "relation_type")
+    public Integer getRelationType() {
+        return relationType;
+    }
 
     public void setRelationId(Integer relationId) {
         this.relationId = relationId;
+    }
+
+    public void setRelationType(Integer relationType) {
+        this.relationType = relationType;
     }
 
     public void setRelationName(String relationName) {

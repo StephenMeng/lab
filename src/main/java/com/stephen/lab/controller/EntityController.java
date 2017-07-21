@@ -19,8 +19,8 @@ import java.util.List;
  * Created by stephen on 2017/7/15.
  */
 @Controller
-@RequestMapping("word")
-public class WordController {
+@RequestMapping("entity")
+public class EntityController {
     @Autowired
     private WordService wordService;
     @Autowired
