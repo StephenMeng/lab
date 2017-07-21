@@ -1,10 +1,11 @@
 package com.stephen.lab.model;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 
 @Entity
-@Table(name = "word_relation")
-public class WordRelation {
+@Table(name = "entity_relation")
+public class EntityRelation {
     @Id
     @Column(name = "relation_id")
     private Integer relationId;

@@ -1,8 +1,7 @@
 package com.stephen.lab.controller;
 
-import com.stephen.lab.constant.JedisConstant;
-import com.stephen.lab.dto.WordMapDto;
-import com.stephen.lab.model.WordMap;
+import com.stephen.lab.dto.EntityMapDto;
+import com.stephen.lab.model.EntityMap;
 import com.stephen.lab.service.WordService;
 import com.stephen.lab.util.Response;
 import com.stephen.lab.util.jedis.JedisAdapter;
@@ -32,17 +31,17 @@ public class WordController {
     @ResponseBody
     public Response getUser(@RequestParam("term") String term) {
         term="标签聚类";
-        List<WordMap>wordMapList=wordService.getWordMap(term);
-        List<WordMapDto>wordMapDtos=new ArrayList<>();
-        for(WordMap wordMap:wordMapList){
-            WordMapDto wordMapDto=new WordMapDto();
-            wordMapDto.setMapId(wordMap.getMapId());
-            wordMapDto.setEntityA(wordService.getWordFromCache(wordMap.getEntityA()));
-            wordMapDto.setRelation(wordService.getRelationFromCache(wordMap.getRelation()));
-            wordMapDto.setEntityB(wordService.getWordFromCache(wordMap.getEntityB()));
-            wordMapDtos.add(wordMapDto);
+        List<EntityMap>wordMapList=wordService.getWordMap(term);
+        List<EntityMapDto> entityMapDtos =new ArrayList<>();
+        for(EntityMap wordMap:wordMapList){
+            EntityMapDto entityMapDto =new EntityMapDto();
+            entityMapDto.setMapId(wordMap.getMapId());
+            entityMapDto.setEntityA(wordService.getWordFromCache(wordMap.getEntityA()));
+            entityMapDto.setRelation(wordService.getRelationFromCache(wordMap.getRelation()));
+            entityMapDto.setEntityB(wordService.getWordFromCache(wordMap.getEntityB()));
+            entityMapDtos.add(entityMapDto);
         }
-        return Response.success(wordMapDtos);
+        return Response.success(entityMapDtos);
     }
 
 }
