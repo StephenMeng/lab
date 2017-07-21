@@ -1,10 +1,11 @@
 package com.stephen.lab.model;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 
 @Entity
-@Table(name = "word_map")
-public class WordMap {
+@Table(name = "entity_map")
+public class EntityMap {
     @Id
     @Column(name = "map_id")
     private Integer mapId;

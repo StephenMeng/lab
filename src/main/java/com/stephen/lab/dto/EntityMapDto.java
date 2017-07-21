@@ -1,6 +1,6 @@
 package com.stephen.lab.dto;
 
-public class WordMapDto {
+public class EntityMapDto {
     private Integer mapId;
     private String entityA;
     private String relation;

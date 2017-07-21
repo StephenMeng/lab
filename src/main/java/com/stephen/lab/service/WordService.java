@@ -1,14 +1,14 @@
 package com.stephen.lab.service;
 
-import com.stephen.lab.dto.WordMapDto;
-import com.stephen.lab.model.WordMap;
+import com.stephen.lab.dto.EntityMapDto;
+import com.stephen.lab.model.EntityMap;
 
 import java.util.List;
 
 public interface WordService {
-    List<WordMap> getWordMap(String word);
+    List<EntityMap> getWordMap(String word);
 
-    List<WordMapDto> getWordMapDto(String term);
+    List<EntityMapDto> getWordMapDto(String term);
 
     String getWordFromCache(Integer entity);
 
