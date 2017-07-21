@@ -1,0 +1,2291 @@
+@prefix : <http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms> .
+
+<http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms> rdf:type owl:Ontology .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#construct
+:construct rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#contains
+:contains rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#greaterThan
+:greaterThan rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#isPartOf
+:isPartOf rdf:type owl:ObjectProperty ;
+          owl:inverseOf :part .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#lessThan
+:lessThan rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#part
+:part rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#similarTo
+:similarTo rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#solveTask
+:solveTask rdf:type owl:ObjectProperty ;
+           owl:inverseOf :useMethod .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#useMethod
+:useMethod rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#useResource
+:useResource rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#useTool
+:useTool rdf:type owl:ObjectProperty .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#hasDefinition
+:hasDefinition rdf:type owl:DatatypeProperty .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#hasMethodology
+:hasMethodology rdf:type owl:DatatypeProperty .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#hasPrinciple
+:hasPrinciple rdf:type owl:DatatypeProperty .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#AHP
+:AHP rdf:type owl:Class ;
+     owl:equivalentClass :层次分析法 ;
+     rdfs:subClassOf :决策分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Analytic_Hierarchy_Process
+:Analytic_Hierarchy_Process rdf:type owl:Class ;
+                            owl:equivalentClass :层次分析法 ;
+                            rdfs:subClassOf :决策分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Apriori算法
+:Apriori算法 rdf:type owl:Class ;
+           rdfs:subClassOf :关联规则挖掘算法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#BM算法
+:BM算法 rdf:type owl:Class ;
+      rdfs:subClassOf :单模式匹配算法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#BosonNLP
+:BosonNLP rdf:type owl:Class ;
+          rdfs:subClassOf :自然语言处理工具 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#CiteSpace
+:CiteSpace rdf:type owl:Class ;
+           rdfs:subClassOf :visualization_tools .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Conjugate_Gradient
+:Conjugate_Gradient rdf:type owl:Class ;
+                    owl:equivalentClass :共轭梯度法 ;
+                    rdfs:subClassOf :最优化 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Continuous_Bag-of-Words
+:Continuous_Bag-of-Words rdf:type owl:Class ;
+                         rdfs:subClassOf :语言模型 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Continuous_skip-gram
+:Continuous_skip-gram rdf:type owl:Class ;
+                      rdfs:subClassOf :语言模型 ;
+                      rdfs:comment "Continuous skip-gram 模型与CBOW正好相反，是通过中间词来预测前后词，一般可以认为位置距离接近的词之间的联系要比位置距离较远的词的联系紧密。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Coreference
+:Coreference rdf:type owl:Class ;
+             rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#DC元数据
+:DC元数据 rdf:type owl:Class ;
+       owl:equivalentClass :Dublin_Core ;
+       rdfs:subClassOf :元数据 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#DFSA算法
+:DFSA算法 rdf:type owl:Class ;
+        rdfs:subClassOf :多模式匹配算法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Deep_Learning
+:Deep_Learning rdf:type owl:Class ;
+               owl:equivalentClass :深度学习 ;
+               rdfs:subClassOf :机器学习 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Dublin_Core
+:Dublin_Core rdf:type owl:Class ;
+             rdfs:subClassOf :元数据 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Folksonomy
+:Folksonomy rdf:type owl:Class ;
+            owl:equivalentClass :大众分类法 ;
+            rdfs:subClassOf :分类法 ;
+            rdfs:comment "是指一种由使用者以任意关键字进行分类的协同工作。这个现象源于2004出现的许多社会性软件(social software)。例如分享书签网站，相片分享网站，目标分享网站等等。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#FudanNLP
+:FudanNLP rdf:type owl:Class ;
+          rdfs:subClassOf :自然语言处理工具 ;
+          rdfs:comment "FudanNLP主要是为中文自然语言处理而开发的工具包，也包含为实现这些任务的机器学习算法和数据集。本工具包及其包含数据集使用LGPL3.0许可证。开发语言为Java。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Glove
+:Glove rdf:type owl:Class ;
+       rdfs:subClassOf :词向量化工具 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Google
+:Google rdf:type owl:Class ;
+        rdfs:subClassOf :搜索引擎 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Gradient_Descent
+:Gradient_Descent rdf:type owl:Class ;
+                  owl:equivalentClass :梯度下降法 ;
+                  rdfs:subClassOf :最优化 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#HITS算法
+:HITS算法 rdf:type owl:Class ;
+        rdfs:subClassOf :链接分析算法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Internet信息资源数据库
+:Internet信息资源数据库 rdf:type owl:Class ;
+                 rdfs:subClassOf :数据库 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#K-means聚类
+:K-means聚类 rdf:type owl:Class ;
+           rdfs:subClassOf :聚类 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#KMP算法
+:KMP算法 rdf:type owl:Class ;
+       rdfs:subClassOf :单模式匹配算法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Linear_Regression
+:Linear_Regression rdf:type owl:Class ;
+                   owl:equivalentClass :线性回归分析 ;
+                   rdfs:subClassOf :回归分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Logistic_Regression
+:Logistic_Regression rdf:type owl:Class ;
+                     owl:equivalentClass :逻辑回归 ;
+                     rdfs:subClassOf :回归分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#MARC
+:MARC rdf:type owl:Class ;
+      rdfs:subClassOf :元数据 ;
+      rdfs:comment "MARC是用于描述存储、交换、控制和检索的一 套机读书目数据标准，经过近50年的发展，它具有严格的语义规则和完整的信息描述字段，能够精确、 完整地描述信息资源，尤其是对检索点的选取能够 确保其数据元素组成具有统一性。如USMARC 中245字段指示符有20种，表示不同的题名检索入口词。运用MARC著录的信息，具有可靠性、完整性、精确性等特点。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Machine_Translation
+:Machine_Translation rdf:type owl:Class ;
+                     owl:equivalentClass :机器翻译 ;
+                     rdfs:subClassOf :自然语言处理 ;
+                     rdfs:comment "e.g. What does \"he\" or \"it\" refer to given a document?" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Metadata
+:Metadata rdf:type owl:Class ;
+          owl:equivalentClass :元数据 ;
+          rdfs:subClassOf :resources .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#MultiNet
+:MultiNet rdf:type owl:Class ;
+          rdfs:subClassOf :社会网络分析软件 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#N-gram
+:N-gram rdf:type owl:Class ;
+        rdfs:subClassOf :语言模型 ;
+        rdfs:comment "N-gram的意思就是每个词出现只看其前面的n个词，可以对每个词出现的概率进行近似。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#NER
+:NER rdf:type owl:Class ;
+     owl:equivalentClass :命名实体识别 ;
+     rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#NLP
+:NLP rdf:type owl:Class ;
+     owl:equivalentClass :自然语言处理 ;
+     rdfs:subClassOf :tasks .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Named_Entity_Recognition
+:Named_Entity_Recognition rdf:type owl:Class ;
+                          owl:equivalentClass :命名实体识别 ;
+                          rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Natural_Language_Processing
+:Natural_Language_Processing rdf:type owl:Class ;
+                             owl:equivalentClass :自然语言处理 ;
+                             rdfs:subClassOf :tasks .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#NetDraw
+:NetDraw rdf:type owl:Class ;
+         rdfs:subClassOf :社会网络分析软件 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#NetMiner
+:NetMiner rdf:type owl:Class ;
+          rdfs:subClassOf :社会网络分析软件 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#NoSQL数据库
+:NoSQL数据库 rdf:type owl:Class ;
+          rdfs:subClassOf :数据库 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#OpenNLP
+:OpenNLP rdf:type owl:Class ;
+         rdfs:subClassOf :自然语言处理工具 ;
+         rdfs:comment "OpenNLP是一个基于Java机器学习工具包，用于处理自然语言文本。支持大多数常用的 NLP 任务，例如：标识化、句子切分、部分词性标注、名称抽取、组块、解析等。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#PageRank算法
+:PageRank算法 rdf:type owl:Class ;
+            rdfs:subClassOf :链接分析算法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Pajek
+:Pajek rdf:type owl:Class ;
+       rdfs:subClassOf :visualization_tools ,
+                       :社会网络分析软件 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Polynomial_Regression
+:Polynomial_Regression rdf:type owl:Class ;
+                       owl:equivalentClass :多项式回归 ;
+                       rdfs:subClassOf :回归分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#QS算法
+:QS算法 rdf:type owl:Class ;
+      rdfs:subClassOf :单模式匹配算法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Quasi-Newton_Methods
+:Quasi-Newton_Methods rdf:type owl:Class ;
+                      owl:equivalentClass :拟牛顿法 ;
+                      rdfs:subClassOf :最优化 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Question_Answering
+:Question_Answering rdf:type owl:Class ;
+                    owl:equivalentClass :问答系统 ;
+                    rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#SPSS
+:SPSS rdf:type owl:Class ;
+      rdfs:subClassOf :统计软件 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#STRUCTURE
+:STRUCTURE rdf:type owl:Class ;
+           rdfs:subClassOf :社会网络分析软件 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#SVM
+:SVM rdf:type owl:Class ;
+     owl:equivalentClass :支持向量机 ;
+     rdfs:subClassOf :监督学习 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Salton模型
+:Salton模型 rdf:type owl:Class ;
+          owl:equivalentClass :扩展布尔检索模型 ;
+          rdfs:subClassOf :信息检索方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#StOCNET
+:StOCNET rdf:type owl:Class ;
+         rdfs:subClassOf :社会网络分析软件 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Stepwise_Regression
+:Stepwise_Regression rdf:type owl:Class ;
+                     rdfs:subClassOf :回归分析 ,
+                                     :逐步回归 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Support_Vector_Machine
+:Support_Vector_Machine rdf:type owl:Class ;
+                        owl:equivalentClass :支持向量机 ;
+                        rdfs:subClassOf :监督学习 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#TF-IDF
+:TF-IDF rdf:type owl:Class ;
+        rdfs:subClassOf :其它数理统计方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Taxonomy
+:Taxonomy rdf:type owl:Class ;
+          owl:equivalentClass :分类法 ;
+          rdfs:subClassOf :resources .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#UCINET
+:UCINET rdf:type owl:Class ;
+        rdfs:subClassOf :社会网络分析软件 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#WolframAlpha
+:WolframAlpha rdf:type owl:Class ;
+              rdfs:subClassOf :搜索引擎 ;
+              rdfs:comment "WolframAlpha是开发计算数学应用软件的沃尔夫勒姆研究公司开发出的新一代的搜索引擎，能根据问题直接给出答案的网站，于 2009年5月15日晚7点（美国中部当地时间，北京时间5月16日上午8点）提前上线，用户在搜索框键入需要查询的问题后，该搜索引擎将直接向用户返回答案，而不是返回一大堆网页链接。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#correlation_analysis
+:correlation_analysis rdf:type owl:Class ;
+                      owl:equivalentClass :相关分析 ;
+                      rdfs:subClassOf :相关回归分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#methods
+:methods rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#regression_analysis
+:regression_analysis rdf:type owl:Class ;
+                     owl:equivalentClass :回归分析 ;
+                     rdfs:subClassOf :相关回归分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#resources
+:resources rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#sentiment_analysis
+:sentiment_analysis rdf:type owl:Class ;
+                    owl:equivalentClass :情感分析 ;
+                    rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#tasks
+:tasks rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#tools
+:tools rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#visualization_tools
+:visualization_tools rdf:type owl:Class ;
+                     owl:equivalentClass :可视化软件 ;
+                     rdfs:subClassOf :tools .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#word2vec
+:word2vec rdf:type owl:Class ;
+          rdfs:subClassOf :词向量化工具 ,
+                          [ rdf:type owl:Restriction ;
+                            owl:onProperty :hasPrinciple ;
+                            owl:someValuesFrom rdfs:Literal
+                          ] ;
+          rdfs:comment "word2vec是一套能将词向量化的工具，Google在13年将其开源，代码可以见 https://github.com/burness/word2vec ，它将文本内容处理成为指定维度大小的实数型向量表示，并且其空间上的相似度可以用来表示文本语义的相似度。" ,
+                       "它有两种模型CBOW和Skip-gram，每一种都可以用来训练生成最优的词向量，同时还有两种cost function的定义方式，一种是Softmax cost function，一种是Negative sampling cost function，所以在提到word2vec的时候，其实是可以有 4 种搭配的方法的。" .
+
+[ rdf:type owl:Axiom ;
+   owl:annotatedSource :word2vec ;
+   owl:annotatedProperty rdfs:subClassOf ;
+   owl:annotatedTarget [ rdf:type owl:Restriction ;
+                         owl:onProperty :hasPrinciple ;
+                         owl:someValuesFrom rdfs:Literal
+                       ] ;
+   rdfs:comment "Word2vec的原理主要涉及到统计语言模型（包括N-gram模型和神经网络语言模型），continuousbag-of-words 模型以及 continuous skip-gram 模型。"
+ ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#一元回归分析
+:一元回归分析 rdf:type owl:Class ;
+        rdfs:subClassOf :回归分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#不精确和不确定的管理
+:不精确和不确定的管理 rdf:type owl:Class ;
+            rdfs:subClassOf :人工智能问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#专家系统
+:专家系统 rdf:type owl:Class ;
+      rdfs:subClassOf :知识工程 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#专家访谈
+:专家访谈 rdf:type owl:Class ;
+      rdfs:subClassOf :定性研究 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#专有名词识别
+:专有名词识别 rdf:type owl:Class ;
+        rdfs:subClassOf :命名实体识别 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#个性化推荐系统
+:个性化推荐系统 rdf:type owl:Class ;
+         rdfs:subClassOf :推荐系统 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#中文分词
+:中文分词 rdf:type owl:Class ;
+      rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#中文字串匹配问题
+:中文字串匹配问题 rdf:type owl:Class ;
+          rdfs:subClassOf :语言的学习与处理 ,
+                          [ rdf:type owl:Restriction ;
+                            owl:onProperty :useMethod ;
+                            owl:someValuesFrom :多模式匹配算法
+                          ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#主因子分析法
+:主因子分析法 rdf:type owl:Class ;
+        rdfs:subClassOf :统计模式识别 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#主成分分析
+:主成分分析 rdf:type owl:Class ;
+       rdfs:subClassOf :多元分析 ;
+       rdfs:comment "把原来多个指标化为少数几个互不相关的综合指标的一种统计方法。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#主题词表
+:主题词表 rdf:type owl:Class ;
+      owl:equivalentClass :叙词表 ;
+      rdfs:subClassOf :文献检索工具 ;
+      rdfs:comment "又称叙词表、检索表或词库。是文献与情报检索中用以标引主题的一种检索工具。 它是一些规范化的、有组织的、体现主题内容的、已定义的名次术语的集合体。由主表、类目表、族性表、轮排表、多种语言对照表、特殊词汇表、语法予以关系表、主题词字顺表及主题词属分关系的词族表等构成。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#事件检索
+:事件检索 rdf:type owl:Class ;
+      rdfs:subClassOf :情报检索 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#事实检索
+:事实检索 rdf:type owl:Class ;
+      rdfs:subClassOf :信息检索 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#交叉分类法
+:交叉分类法 rdf:type owl:Class ;
+       rdfs:subClassOf :分类法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#产品特征抽取
+:产品特征抽取 rdf:type owl:Class ;
+        rdfs:subClassOf :产品评论挖掘 ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :useMethod ;
+                          owl:someValuesFrom :双向传播算法
+                        ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#产品特征排序
+:产品特征排序 rdf:type owl:Class ;
+        rdfs:subClassOf :产品评论挖掘 ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :useMethod ;
+                          owl:someValuesFrom :HITS算法
+                        ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#产品观点排序
+:产品观点排序 rdf:type owl:Class ;
+        rdfs:subClassOf :产品评论挖掘 ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :useMethod ;
+                          owl:someValuesFrom :HITS算法
+                        ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#产品评论挖掘
+:产品评论挖掘 rdf:type owl:Class ;
+        rdfs:subClassOf :tasks .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#人像识别
+:人像识别 rdf:type owl:Class ;
+      rdfs:subClassOf :D识别引擎 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#人名识别
+:人名识别 rdf:type owl:Class ;
+      rdfs:subClassOf :命名实体识别 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#人工智能
+:人工智能 rdf:type owl:Class ;
+      rdfs:subClassOf :应用计算机科学 ;
+      rdfs:comment "智能搜索引擎是结合了人工智能技术的新一代搜索引擎。他除了能提供传统的快速检索、相关度排序等功能，还能提供用户角色登记、用户兴趣自动识别、内容的语义理解、智能信息化过滤和推送等功能。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#人工智能问题
+:人工智能问题 rdf:type owl:Class ;
+        rdfs:subClassOf :tasks ;
+        owl:disjointWith :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#人工生命
+:人工生命 rdf:type owl:Class ;
+      rdfs:subClassOf :人工智能问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#人工神经网络
+:人工神经网络 rdf:type owl:Class ;
+        rdfs:subClassOf :人工智能 ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :solveTask ;
+                          owl:someValuesFrom :智能信息检索
+                        ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#作者共被引分析
+:作者共被引分析 rdf:type owl:Class ;
+         rdfs:subClassOf :共被引分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#依存句法分析
+:依存句法分析 rdf:type owl:Class ;
+        rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#信号处理理论
+:信号处理理论 rdf:type owl:Class ;
+        rdfs:subClassOf :methods ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :construct ;
+                          owl:someValuesFrom :多媒体文献数据库
+                        ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#信息与编码理论
+:信息与编码理论 rdf:type owl:Class ;
+         rdfs:subClassOf :理论计算机科学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#信息传递技术
+:信息传递技术 rdf:type owl:Class ;
+        rdfs:subClassOf :信息技术 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#信息伦理学
+:信息伦理学 rdf:type owl:Class ;
+       rdfs:subClassOf :信息科学 ;
+       rdfs:comment "规范信息人员行为的伦理道德观念被称为信息伦理观(information ethic)，研究规范信息人员行为的信息伦理观的学科被称为信息伦理学（information ethics)。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#信息加工技术
+:信息加工技术 rdf:type owl:Class ;
+        rdfs:subClassOf :信息技术 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#信息存储技术
+:信息存储技术 rdf:type owl:Class ;
+        rdfs:subClassOf :信息技术 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#信息技术
+:信息技术 rdf:type owl:Class ;
+      rdfs:subClassOf :信息科学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#信息标准化技术
+:信息标准化技术 rdf:type owl:Class ;
+         rdfs:subClassOf :信息技术 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#信息检索
+:信息检索 rdf:type owl:Class ;
+      rdfs:subClassOf :tasks .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#信息检索方法
+:信息检索方法 rdf:type owl:Class ;
+        rdfs:subClassOf :信息技术 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#信息科学
+:信息科学 rdf:type owl:Class ;
+      rdfs:subClassOf :应用计算机科学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#信息获取技术
+:信息获取技术 rdf:type owl:Class ;
+        rdfs:subClassOf :信息技术 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#信息过滤
+:信息过滤 rdf:type owl:Class ;
+      rdfs:subClassOf :算法 ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty :solveTask ;
+                        owl:someValuesFrom :智能信息检索
+                      ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#倒排检索
+:倒排检索 rdf:type owl:Class ;
+      rdfs:subClassOf :信息检索方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#假设检验
+:假设检验 rdf:type owl:Class ;
+      rdfs:subClassOf :数理统计学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#元数据
+:元数据 rdf:type owl:Class ;
+     rdfs:subClassOf :resources .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#全文检索
+:全文检索 rdf:type owl:Class ;
+      rdfs:subClassOf :信息检索 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#共现分析
+:共现分析 rdf:type owl:Class ;
+      rdfs:subClassOf :文献计量分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#共现聚类分析
+:共现聚类分析 rdf:type owl:Class ;
+        rdfs:subClassOf :共现分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#共被引分析
+:共被引分析 rdf:type owl:Class ;
+       rdfs:subClassOf :共现分析 ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty :useMethod ;
+                         owl:someValuesFrom :多维尺度分析
+                       ] ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty :useMethod ;
+                         owl:someValuesFrom :皮尔逊相关系数法
+                       ] ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty :useMethod ;
+                         owl:someValuesFrom :聚类
+                       ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#共被引矩阵可视化
+:共被引矩阵可视化 rdf:type owl:Class ;
+          rdfs:subClassOf :tasks .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#共词分析
+:共词分析 rdf:type owl:Class ;
+      rdfs:subClassOf :共现分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#共轭梯度法
+:共轭梯度法 rdf:type owl:Class ;
+       rdfs:subClassOf :最优化 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#关系数据库
+:关系数据库 rdf:type owl:Class ;
+       rdfs:subClassOf :数据库 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#关联规则挖掘算法
+:关联规则挖掘算法 rdf:type owl:Class ;
+          rdfs:subClassOf :数据挖掘算法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#关键词抽取
+:关键词抽取 rdf:type owl:Class ;
+       owl:equivalentClass :关键词提取 ;
+       rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#关键词提取
+:关键词提取 rdf:type owl:Class ;
+       rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#其它数理统计方法
+:其它数理统计方法 rdf:type owl:Class ;
+          rdfs:subClassOf :数理统计学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#典型相关
+:典型相关 rdf:type owl:Class ;
+      rdfs:subClassOf :多元分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#决策分析
+:决策分析 rdf:type owl:Class ;
+      rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#决策支持系统
+:决策支持系统 rdf:type owl:Class ;
+        rdfs:subClassOf :专家系统 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#决策树
+:决策树 rdf:type owl:Class ;
+     rdfs:subClassOf :预测 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#决策理论方法
+:决策理论方法 rdf:type owl:Class ;
+        rdfs:subClassOf :模式识别 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#函数空间
+:函数空间 rdf:type owl:Class ;
+      rdfs:subClassOf :泛函分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#分众分类法
+:分众分类法 rdf:type owl:Class ;
+       owl:equivalentClass :大众分类法 ;
+       rdfs:subClassOf :分类法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#分布式检索
+:分布式检索 rdf:type owl:Class ;
+       rdfs:subClassOf :信息检索 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#分类
+:分类 rdf:type owl:Class ;
+    rdfs:subClassOf :机器学习 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#分类法
+:分类法 rdf:type owl:Class ;
+     rdfs:subClassOf :resources ;
+     rdfs:comment "分类法是指将类或组按照相互间的关系，组成系统化的结构，并体现为许多类目按照一定的原则和关系组织起来的体系表，作为分类工作的依据和工具。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#分词
+:分词 rdf:type owl:Class ;
+    rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#划分聚类
+:划分聚类 rdf:type owl:Class ;
+      rdfs:subClassOf :聚类 ;
+      rdfs:comment "划分聚类方法是一种基于原型（prototype)的聚类方法，其本质是首先从数据集中随机地选择几个对象作为聚类的原型，然后将其他对象分别分配到由原型所代表的最相似，也就是距离最近的类中。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#判别函数分析
+:判别函数分析 rdf:type owl:Class ;
+        rdfs:subClassOf :多元分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#判别函数法
+:判别函数法 rdf:type owl:Class ;
+       rdfs:subClassOf :统计模式识别 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#动态规划
+:动态规划 rdf:type owl:Class ;
+      rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#协方差分析
+:协方差分析 rdf:type owl:Class ;
+       rdfs:subClassOf :线性模型方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#单模式匹配
+:单模式匹配 rdf:type owl:Class ;
+       rdfs:subClassOf :中文字串匹配问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#单模式匹配算法
+:单模式匹配算法 rdf:type owl:Class ;
+         rdfs:subClassOf :模式匹配算法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#博弈论
+:博弈论 rdf:type owl:Class ;
+     rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#参数规划
+:参数规划 rdf:type owl:Class ;
+      rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#双向传播算法
+:双向传播算法 rdf:type owl:Class ;
+        rdfs:subClassOf :算法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#变分法
+:变分法 rdf:type owl:Class ;
+     rdfs:subClassOf :泛函分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#叙词表
+:叙词表 rdf:type owl:Class ;
+     rdfs:subClassOf :文献检索工具 ;
+     rdfs:comment "叙词表，将文献作者、标引者和检索者使用的自然语言转换成规范化的叙词型主题检索语言的术语控制工具，亦称主题词表、检索词典。它是一种概括某一学科领域，以规范化的、受控的、动态性的叙词(主题词)为基本成分和以参照系统显示词间关系，用于标引、存储和检索文献的词典。叙词表是叙词法的具体体现。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#句法方法
+:句法方法 rdf:type owl:Class ;
+      rdfs:subClassOf :模式识别 ;
+      rdfs:comment "又称结构方法或语言学方法。其基本思想是把一个模式描述为较简单的子模式的组合，子模式又可描述为更简单的子模式的组合，最终得到一个树形的结构描述，在底层的最简单的子模式称为模式基元。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#可视化软件
+:可视化软件 rdf:type owl:Class ;
+       rdfs:subClassOf :tools .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#可靠性数学理论
+:可靠性数学理论 rdf:type owl:Class ;
+         rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#同义词查找
+:同义词查找 rdf:type owl:Class ;
+       rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#向量检索
+:向量检索 rdf:type owl:Class ;
+      rdfs:subClassOf :信息检索方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#向量空间模型
+:向量空间模型 rdf:type owl:Class ;
+        rdfs:subClassOf :用户模型表示方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#启发式优化方法
+:启发式优化方法 rdf:type owl:Class ;
+         rdfs:subClassOf :最优化 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#命名实体识别
+:命名实体识别 rdf:type owl:Class ;
+        owl:equivalentClass :实体名识别 ;
+        rdfs:subClassOf :自然语言处理 ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :hasDefinition ;
+                          owl:someValuesFrom rdfs:Literal
+                        ] .
+
+[ rdf:type owl:Axiom ;
+   owl:annotatedSource :命名实体识别 ;
+   owl:annotatedProperty rdfs:subClassOf ;
+   owl:annotatedTarget [ rdf:type owl:Restriction ;
+                         owl:onProperty :hasDefinition ;
+                         owl:someValuesFrom rdfs:Literal
+                       ] ;
+   rdfs:comment "命名实体识别（NER）是指识别文本中具有特定意义的实体，主要包括人名、地名、机构名、专有名词等。命名实体识别是信息提取、问答系统、句法分析、机器翻译等应用领域的重要基础工具，作为结构化信息提取的重要步骤。"
+ ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#回归
+:回归 rdf:type owl:Class ;
+    rdfs:subClassOf :机器学习 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#回归分析
+:回归分析 rdf:type owl:Class ;
+      rdfs:subClassOf :相关回归分析 ;
+      rdfs:comment "回归分析（regression analysis)是确定两种或两种以上变量间相互依赖的定量关系的一种统计分析方法。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#因素分析
+:因素分析 rdf:type owl:Class ;
+      rdfs:subClassOf :多元分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#图像识别
+:图像识别 rdf:type owl:Class ;
+      rdfs:subClassOf :D识别引擎 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#图论
+:图论 rdf:type owl:Class ;
+    rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#图谱检索
+:图谱检索 rdf:type owl:Class ;
+      rdfs:subClassOf :情报检索 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#地名识别
+:地名识别 rdf:type owl:Class ;
+      rdfs:subClassOf :命名实体识别 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#地理信息系统
+:地理信息系统 rdf:type owl:Class ;
+        rdfs:subClassOf :专家系统 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#基于本体论的表示
+:基于本体论的表示 rdf:type owl:Class ;
+          rdfs:subClassOf :用户模型表示方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#基于案例的表示
+:基于案例的表示 rdf:type owl:Class ;
+         rdfs:subClassOf :用户模型表示方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#基于用户-项目评价矩阵的表示
+:基于用户-项目评价矩阵的表示 rdf:type owl:Class ;
+                rdfs:subClassOf :用户模型表示方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#复杂系统
+:复杂系统 rdf:type owl:Class ;
+      rdfs:subClassOf :人工智能问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#多元分析
+:多元分析 rdf:type owl:Class ;
+      owl:equivalentClass :多元统计分析 ;
+      rdfs:subClassOf :数理统计学 ;
+      rdfs:comment "研究多个自变量与因变量相互关系的一组统计理论和方法。又称多变量分析。多元分析是单变量统计方法的发展和推广。人的心理和行为具有复杂的内在结构，受到多种因素的制约。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#多元回归分析
+:多元回归分析 rdf:type owl:Class ;
+        rdfs:subClassOf :回归分析 ,
+                        :线性模型方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#多元方差分析
+:多元方差分析 rdf:type owl:Class ;
+        rdfs:subClassOf :线性模型方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#多元统计分析
+:多元统计分析 rdf:type owl:Class ;
+        rdfs:subClassOf :数理统计学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#多媒体技术
+:多媒体技术 rdf:type owl:Class ;
+       rdfs:subClassOf :信息技术 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#多媒体文献数据库
+:多媒体文献数据库 rdf:type owl:Class ;
+          rdfs:subClassOf :Internet信息资源数据库 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#多模式匹配
+:多模式匹配 rdf:type owl:Class ;
+       rdfs:subClassOf :中文字串匹配问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#多模式匹配算法
+:多模式匹配算法 rdf:type owl:Class ;
+         rdfs:subClassOf :模式匹配算法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#多维尺度分析
+:多维尺度分析 rdf:type owl:Class ;
+        rdfs:subClassOf :多元统计分析 ;
+        rdfs:comment "多维尺度分析（MultiDimensional Scaling）是分析研究对象的相似性或差异性的一种多元统计分析方法。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#多维识别引擎
+:多维识别引擎 rdf:type owl:Class ;
+        rdfs:subClassOf :模式识别问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#多重回归分析
+:多重回归分析 rdf:type owl:Class ;
+        rdfs:subClassOf :回归分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#多项式回归
+:多项式回归 rdf:type owl:Class ;
+       rdfs:subClassOf :回归分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#大众分类法
+:大众分类法 rdf:type owl:Class ;
+       rdfs:subClassOf :分类法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#定性研究
+:定性研究 rdf:type owl:Class ;
+      rdfs:subClassOf :社会科学研究方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#定量研究
+:定量研究 rdf:type owl:Class ;
+      rdfs:subClassOf :社会科学研究方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#实体名识别
+:实体名识别 rdf:type owl:Class ;
+       rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#实验法
+:实验法 rdf:type owl:Class ;
+     rdfs:subClassOf :定量研究 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#对策论
+:对策论 rdf:type owl:Class ;
+     rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#层次分析法
+:层次分析法 rdf:type owl:Class ;
+       rdfs:subClassOf :决策分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#层次聚类
+:层次聚类 rdf:type owl:Class ;
+      rdfs:subClassOf :聚类 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#岭回归
+:岭回归 rdf:type owl:Class ;
+     rdfs:subClassOf :回归分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#巴拿赫空间
+:巴拿赫空间 rdf:type owl:Class ;
+       rdfs:subClassOf :泛函分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#布尔检索
+:布尔检索 rdf:type owl:Class ;
+      rdfs:subClassOf :信息检索方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#布拉德福定律
+:布拉德福定律 rdf:type owl:Class ;
+        rdfs:subClassOf :文献计量学定律 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#希尔伯特空间
+:希尔伯特空间 rdf:type owl:Class ;
+        rdfs:subClassOf :泛函分析 ;
+        rdfs:comment "希尔伯特空间是欧几里德空间的一个推广，其不再局限于有限维的情形。与欧几里德空间相仿，希尔伯特空间也是一个内积空间，其上有距离和角的概念（及由此引申而来的正交性与垂直性的概念）。此外，希尔伯特空间还是一个完备的空间，其上所有的柯西序列等价于收敛序列，从而微积分中的大部分概念都可以无障碍地推广到希尔伯特空间中。希尔伯特空间为基于任意正交系上的多项式表示的傅立叶级数和傅立叶变换提供了一种有效的表述方式，而这也是泛函分析的核心概念之一。希尔伯特空间是公式化数学和量子力学的关键性概念之一" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#并发、并行和分布式系统
+:并发、并行和分布式系统 rdf:type owl:Class ;
+             rdfs:subClassOf :应用计算机科学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#广义函数论
+:广义函数论 rdf:type owl:Class ;
+       rdfs:subClassOf :泛函分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#库存论
+:库存论 rdf:type owl:Class ;
+     rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#应用概率论
+:应用概率论 rdf:type owl:Class ;
+       rdfs:subClassOf :概率论 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#应用计算机科学
+:应用计算机科学 rdf:type owl:Class ;
+         rdfs:subClassOf :计算机科学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#形式化方法
+:形式化方法 rdf:type owl:Class ;
+       rdfs:subClassOf :理论计算机科学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#情感分析
+:情感分析 rdf:type owl:Class ;
+      rdfs:subClassOf :自然语言处理 ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty :useMethod ;
+                        owl:someValuesFrom :分类
+                      ] ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty :hasDefinition ;
+                        owl:someValuesFrom rdfs:Literal
+                      ] .
+
+[ rdf:type owl:Axiom ;
+   owl:annotatedSource :情感分析 ;
+   owl:annotatedProperty rdfs:subClassOf ;
+   owl:annotatedTarget [ rdf:type owl:Restriction ;
+                         owl:onProperty :hasDefinition ;
+                         owl:someValuesFrom rdfs:Literal
+                       ] ;
+   rdfs:comment "就是要识别出用户对一件事一个物或一个人的看法、态度，比如一个电影的评论，一个商品的评价，一次体验的感想等等。根据对带有情感色彩的主观性文本进行分析，识别出用户的态度，是喜欢，讨厌，还是中立。在实际生活中有很多应用，例如通过对 Twitter 用户的情感分析，来预测股票走势、预测电影票房、选举结果等，还可以用来了解用户对公司、产品的喜好，分析结果可以被用来改善产品和服务，还可以发现竞争对手的优劣势等等。"
+ ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#情报检索
+:情报检索 rdf:type owl:Class ;
+      rdfs:subClassOf :信息检索 ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty :useMethod ;
+                        owl:someValuesFrom :布尔检索
+                      ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#情报计量学
+:情报计量学 rdf:type owl:Class ;
+       rdfs:subClassOf :计量学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#感知问题
+:感知问题 rdf:type owl:Class ;
+      rdfs:subClassOf :人工智能问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#手工
+:手工 rdf:type owl:Class ;
+    rdfs:subClassOf :methods ,
+                    [ rdf:type owl:Restriction ;
+                      owl:onProperty :construct ;
+                      owl:someValuesFrom :多媒体文献数据库
+                    ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#手工检索
+:手工检索 rdf:type owl:Class ;
+      rdfs:subClassOf :信息检索方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#扩展布尔检索模型
+:扩展布尔检索模型 rdf:type owl:Class ;
+          rdfs:subClassOf :信息检索方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#抽样理论
+:抽样理论 rdf:type owl:Class ;
+      rdfs:subClassOf :数理统计学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#拉格朗日乘数法
+:拉格朗日乘数法 rdf:type owl:Class ;
+         rdfs:subClassOf :最优化 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#拓扑线性空间
+:拓扑线性空间 rdf:type owl:Class ;
+        rdfs:subClassOf :泛函分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#拟牛顿法
+:拟牛顿法 rdf:type owl:Class ;
+      rdfs:subClassOf :最优化 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#拼写检查
+:拼写检查 rdf:type owl:Class ;
+      rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#指纹识别
+:指纹识别 rdf:type owl:Class ;
+      rdfs:subClassOf :D识别引擎 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#排队论
+:排队论 rdf:type owl:Class ;
+     rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#控制论
+:控制论 rdf:type owl:Class ;
+     rdfs:subClassOf :methods .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#推理
+:推理 rdf:type owl:Class ;
+    rdfs:subClassOf :人工智能问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#推荐系统
+:推荐系统 rdf:type owl:Class ;
+      rdfs:subClassOf :专家系统 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#推荐系统用户建模
+:推荐系统用户建模 rdf:type owl:Class ;
+          rdfs:subClassOf :tasks .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#搜索引擎
+:搜索引擎 rdf:type owl:Class ;
+      rdfs:subClassOf :tools .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#搜索论
+:搜索论 rdf:type owl:Class ;
+     rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#支持向量机
+:支持向量机 rdf:type owl:Class ;
+       rdfs:subClassOf :监督学习 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#数学
+:数学 rdf:type owl:Class ;
+    rdfs:subClassOf :methods .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#数据库
+:数据库 rdf:type owl:Class ;
+     rdfs:subClassOf :resources .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#数据挖掘
+:数据挖掘 rdf:type owl:Class ;
+      rdfs:subClassOf :知识工程 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#数据挖掘算法
+:数据挖掘算法 rdf:type owl:Class ;
+        rdfs:subClassOf :算法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#数据收集
+:数据收集 rdf:type owl:Class ;
+      rdfs:subClassOf :推荐系统用户建模 ;
+      rdfs:comment "数据收集是一个获取与用户特征、偏好或活动相关的信息的过程。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#数据检索
+:数据检索 rdf:type owl:Class ;
+      rdfs:subClassOf :情报检索 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#数理统计学
+:数理统计学 rdf:type owl:Class ;
+       owl:equivalentClass :统计学 ;
+       rdfs:subClassOf :数学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#整数规划
+:整数规划 rdf:type owl:Class ;
+      rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#文字识别
+:文字识别 rdf:type owl:Class ;
+      rdfs:subClassOf :D识别引擎 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#文本分类
+:文本分类 rdf:type owl:Class ;
+      rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#文本文献数据库
+:文本文献数据库 rdf:type owl:Class ;
+         rdfs:subClassOf :Internet信息资源数据库 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#文本聚类
+:文本聚类 rdf:type owl:Class ;
+      rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#文献作者共著分析
+:文献作者共著分析 rdf:type owl:Class ;
+          rdfs:subClassOf :共现分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#文献共引分析
+:文献共引分析 rdf:type owl:Class ;
+        rdfs:subClassOf :共现分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#文献检索
+:文献检索 rdf:type owl:Class ;
+      rdfs:subClassOf :情报检索 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#文献检索工具
+:文献检索工具 rdf:type owl:Class ;
+        rdfs:subClassOf :resources .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#文献计量分析
+:文献计量分析 rdf:type owl:Class ;
+        rdfs:subClassOf :文献计量学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#文献计量学
+:文献计量学 rdf:type owl:Class ;
+       rdfs:subClassOf :计量学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#文献计量学定律
+:文献计量学定律 rdf:type owl:Class ;
+         rdfs:subClassOf :文献计量学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#新闻分类
+:新闻分类 rdf:type owl:Class ;
+      rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#方差分析
+:方差分析 rdf:type owl:Class ;
+      rdfs:subClassOf :数理统计学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#无监督学习
+:无监督学习 rdf:type owl:Class ;
+       rdfs:subClassOf :机器学习 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#无线性相关
+:无线性相关 rdf:type owl:Class ;
+       rdfs:subClassOf :线性相关分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#时间序列分析
+:时间序列分析 rdf:type owl:Class ;
+        rdfs:subClassOf :数理统计学 ;
+        rdfs:comment "时间序列分析(Time series analysis)是一种动态数据处理的统计方法。该方法基于随机过程理论和数理统计学方法，研究随机数据序列所遵从的统计规律以用于解决实际问题。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#智能Agents
+:智能Agents rdf:type owl:Class ;
+          rdfs:subClassOf :人工智能 ,
+                          [ rdf:type owl:Restriction ;
+                            owl:onProperty :solveTask ;
+                            owl:someValuesFrom :智能信息检索
+                          ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#智能信息检索
+:智能信息检索 rdf:type owl:Class ;
+        rdfs:subClassOf :信息检索 ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :useMethod ;
+                          owl:someValuesFrom :智能Agents
+                        ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#智能搜索
+:智能搜索 rdf:type owl:Class ;
+      rdfs:subClassOf :人工智能问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#智能搜索引擎
+:智能搜索引擎 rdf:type owl:Class ;
+        rdfs:subClassOf :智能搜索 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#最优化
+:最优化 rdf:type owl:Class ;
+     rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#最好优先算法
+:最好优先算法 rdf:type owl:Class ;
+        rdfs:subClassOf :算法 ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :solveTask ;
+                          owl:someValuesFrom :智能信息检索
+                        ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#机器学习
+:机器学习 rdf:type owl:Class ;
+      rdfs:subClassOf :人工智能 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#机器翻译
+:机器翻译 rdf:type owl:Class ;
+      rdfs:subClassOf :自然语言处理 ;
+      rdfs:comment "机器翻译指的是利用计算机自动地将一种自然语言翻译为另外一种自然语言。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#机构名识别
+:机构名识别 rdf:type owl:Class ;
+       rdfs:subClassOf :命名实体识别 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#机械检索
+:机械检索 rdf:type owl:Class ;
+      rdfs:subClassOf :信息检索方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#标签聚类
+:标签聚类 rdf:type owl:Class ;
+      rdfs:subClassOf :tasks ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty :useMethod ;
+                        owl:someValuesFrom :划分聚类
+                      ] ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty :useMethod ;
+                        owl:someValuesFrom :层次聚类
+                      ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#树状分类法
+:树状分类法 rdf:type owl:Class ;
+       rdfs:subClassOf :分类法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#梯度下降法
+:梯度下降法 rdf:type owl:Class ;
+       rdfs:subClassOf :最优化 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#概率分布
+:概率分布 rdf:type owl:Class ;
+      rdfs:subClassOf :概率论 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#概率论
+:概率论 rdf:type owl:Class ;
+     rdfs:subClassOf :数学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#模型学习
+:模型学习 rdf:type owl:Class ;
+      rdfs:subClassOf :推荐系统用户建模 ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty :useMethod ;
+                        owl:someValuesFrom :TF-IDF
+                      ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#模型更新
+:模型更新 rdf:type owl:Class ;
+      rdfs:subClassOf :推荐系统用户建模 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#模型表示
+:模型表示 rdf:type owl:Class ;
+      rdfs:subClassOf :推荐系统用户建模 ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty :useMethod ;
+                        owl:someValuesFrom :人工神经网络
+                      ] ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty :useMethod ;
+                        owl:someValuesFrom :用户模型表示方法
+                      ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#模式匹配算法
+:模式匹配算法 rdf:type owl:Class ;
+        rdfs:subClassOf :算法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#模式识别
+:模式识别 rdf:type owl:Class ;
+      rdfs:subClassOf :methods .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#模式识别问题
+:模式识别问题 rdf:type owl:Class ;
+        rdfs:subClassOf :人工智能问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#模拟
+:模拟 rdf:type owl:Class ;
+    rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#模糊检索
+:模糊检索 rdf:type owl:Class ;
+      rdfs:subClassOf :信息检索方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#正相关
+:正相关 rdf:type owl:Class ;
+     rdfs:subClassOf :线性相关分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#泛函分析
+:泛函分析 rdf:type owl:Class ;
+      rdfs:subClassOf :数学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#洛特卡定律
+:洛特卡定律 rdf:type owl:Class ;
+       rdfs:subClassOf :文献计量学定律 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#测度与积分
+:测度与积分 rdf:type owl:Class ;
+       rdfs:subClassOf :泛函分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#深度学习
+:深度学习 rdf:type owl:Class ;
+      rdfs:subClassOf :机器学习 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#牛顿法
+:牛顿法 rdf:type owl:Class ;
+     owl:equivalentClass :s_method ;
+     rdfs:subClassOf :最优化 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#特征分析法
+:特征分析法 rdf:type owl:Class ;
+       rdfs:subClassOf :统计模式识别 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#理论计算机科学
+:理论计算机科学 rdf:type owl:Class ;
+         rdfs:subClassOf :计算机科学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#生物学
+:生物学 rdf:type owl:Class ;
+     rdfs:subClassOf :methods .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#用户模型表示方法
+:用户模型表示方法 rdf:type owl:Class ;
+          rdfs:subClassOf :methods .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#皮尔逊相关系数法
+:皮尔逊相关系数法 rdf:type owl:Class ;
+          rdfs:subClassOf :相关回归分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#监督学习
+:监督学习 rdf:type owl:Class ;
+      rdfs:subClassOf :机器学习 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#直接检索
+:直接检索 rdf:type owl:Class ;
+      rdfs:subClassOf :信息检索方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#相关分析
+:相关分析 rdf:type owl:Class ;
+      rdfs:subClassOf :相关回归分析 ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty :hasDefinition ;
+                        owl:someValuesFrom rdfs:Literal
+                      ] .
+
+[ rdf:type owl:Axiom ;
+   owl:annotatedSource :相关分析 ;
+   owl:annotatedProperty rdfs:subClassOf ;
+   owl:annotatedTarget [ rdf:type owl:Restriction ;
+                         owl:onProperty :hasDefinition ;
+                         owl:someValuesFrom rdfs:Literal
+                       ] ;
+   rdfs:comment "相关分析是研究现象之间是否存在某种依存关系，并对具体有依存关系的现象探讨其相关方向以及相关程度，是研究随机变量之间的相关关系的一种统计方法。"
+ ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#相关反馈
+:相关反馈 rdf:type owl:Class ;
+      rdfs:subClassOf :算法 ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty :solveTask ;
+                        owl:someValuesFrom :智能信息检索
+                      ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#相关回归分析
+:相关回归分析 rdf:type owl:Class ;
+        rdfs:subClassOf :数理统计学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#相关法
+:相关法 rdf:type owl:Class ;
+     rdfs:subClassOf :定量研究 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#知识发现
+:知识发现 rdf:type owl:Class ;
+      rdfs:subClassOf :知识工程 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#知识处理系统
+:知识处理系统 rdf:type owl:Class ;
+        rdfs:subClassOf :人工智能 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#知识工程
+:知识工程 rdf:type owl:Class ;
+      rdfs:subClassOf :人工智能问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#知识检索
+:知识检索 rdf:type owl:Class ;
+      rdfs:subClassOf :信息检索 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#知识获取
+:知识获取 rdf:type owl:Class ;
+      rdfs:subClassOf :人工智能 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#知识获取问题
+:知识获取问题 rdf:type owl:Class ;
+        rdfs:subClassOf :人工智能问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#知识表现
+:知识表现 rdf:type owl:Class ;
+      rdfs:subClassOf :人工智能问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#知识表示
+:知识表示 rdf:type owl:Class ;
+      rdfs:subClassOf :人工智能 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#社会科学研究方法
+:社会科学研究方法 rdf:type owl:Class ;
+          rdfs:subClassOf :methods .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#社会网络分析
+:社会网络分析 rdf:type owl:Class ;
+        rdfs:subClassOf :定量研究 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#社会网络分析软件
+:社会网络分析软件 rdf:type owl:Class ;
+          rdfs:subClassOf :tools .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#神经网络语言模型
+:神经网络语言模型 rdf:type owl:Class ;
+          rdfs:subClassOf :语言模型 ;
+          rdfs:comment "神经网络语言模型（NNLM）用特征向量来表征每个词各个方面的特征。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#神经网络问题
+:神经网络问题 rdf:type owl:Class ;
+        rdfs:subClassOf :人工智能问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#科学计量学
+:科学计量学 rdf:type owl:Class ;
+       rdfs:subClassOf :计量学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#科技文献类数据库
+:科技文献类数据库 rdf:type owl:Class ;
+          rdfs:subClassOf :非结构化数据库 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#程序设计语言理论
+:程序设计语言理论 rdf:type owl:Class ;
+          rdfs:subClassOf :理论计算机科学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#简单回归分析
+:简单回归分析 rdf:type owl:Class ;
+        rdfs:subClassOf :回归分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#算子代数
+:算子代数 rdf:type owl:Class ;
+      rdfs:subClassOf :泛函分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#算法
+:算法 rdf:type owl:Class ;
+    rdfs:subClassOf :理论计算机科学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#篇章理解
+:篇章理解 rdf:type owl:Class ;
+      rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#线性回归分析
+:线性回归分析 rdf:type owl:Class ;
+        rdfs:subClassOf :回归分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#线性模型方法
+:线性模型方法 rdf:type owl:Class ;
+        rdfs:subClassOf :多元分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#线性相关分析
+:线性相关分析 rdf:type owl:Class ;
+        rdfs:subClassOf :相关分析 ;
+        rdfs:comment "研究两个变量间线性关系的程度。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#线性算子理论
+:线性算子理论 rdf:type owl:Class ;
+        rdfs:subClassOf :泛函分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#线性规划
+:线性规划 rdf:type owl:Class ;
+      rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#组合最优化
+:组合最优化 rdf:type owl:Class ;
+       rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#组合规划
+:组合规划 rdf:type owl:Class ;
+      rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#组合调度问题
+:组合调度问题 rdf:type owl:Class ;
+        rdfs:subClassOf :人工智能问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#经济计量学
+:经济计量学 rdf:type owl:Class ;
+       rdfs:subClassOf :计量学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#统筹论
+:统筹论 rdf:type owl:Class ;
+     rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#统计判决理论
+:统计判决理论 rdf:type owl:Class ;
+        rdfs:subClassOf :数理统计学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#统计学
+:统计学 rdf:type owl:Class ;
+     rdfs:subClassOf :数学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#统计推断
+:统计推断 rdf:type owl:Class ;
+      rdfs:subClassOf :数理统计学 ;
+      rdfs:comment "统计推断statistical inference，根据带随机性的观测数据（样本）以及问题的条件和假定（模型），而对未知事物作出的，以概率形式表述的推断。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#统计模式识别
+:统计模式识别 rdf:type owl:Class ;
+        rdfs:subClassOf :模式识别 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#统计软件
+:统计软件 rdf:type owl:Class ;
+      rdfs:subClassOf :tools .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#网络流
+:网络流 rdf:type owl:Class ;
+     rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#聚类
+:聚类 rdf:type owl:Class ;
+    rdfs:subClassOf :机器学习 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#聚类分析
+:聚类分析 rdf:type owl:Class ;
+      rdfs:subClassOf :多元分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#自动控制技术
+:自动控制技术 rdf:type owl:Class ;
+        rdfs:subClassOf :信息技术 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#自动推理
+:自动推理 rdf:type owl:Class ;
+      rdfs:subClassOf :人工智能 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#自然语言处理
+:自然语言处理 rdf:type owl:Class ;
+        rdfs:subClassOf :tasks ;
+        rdfs:comment "用计算机来处理、理解以及运用人类语言(如中文、英文等)，它属于人工智能的一个分支，是计算机科学与语言学的交叉学科，又常被称为计算语言学。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#自然语言处理工具
+:自然语言处理工具 rdf:type owl:Class ;
+          rdfs:subClassOf :tools .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#自然语言理解
+:自然语言理解 rdf:type owl:Class ;
+        rdfs:subClassOf :人工智能 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#视频技术
+:视频技术 rdf:type owl:Class ;
+      rdfs:subClassOf :信息技术 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#计算机体系结构与工程
+:计算机体系结构与工程 rdf:type owl:Class ;
+            rdfs:subClassOf :应用计算机科学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#计算机图形与视觉
+:计算机图形与视觉 rdf:type owl:Class ;
+          rdfs:subClassOf :应用计算机科学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#计算机安全和密码学
+:计算机安全和密码学 rdf:type owl:Class ;
+           rdfs:subClassOf :应用计算机科学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#计算机性能分析
+:计算机性能分析 rdf:type owl:Class ;
+         rdfs:subClassOf :应用计算机科学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#计算机技术
+:计算机技术 rdf:type owl:Class ;
+       rdfs:subClassOf :信息技术 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#计算机检索
+:计算机检索 rdf:type owl:Class ;
+       rdfs:subClassOf :信息检索方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#计算机科学
+:计算机科学 rdf:type owl:Class ;
+       rdfs:subClassOf :methods .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#计算机网络
+:计算机网络 rdf:type owl:Class ;
+       rdfs:subClassOf :应用计算机科学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#计算机视觉
+:计算机视觉 rdf:type owl:Class ;
+       rdfs:subClassOf :计算机图形与视觉 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#计算理论
+:计算理论 rdf:type owl:Class ;
+      rdfs:subClassOf :理论计算机科学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#计算科学
+:计算科学 rdf:type owl:Class ;
+      rdfs:subClassOf :应用计算机科学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#计量学
+:计量学 rdf:type owl:Class ;
+     rdfs:subClassOf :methods .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#评论挖掘结果的汇总以及按用户观点排序
+:评论挖掘结果的汇总以及按用户观点排序 rdf:type owl:Class ;
+                    rdfs:subClassOf :产品评论挖掘 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#评论观点抽取
+:评论观点抽取 rdf:type owl:Class ;
+        rdfs:subClassOf :产品评论挖掘 ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :useMethod ;
+                          owl:someValuesFrom :双向传播算法
+                        ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#评论观点的强度判断
+:评论观点的强度判断 rdf:type owl:Class ;
+           rdfs:subClassOf :产品评论挖掘 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#评论观点的极性判断
+:评论观点的极性判断 rdf:type owl:Class ;
+           rdfs:subClassOf :产品评论挖掘 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#词向量化工具
+:词向量化工具 rdf:type owl:Class ;
+        rdfs:subClassOf :自然语言处理工具 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#词性标注
+:词性标注 rdf:type owl:Class ;
+      rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#词表
+:词表 rdf:type owl:Class ;
+    rdfs:subClassOf :文献检索工具 ;
+    rdfs:comment "词表是某一主题检索语言语种的词典，其功用是：⑴对该种主题法的严格实施起管理作用；⑵对周密选用检索词以便准确、全面地标引和检索文献起保证作用；⑶对文献标引人员和情报检索人员查找所需检索词起方便作用。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#词频分析
+:词频分析 rdf:type owl:Class ;
+      rdfs:subClassOf :文献计量分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#试验设计
+:试验设计 rdf:type owl:Class ;
+      rdfs:subClassOf :数理统计学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#语义分析
+:语义分析 rdf:type owl:Class ;
+      rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#语义检索
+:语义检索 rdf:type owl:Class ;
+      rdfs:subClassOf :信息检索方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#语义网络
+:语义网络 rdf:type owl:Class ;
+      rdfs:subClassOf :用户模型表示方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#语法分析
+:语法分析 rdf:type owl:Class ;
+      rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#语言学
+:语言学 rdf:type owl:Class ;
+     rdfs:subClassOf :methods .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#语言技术平台
+:语言技术平台 rdf:type owl:Class ;
+        rdfs:subClassOf :自然语言处理工具 ;
+        rdfs:comment "语言技术平台（Language Technology Platform，LTP）是哈工大社会计算与信息检索研究中心历时十年开发的一整套中文语言处理系统。LTP制定了基于XML的语言处理结果表示，并在此基础上提供了一整套自底向上的丰富而且高效的中文语言处理模块（包括词法、句法、语义等6项中文处理核心技术），以及基于动态链接库（Dynamic Link Library, DLL）的应用程序接口，可视化工具，并且能够以网络服务（Web Service）的形式进行使用。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#语言模型
+:语言模型 rdf:type owl:Class ;
+      rdfs:subClassOf :自然语言理解 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#语言的学习与处理
+:语言的学习与处理 rdf:type owl:Class ;
+          rdfs:subClassOf :人工智能问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#语音识别
+:语音识别 rdf:type owl:Class ;
+      rdfs:subClassOf :驻波识别引擎 ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty :useMethod ;
+                        owl:someValuesFrom :模式识别
+                      ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#调查法
+:调查法 rdf:type owl:Class ;
+     rdfs:subClassOf :定量研究 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#贝叶斯分类
+:贝叶斯分类 rdf:type owl:Class ;
+       rdfs:subClassOf :分类 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#贝叶斯统计
+:贝叶斯统计 rdf:type owl:Class ;
+       rdfs:subClassOf :数理统计学 ;
+       rdfs:comment "英国学者托马斯·贝叶斯在《论有关机遇问题的求解》中提出一种归纳推理的理论，后被一些统计学者发展为一种系统的统计推断方法，称为贝叶斯方法。采用这种方法作统计推断所得的全部结果，构成贝叶斯统计的内容。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#负相关
+:负相关 rdf:type owl:Class ;
+     rdfs:subClassOf :线性相关分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#车牌识别
+:车牌识别 rdf:type owl:Class ;
+      rdfs:subClassOf :D识别引擎 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#软件工程
+:软件工程 rdf:type owl:Class ;
+      rdfs:subClassOf :应用计算机科学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#软计算
+:软计算 rdf:type owl:Class ;
+     rdfs:subClassOf :人工智能问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#运筹学
+:运筹学 rdf:type owl:Class ;
+     rdfs:subClassOf :数学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#近邻分类法
+:近邻分类法 rdf:type owl:Class ;
+       rdfs:subClassOf :统计模式识别 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#逐步回归
+:逐步回归 rdf:type owl:Class ;
+      rdfs:subClassOf :回归分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#通信技术
+:通信技术 rdf:type owl:Class ;
+      rdfs:subClassOf :信息传递技术 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#逻辑回归
+:逻辑回归 rdf:type owl:Class ;
+      rdfs:subClassOf :回归分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#逻辑程序设计
+:逻辑程序设计 rdf:type owl:Class ;
+        rdfs:subClassOf :人工智能问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#遗传算法
+:遗传算法 rdf:type owl:Class ;
+      rdfs:subClassOf :methods .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#遗传算法人类思维方式
+:遗传算法人类思维方式 rdf:type owl:Class ;
+            rdfs:subClassOf :人工智能问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#遥感技术
+:遥感技术 rdf:type owl:Class ;
+      rdfs:subClassOf :信息技术 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#链接分析算法
+:链接分析算法 rdf:type owl:Class ;
+        rdfs:subClassOf :算法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#问答系统
+:问答系统 rdf:type owl:Class ;
+      rdfs:subClassOf :自然语言处理 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#间接检索
+:间接检索 rdf:type owl:Class ;
+      rdfs:subClassOf :信息检索方法 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#随机规划
+:随机规划 rdf:type owl:Class ;
+      rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#随机过程
+:随机过程 rdf:type owl:Class ;
+      rdfs:subClassOf :概率论 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#非个性化推荐系统
+:非个性化推荐系统 rdf:type owl:Class ;
+          rdfs:subClassOf :推荐系统 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#非参数统计
+:非参数统计 rdf:type owl:Class ;
+       rdfs:subClassOf :数理统计学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#非线性回归分析
+:非线性回归分析 rdf:type owl:Class ;
+         rdfs:subClassOf :回归分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#非线性映射法
+:非线性映射法 rdf:type owl:Class ;
+        rdfs:subClassOf :统计模式识别 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#非线性泛函分析
+:非线性泛函分析 rdf:type owl:Class ;
+         rdfs:subClassOf :泛函分析 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#非线性规划
+:非线性规划 rdf:type owl:Class ;
+       rdfs:subClassOf :运筹学 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#非结构化数据库
+:非结构化数据库 rdf:type owl:Class ;
+         rdfs:subClassOf :数据库 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#顺序检索
+:顺序检索 rdf:type owl:Class ;
+      rdfs:subClassOf :信息检索方法 ;
+      rdfs:comment "顺序检索是指用户提交一个检索需求由计算机 按照指定的检索方式对数据库中的记录进行顺序检索匹配，最后将符合条件的记录（检索结果）按一定规则排序输出，排序规则可根据需求进行定义，目前常用的有按时间、匹配度、文献被引次数等方式；检索结果还需要按类型聚类输出（按文献类型、机构 类型、期刊名称、会议名称等）。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#预测
+:预测 rdf:type owl:Class ;
+    rdfs:subClassOf :机器学习 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#马尔可夫过程
+:马尔可夫过程 rdf:type owl:Class ;
+        rdfs:subClassOf :概率论 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#驻波识别引擎
+:驻波识别引擎 rdf:type owl:Class ;
+        rdfs:subClassOf :模式识别问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#齐夫定律
+:齐夫定律 rdf:type owl:Class ;
+      rdfs:subClassOf :文献计量学定律 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#2D识别引擎
+:D识别引擎 rdf:type owl:Class ;
+       rdfs:subClassOf :模式识别问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#3D识别引擎
+:D识别引擎 rdf:type owl:Class ;
+       rdfs:subClassOf :模式识别问题 .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#Newton's_method
+:s_method rdf:type owl:Class ;
+          rdfs:subClassOf :最优化 .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#中国图书馆分类法
+:中国图书馆分类法 rdf:type owl:NamedIndividual ,
+                   :分类法 ;
+          rdfs:comment "原称《中国图书馆图书分类法》，是我国建国后编制出版的一部具有代表性的大型综合性分类法，是当今国内图书馆使用最广泛的分类法体系，简称《中图法》。《中图法》初版于1975年，1999年出版了第四版。修订后的《中图法》第四版增加了类分资料的类目，并与类分图书的类目以“+”标识进行了区分，因此正式改名为《中国图书馆分类法》，简称不变。《中图法》第四版全面补充新主题、扩充类目体系，使分类法跟上科学技术发展的步伐。同时规范类目，完善参照系统、注释系统，调整类目体系，增修复分表，明显加强类目的扩容性和分类的准确性。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#使用Pajek可视化共被引矩阵
+:使用Pajek可视化共被引矩阵 rdf:type owl:NamedIndividual ,
+                          :共被引矩阵可视化 ,
+                          [ rdf:type owl:Restriction ;
+                            owl:onProperty :useTool ;
+                            owl:someValuesFrom :Pajek
+                          ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#图书馆移动信息服务质量影响因素的权重测定和绩效评估
+:图书馆移动信息服务质量影响因素的权重测定和绩效评估 rdf:type owl:NamedIndividual ,
+                                    :tasks ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty :useMethod ;
+                                      owl:someValuesFrom :层次分析法
+                                    ] .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#杜威十进分类法
+:杜威十进分类法 rdf:type owl:NamedIndividual ;
+         rdfs:comment "美国M.杜威编制的综合性等级列举式分类法。分为详、简两种版本,详本于1876年问世，取名为《图书馆图书小册子排架及编目适用的分类法和主题索引》，1951年的第15版改名《杜威十进分类法》，1989年出版第20版；简本主要供中小型图书馆使用，现已出版到第12版。详本的各版情况见表。M.杜威编制的有关综合性等级列举式分类法的著作。英文简称DC或DDC。有详、简两个版本。详本于 1876年出第一版，1989年已出20版。简本篇幅约为详本的10%，主要供中、小型图书馆使用。1894年首次出版，已出13版。共分10个大类：000总论；100哲学；200宗教 ；300社会科学；400语言学；500自然科学；600技术科学；700美术；800文学；900历史、地理。为适应科学技术发展和文献出版的需要，从第十六版起，逐步将一些体系过于陈旧的类目彻底改编，在新版本出版前单独印行一、二个类的改编表，供用户试用，被称为“凤凰表”。这种连续的局部更新，使DC既跟上新知识的发展，又保证了分类法的稳定性。DC已用30多种文字出版，被 135个国家和地区采用 ，成为世界上历史最久且使用最广的分类法。" .
+
+
+###  http://www.semanticweb.org/ting/ontologies/2017/6/informaticsTerms#用word2vec解决情感分析问题
+:用word2vec解决情感分析问题 rdf:type owl:NamedIndividual ,
+                            :情感分析 ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :useTool ;
+                              owl:someValuesFrom :word2vec
+                            ] ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :hasMethodology ;
+                              owl:someValuesFrom rdfs:Literal
+                            ] .
+
+[ rdf:type owl:Axiom ;
+   owl:annotatedSource :用word2vec解决情感分析问题 ;
+   owl:annotatedProperty rdf:type ;
+   owl:annotatedTarget [ rdf:type owl:Restriction ;
+                         owl:onProperty :hasMethodology ;
+                         owl:someValuesFrom rdfs:Literal
+                       ] ;
+   rdfs:comment """第一步，就是先用 word2vec 和 SGD 训练出每个单词的最优表示向量。
+第二步，用 Softmax Regression 对训练数据集的每个句子进行训练，得到分类器的参数，用这个参数就可以预测新的数据集的情感分类。其中训练数据集的每个句子，都对应一个0－1之间的浮点得分，将这个得分化为 0-4 整数型 5 个级别，分别属于 5 种感情类别，讨厌，有点讨厌，中立，有点喜欢，喜欢。然后将每个句子的词转化成之前训练过的词向量，这样哪些词属于哪个类就知道了，然后用分类器得到分类的边界，得到的参数就可以用来进行预测。"""
+ ] .
+
+
+###  Generated by the OWL API (version 4.2.8.20170104-2310) https://github.com/owlcs/owlapi
