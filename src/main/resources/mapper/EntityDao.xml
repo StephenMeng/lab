@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.stephen.lab.dao.EntityDao">
+    <select id="selectRelations" resultType="com.stephen.lab.model.EntityRelation">
+        SELECT DISTINCT (r.*) from entity_relation r
+        left join  entity_map m on r.relation_id=m.relation_id
+        where m.entity_a=#{entityId}
+        UNION
+         SELECT DISTINCT (r.*) from entity_relation r
+        left join  entity_map m on r.relation_id=m.relation_id
+        where m.entity_b=#{entityId}
+    </select>
 </mapper>

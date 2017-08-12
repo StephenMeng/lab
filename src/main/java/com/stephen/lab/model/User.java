@@ -1,11 +1,13 @@
 package com.stephen.lab.model;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 
 /**
  * Created by stephen on 2017/7/15.
  */
 @Entity
+@Table(name = "user")
 public class User {
     @Id
     @Column(name = "user_id")
