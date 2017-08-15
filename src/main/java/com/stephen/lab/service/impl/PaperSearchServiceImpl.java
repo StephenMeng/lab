@@ -1,6 +1,7 @@
 package com.stephen.lab.service.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.stephen.lab.constant.PaperConditionType;
 import com.stephen.lab.dao.PaperDao;
 import com.stephen.lab.model.Paper;
 import com.stephen.lab.model.condition.PaperSearchCondition;
@@ -33,19 +34,17 @@ public class PaperSearchServiceImpl implements PaperSearchService {
         List<Paper> papers = new ArrayList<>();
         Long total = 0L;
         String q = parseSearchCondition(searchCondition);
-        LogRecod.print(q);
         try {
             SolrQuery solrQuery = new SolrQuery();
             solrQuery.setQuery(q);
-            solrQuery.setStart(0);
-            solrQuery.setRows(20);
+            solrQuery.setStart((searchCondition.getPageNo() - 1) * searchCondition.getPageSize());
+            solrQuery.setRows(searchCondition.getPageSize());
             LogRecod.print("start query:");
             QueryResponse response = solrClient.query(solrQuery);
             SolrDocumentList documents = response.getResults();
             total = documents.getNumFound();
             for (SolrDocument document : documents) {
                 Long pid = Long.parseLong(document.get("id").toString());
-                LogRecod.print(pid);
                 Paper paper = paperService.selectByPaperId(pid);
                 papers.add(paper);
             }
@@ -59,8 +58,20 @@ public class PaperSearchServiceImpl implements PaperSearchService {
     }
 
     private String parseSearchCondition(PaperSearchCondition searchCondition) {
-        String q = null;
-        q = "paper_keyword:" + searchCondition.getKeyword();
-        return q;
+        StringBuilder q = new StringBuilder();
+        switch (searchCondition.getSearchType()) {
+            case PaperConditionType.KEYWORD:
+                q.append("paper_keyword:" + searchCondition.getQ());
+                break;
+            case PaperConditionType.SUMMARY:
+                q.append("paper_summary:" + searchCondition.getQ());
+                break;
+            case PaperConditionType.TITLE:
+                q.append("paper_title:" + searchCondition.getQ());
+                break;
+            default:
+                break;
+        }
+        return q.toString();
     }
 }

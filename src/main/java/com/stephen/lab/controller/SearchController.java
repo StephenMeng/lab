@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("search")
 public class SearchController {
@@ -22,11 +24,15 @@ public class SearchController {
     @RequestMapping("/paper")
     @ResponseBody
     public Response searchPaper(@RequestParam("keyword") String keyword, @RequestParam("searchType") Integer searchType,
+                                @RequestParam("sources") List<Integer> sources,
                                 @RequestParam(value = "startDate", required = false) String startDate,
                                 @RequestParam(value = "endDate", required = false) String endDate,
-                                @RequestParam(value = "organ", required = false) String organ
+                                @RequestParam(value = "organ", required = false) String organ,
+                                @RequestParam("pageNo")Integer pageNo,
+                                @RequestParam("pageSize")Integer pageSize
     ) {
-        PaperSearchCondition searchCondition = ConditionUtil.getCondition(keyword, searchType, startDate, endDate, organ);
+        PaperSearchCondition searchCondition = ConditionUtil.getCondition(keyword, searchType, sources,
+                startDate, endDate, organ,pageNo,pageSize);
         return Response.success(paperSearchService.searchPaper(searchCondition));
     }
 

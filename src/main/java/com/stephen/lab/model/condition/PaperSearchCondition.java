@@ -1,40 +1,43 @@
 package com.stephen.lab.model.condition;
 
 import java.util.Date;
+import java.util.List;
 
 public class PaperSearchCondition {
-    private String paperTitle;
-    private String keyword;
-    private String summary;
+    private Integer searchType;
+    private List<Integer> sources;
+    private String q;
     private String author;
     private Date startDate;
     private Date endDate;
     private String organ;
     private String journal;
     private String fund;
+    private Integer pageNo;
+    private Integer pageSize;
 
-    public String getPaperTitle() {
-        return paperTitle;
+    public Integer getSearchType() {
+        return searchType;
     }
 
-    public void setPaperTitle(String paperTitle) {
-        this.paperTitle = paperTitle;
+    public List<Integer> getSources() {
+        return sources;
     }
 
-    public String getKeyword() {
-        return keyword;
+    public String getQ() {
+        return q;
     }
 
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
+    public void setQ(String q) {
+        this.q = q;
     }
 
-    public String getSummary() {
-        return summary;
+    public void setSearchType(Integer searchType) {
+        this.searchType = searchType;
     }
 
-    public void setSummary(String summary) {
-        this.summary = summary;
+    public void setSources(List<Integer> sources) {
+        this.sources = sources;
     }
 
     public String getAuthor() {
@@ -85,12 +88,28 @@ public class PaperSearchCondition {
         this.fund = fund;
     }
 
+    public Integer getPageNo() {
+        return pageNo;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageNo(Integer pageNo) {
+        this.pageNo = pageNo;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
+
     @Override
     public String toString() {
         return "PaperSearchCondition{" +
-                "paperTitle='" + paperTitle + '\'' +
-                ", keyword='" + keyword + '\'' +
-                ", summary='" + summary + '\'' +
+                "searchType=" + searchType +
+                ", sources=" + sources +
+                ", q='" + q + '\'' +
                 ", author='" + author + '\'' +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
