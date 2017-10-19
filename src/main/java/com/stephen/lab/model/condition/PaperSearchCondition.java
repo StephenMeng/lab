@@ -5,7 +5,7 @@ import java.util.List;
 
 public class PaperSearchCondition {
     private Integer searchType;
-    private List<Integer> sources;
+    private Integer sources;
     private String q;
     private String author;
     private Date startDate;
@@ -20,7 +20,7 @@ public class PaperSearchCondition {
         return searchType;
     }
 
-    public List<Integer> getSources() {
+    public Integer getSources() {
         return sources;
     }
 
@@ -36,7 +36,7 @@ public class PaperSearchCondition {
         this.searchType = searchType;
     }
 
-    public void setSources(List<Integer> sources) {
+    public void setSources(Integer sources) {
         this.sources = sources;
     }
 

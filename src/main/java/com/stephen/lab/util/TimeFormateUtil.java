@@ -11,8 +11,8 @@ public class TimeFormateUtil {
         Date date = null;
         try {
             date = dateFormat.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            return null;
         }
         return date;
     }

@@ -1,6 +1,6 @@
 package com.stephen.lab.util;
 
-import com.stephen.lab.dto.Language;
+import com.stephen.lab.dto.semantic.Language;
 import com.stephen.lab.model.User;
 
 /**

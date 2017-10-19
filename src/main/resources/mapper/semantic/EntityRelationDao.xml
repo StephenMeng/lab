@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.stephen.lab.dao.semantic.EntityRelationDao">
+    <insert id="insertReturnId" parameterType="com.stephen.lab.model.semantic.EntityRelation"
+            useGeneratedKeys="true" keyProperty="relationId" keyColumn="relation_id">
+        INSERT INTO entity_relation (relation_name, relation_type) VALUES (#{relationName},0);
+    </insert>
+    <resultMap id="entityRelation" type="com.stephen.lab.model.semantic.EntityRelation">
+        <id column="relation_id" property="relationId"/>
+        <result column="relation_name" property="relationName"/>
+        <result column="relation_name_passive" property="relationNamePassive"/>
+        <result column="relation_type" property="relationType"/>
+    </resultMap>
+    <select id="selectByName" parameterType="java.lang.String" resultMap="entityRelation">
+        SELECT relation_id,relation_name,relation_name_passive,relation_type
+         from entity_relation
+         where relation_name=#{relationName} limit 1
+    </select>
+</mapper>

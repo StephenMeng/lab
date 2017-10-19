@@ -5,7 +5,7 @@ import com.stephen.lab.model.condition.PaperSearchCondition;
 import java.util.List;
 
 public class ConditionUtil {
-    public static PaperSearchCondition getCondition(String keyword, Integer searchType, List<Integer> sources, String startDate, String endDate, String organ, Integer pageNo, Integer pageSize) {
+    public static PaperSearchCondition getCondition(String keyword, Integer searchType, Integer sources, String startDate, String endDate, String organ, Integer pageNo, Integer pageSize) {
         PaperSearchCondition condition = new PaperSearchCondition();
         condition.setQ(keyword);
         condition.setSearchType(searchType);
