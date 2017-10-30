@@ -150,6 +150,7 @@ public class EntityServiceImpl implements EntityService {
 
     @Override
     public Long addEntity(String entityName, List<String> entityType) {
+        LogRecod.print(entityName);
         Entity entity = new Entity();
         entity.setEntityName(entityName);
         entity.setEntityType(ListUtil.ListToString(entityType, ";"));

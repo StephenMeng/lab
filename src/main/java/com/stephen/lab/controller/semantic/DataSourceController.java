@@ -20,7 +20,7 @@ public class DataSourceController {
     @ResponseBody
     public Response getDataSource(
     ) {
-        List<DataSource> dataSources = dataSourceService.getAllDataSources();
+        List<DataSource> dataSources = dataSourceService.getSemanticDataSources();
         return Response.success(dataSources);
     }
 }

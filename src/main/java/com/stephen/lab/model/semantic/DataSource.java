@@ -4,7 +4,7 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 
 @Entity
-@Table(name = "paper_source")
+@Table(name = "data_source")
 public class DataSource {
     @Id
     @Column(name = "source_id")

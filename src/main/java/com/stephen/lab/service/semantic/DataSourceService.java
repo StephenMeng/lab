@@ -9,4 +9,6 @@ import java.util.List;
  */
 public interface DataSourceService {
     List<DataSource> getAllDataSources();
+
+    List<DataSource> getSemanticDataSources();
 }

@@ -104,7 +104,7 @@ public class NstrsController {
                     nstrs.setNstrsId(idUrl);
 //                if (!nstrsList.contains(idUrl)) {
 //                    nstrs.setProvince(area);
-//                    nstrsService.add(nstrs);
+//                    nstrsService.addOrUpdate(nstrs);
 //                }
                     Nstrs exist = nstrsService.selectOne(nstrs);
                     if (exist != null) {
@@ -346,7 +346,7 @@ public class NstrsController {
 //                            if (element.html().contains("img")) {
 //                                String host = element.select("td").get(1).text();
 //                                String port = element.select("td").get(2).text();
-//                                blockingQueue.add(host + ":" + port);
+//                                blockingQueue.addOrUpdate(host + ":" + port);
 //                            }
 //                        }
 //                    } catch (IOException e) {

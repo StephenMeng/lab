@@ -1,5 +1,6 @@
 package com.stephen.lab.service.semantic.impl;
 
+import com.stephen.lab.constant.DataSourceType;
 import com.stephen.lab.dao.semantic.DataSourceDao;
 import com.stephen.lab.model.semantic.DataSource;
 import com.stephen.lab.service.semantic.DataSourceService;
@@ -17,6 +18,13 @@ public class DataSourceServiceImpl implements DataSourceService {
     public List<DataSource> getAllDataSources() {
         List<DataSource> dataSources = dataSourceDao.selectAll();
         return dataSources;
+    }
+
+    @Override
+    public List<DataSource> getSemanticDataSources() {
+        DataSource condition = new DataSource();
+        condition.setSourceType(DataSourceType.SEMANTIC);
+        return dataSourceDao.select(condition);
     }
 
     public DataSource getDataSource(Integer source) {

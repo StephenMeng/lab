@@ -58,10 +58,10 @@ public class InitController {
 
         int count = 0;
         StringBuilder entityStringBuilder = null;
-        String keyword = "%E4%BA%91%E8%AE%A1%E7%AE%97";//云计算
-//        String keyword = "%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98";//数据挖掘
+//        String keyword = "%E4%BA%91%E8%AE%A1%E7%AE%97";//云计算
+        String keyword = "%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98";//数据挖掘
 
-        for (int i = 1; i < 1; i++) {
+        for (int i = 1; i < 100; i++) {
             String s = "http://so.csdn.net/so/search/s.do?" +
                     "p=" + i + "&q=" + keyword + "&t=blog&domain=&o=&s=&u=null&l=null&f=null";
             LogRecod.print(s);
@@ -394,7 +394,6 @@ public class InitController {
 
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-            LogRecod.print(jsonObject);
             EntityJsonDto entityJsonDto = JSONObject.parseObject(jsonObject.toJSONString(), EntityJsonDto.class);
             if (!entityJsonDto.getId().contains("genid")) {
                 Entity entity = new Entity();
