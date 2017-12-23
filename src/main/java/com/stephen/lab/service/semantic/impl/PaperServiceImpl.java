@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class PaperServiceImpl implements PaperService {
@@ -45,5 +46,15 @@ public class PaperServiceImpl implements PaperService {
     @Override
     public void addPaper(Paper paper) {
         paperDao.insert(paper);
+    }
+
+    @Override
+    public List<Paper> select(Paper conditon) {
+        return paperDao.select(conditon);
+    }
+
+    @Override
+    public int updateSelective(Paper p) {
+        return paperDao.updateByPrimaryKeySelective(p);
     }
 }

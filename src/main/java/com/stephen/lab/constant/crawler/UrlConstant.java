@@ -32,4 +32,7 @@ public class UrlConstant {
 
     public static final String WEI_BO = "http://weibo.com";
     public static final Integer WEI_BO_ID = 11;
+
+    public static final String WAN_FANG = "http://new.wanfangdata.com.cn";
+    public static final Integer WAN_FAGN_ID = 12;
 }
