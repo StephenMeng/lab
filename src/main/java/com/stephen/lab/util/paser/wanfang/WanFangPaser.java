@@ -51,11 +51,8 @@ public class WanFangPaser implements Parser {
         Paper paper = new Paper();
         Document document = Jsoup.parse(html);
         Elements detail = document.select("div[class=info_right]");
-        for (Element element : detail) {
-            LogRecod.print(element.text());
-        }
         try {
-            Element pAbstract = document.select("div[id=see_alldiv]").first();
+            Element pAbstract = document.select("div[class=abstract]").first().select("textarea").first();
             paper.setSummary(pAbstract.text().replace("摘要：", ""));
         } catch (Exception e) {
         }
@@ -67,7 +64,7 @@ public class WanFangPaser implements Parser {
         }
         try {
             Element autor = detail.get(2);
-            paper.setKeyword(autor.text());
+            paper.setAuthor(autor.text());
         } catch (
                 Exception e) {
         }
@@ -91,8 +88,7 @@ public class WanFangPaser implements Parser {
                 Exception e) {
         }
         try {
-            Element fund = document.select("div[class=info_right author]").get(1);
-
+            Element fund = document.select("div[class=info_right author]").get(3);
             paper.setFund(fund.text());
         } catch (
                 Exception e) {
