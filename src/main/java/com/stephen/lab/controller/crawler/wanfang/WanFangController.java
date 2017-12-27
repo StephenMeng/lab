@@ -76,7 +76,7 @@ public class WanFangController {
             }
             List<Paper> messages = new WanFangPaser().parse(result);
             if (messages.size() < pageSize) {
-                crawlErrorService.addErrorItem(url, UrlConstant.WAN_FAGN_ID);
+                addErrorIte(url);
             }
             messages.forEach(paper -> {
                 if (!paperUrls.contains(paper.getPaperUrl())) {
@@ -84,10 +84,19 @@ public class WanFangController {
                 }
             });
         } catch (Exception e) {
-            crawlErrorService.addErrorItem(url, UrlConstant.WAN_FAGN_ID);
+            addErrorIte(url);
             return false;
         }
         return true;
+    }
+
+    private void addErrorIte(String url) {
+        CrawlError conditon = new CrawlError();
+        conditon.setErrorHref(url);
+        List<CrawlError> errors = crawlErrorService.select(conditon);
+        if (errors == null || errors.size() == 0) {
+            crawlErrorService.addErrorItem(url, UrlConstant.WAN_FAGN_ID);
+        }
     }
 
     @RequestMapping("crawl_error")
@@ -100,12 +109,15 @@ public class WanFangController {
         paperConditon.setSource(UrlConstant.WAN_FAGN_ID);
         List<Paper> papers = paperService.select(paperConditon);
         List<String> paperUrls = papers.stream().map(Paper::getPaperUrl).collect(Collectors.toList());
+        ExecutorService service = Executors.newFixedThreadPool(20);
         errors.forEach(error -> {
-            String url = error.getErrorHref();
-            if (crawUrl(50, paperUrls, url)) {
-                error.setStatus(ErrorConstant.REPAIRED);
-                crawlErrorService.updateSelective(error);
-            }
+            service.execute(() -> {
+                String url = error.getErrorHref();
+                if (crawUrl(50, paperUrls, url)) {
+                    error.setStatus(ErrorConstant.REPAIRED);
+                    crawlErrorService.updateSelective(error);
+                }
+            });
         });
         return Response.success(true);
     }
