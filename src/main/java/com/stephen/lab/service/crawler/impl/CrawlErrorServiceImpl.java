@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by stephen on 2017/10/22.
@@ -24,12 +25,22 @@ public class CrawlErrorServiceImpl implements CrawlErrorService {
     }
 
     @Override
-    public void addErrorItem(String url, Integer chinaDailyComId) {
+    public void addErrorItem(String url, Integer sourceId) {
         CrawlError crawlError = new CrawlError();
         crawlError.setCreateDate(new Date());
         crawlError.setErrorHref(url);
-        crawlError.setSourceId(chinaDailyComId);
+        crawlError.setSourceId(sourceId);
         crawlError.setStatus(ErrorConstant.ERROR);
         addErrorItem(crawlError);
+    }
+
+    @Override
+    public List<CrawlError> select(CrawlError conditon) {
+        return crawlErrorDao.select(conditon);
+    }
+
+    @Override
+    public void updateSelective(CrawlError error) {
+        crawlErrorDao.updateByPrimaryKeySelective(error);
     }
 }
