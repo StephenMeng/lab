@@ -57,14 +57,17 @@ public class WanFangController {
             List<Paper> messages = new WanFangPaser().parse(result);
             Integer page = i;
             messages.forEach(paper -> {
-                Paper conditon = new Paper();
-                conditon.setPaperUrl(paper.getPaperUrl());
-                List<Paper> papers = paperService.select(conditon);
-                if (papers == null || papers.size() == 0) {
+//                Paper conditon = new Paper();
+//                conditon.setPaperUrl(paper.getPaperUrl());
+//                List<Paper> papers = paperService.select(conditon);
+//                if (papers == null || papers.size() == 0) {
                     LogRecod.print(String.valueOf(page) + "\t" + paper.getTitle());
                     paperService.addPaper(paper);
-                }
+//                }
             });
+            if(messages.size()<pageSize){
+
+            }
         }
         return Response.success(true);
     }

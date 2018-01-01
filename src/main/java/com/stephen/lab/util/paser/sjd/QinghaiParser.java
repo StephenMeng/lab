@@ -3,13 +3,11 @@ package com.stephen.lab.util.paser.sjd;
 import com.stephen.lab.constant.crawler.UrlConstant;
 import com.stephen.lab.model.crawler.ShiJiuDaMessage;
 import com.stephen.lab.util.DateUtils;
-import com.stephen.lab.util.LogRecod;
 import com.stephen.lab.util.paser.Parser;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import sun.rmi.runtime.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
