@@ -171,7 +171,12 @@ public class CSSCIAnanlysisController {
         return result;
     }
 
-
+    /**
+     * 余弦相似性
+     * @param ta
+     * @param tb
+     * @return
+     */
     private double computeDistance(List<Token> ta, List<Token> tb) {
         double result = 0;
         double fenzi = 0;
