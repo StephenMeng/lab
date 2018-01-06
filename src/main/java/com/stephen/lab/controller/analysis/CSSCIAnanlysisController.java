@@ -171,21 +171,28 @@ public class CSSCIAnanlysisController {
         return result;
     }
 
+
     private double computeDistance(List<Token> ta, List<Token> tb) {
         double result = 0;
+        double fenzi = 0;
+        double pa = getPow(ta);
+        double pb = getPow(tb);
         for (Token a : ta) {
             if (tb.contains(a)) {
                 int index = tb.indexOf(a);
                 Token b = tb.get(index);
-                result += Math.pow((Math.abs(a.getWeight() - Math.abs(b.getWeight()))), 2);
-            } else {
-                result += Math.pow(a.getWeight(), 2);
+                fenzi += a.getWeight() * b.getWeight();
             }
         }
-        for (Token b : tb) {
-            if (!ta.contains(b)) {
-                result += Math.pow(b.getWeight(), 2);
-            }
+        result = Math.pow(fenzi, 2) / (pa * pb);
+        result = Math.sqrt(result);
+        return result;
+    }
+
+    private double getPow(List<Token> ta) {
+        double result = 0;
+        for (Token t : ta) {
+            result += Math.pow(t.getWeight(), 2);
         }
         return result;
     }
