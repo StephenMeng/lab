@@ -39,6 +39,10 @@ public class Paper {
     private String pubDate;
     @Column(name = "read_num")
     private Integer readNum;
+    @Column(name = "page_num")
+    private String pageNum;
+    @Column(name = "page_size")
+    private String pageSize;
 
     public String getIssn() {
         return issn;
@@ -250,6 +254,22 @@ public class Paper {
 
     public void setReadNum(Integer readNum) {
         this.readNum = readNum;
+    }
+
+    public String getPageNum() {
+        return pageNum;
+    }
+
+    public void setPageNum(String pageNum) {
+        this.pageNum = pageNum;
+    }
+
+    public String getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(String pageSize) {
+        this.pageSize = pageSize;
     }
 
     @Override

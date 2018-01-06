@@ -35,4 +35,6 @@ public class UrlConstant {
 
     public static final String WAN_FANG = "http://new.wanfangdata.com.cn";
     public static final Integer WAN_FAGN_ID = 12;
+    public static final String CSSCI = "http://cssci.nju.edu.cn";
+    public static final Integer CSSCI_ID = 13;
 }

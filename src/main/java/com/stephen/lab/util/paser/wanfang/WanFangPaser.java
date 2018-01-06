@@ -50,54 +50,51 @@ public class WanFangPaser implements Parser {
     public Paper parseDetail(String html) {
         Paper paper = new Paper();
         Document document = Jsoup.parse(html);
-        Elements detail = document.select("div[class=info_right]");
+        Element urlInfo = document.select("div[class=left_con_top]").first();
+        Elements li = urlInfo.select("li");
+        for (Element l : li) {
+            Element left = l.select("div[class=info_left]").first();
+            Element right = l.select("div[class=info_right]").first();
+            try {
+                if (left != null) {
+                    if (left.text().contains("关键词：")) {
+                        paper.setPaperLinkId(right.text());
+                    }
+                    if (left.text().contains("作者：")) {
+                        paper.setAuthor(right.text());
+                    }
+                    if (left.text().contains("作者单位：")) {
+                        paper.setOrgan(right.text());
+                    }
+                    if (left.text().contains("刊名：")) {
+                        paper.setJournal(right.text());
+                    }
+                    if (left.text().contains("年，卷(期)：")) {
+                        paper.setYear(right.text());
+                    }
+                    if (left.text().contains("页数：")) {
+                        paper.setPageSize(right.text());
+                    }
+                    if (left.text().contains("页码：")) {
+                        paper.setPageNum(right.text());
+                    }
+                    if (left.text().contains("基金项目：")) {
+                        Element fund = l.select("div[class=info_right author]").first();
+                        paper.setFund(fund.text());
+                    }
+                    if (left.text().contains("doi：")) {
+                        Element fund = l.select("div[class=info_right author]").first();
+                        paper.setPaperLinkId(fund.text());
+                    }
+                }
+            } catch (Exception e) {
+            }
+
+        }
         try {
             Element pAbstract = document.select("div[class=abstract]").first().select("textarea").first();
             paper.setSummary(pAbstract.text().replace("摘要：", ""));
         } catch (Exception e) {
-        }
-        try {
-            Element keyword = detail.get(0);
-            paper.setKeyword(keyword.text());
-        } catch (
-                Exception e) {
-        }
-        try {
-            Element autor = detail.get(2);
-            paper.setAuthor(autor.text());
-        } catch (
-                Exception e) {
-        }
-
-        try {
-            Element autorOrg = detail.get(3);
-            paper.setOrgan(autorOrg.text());
-        } catch (
-                Exception e) {
-        }
-        try {
-            Element journal = detail.get(4);
-            paper.setJournal(journal.text());
-        } catch (
-                Exception e) {
-        }
-        try {
-            Element year = detail.get(5);
-            paper.setYear(year.text());
-        } catch (
-                Exception e) {
-        }
-        try {
-            Element fund = document.select("div[class=info_right author]").get(3);
-            paper.setFund(fund.text());
-        } catch (
-                Exception e) {
-        }
-        try {
-            Element doi = document.select("div[class=info_right author]").first();
-            paper.setPaperLinkId(doi.text());
-        } catch (
-                Exception e) {
         }
         return paper;
     }
