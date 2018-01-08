@@ -11,7 +11,6 @@ import com.stephen.lab.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sun.security.jgss.TokenTracker;
 
 import java.io.*;
 import java.util.*;
@@ -21,7 +20,7 @@ import java.util.*;
 public class CSSCIAnanlysisController {
     @Autowired
     private PaperService paperService;
-    String filePath = "C:\\Users\\stephen\\Desktop\\tfidf.txt";
+    String filePath = "C:\\Users\\Stephen\\Desktop\\tfidf-1.txt";
 
     @RequestMapping("parseKeyword")
     public Response parseKeyword() {
@@ -83,7 +82,7 @@ public class CSSCIAnanlysisController {
                 int index = tokenYearFreq.indexOf(token);
                 Token yearToken = tokenYearFreq.get(index);
 
-                token.setWeight(Math.log(yearMap.size() / (double) (yearToken.getFreq() + 1)) * token.getFreq());
+                token.setWeight(Math.log(yearMap.size() / (yearToken.getFreq() + 0.0000001)) * token.getFreq());
                 if (yearToken.getWord().equals("情感分析")) {
                     LogRecod.print("年：" + yt.getKey() + "\t" + yearMap.size() + "\t" + (yearToken.getFreq() + 1) + "\t" + token.getFreq() + "\t" + token.getWeight());
                 }
@@ -111,9 +110,13 @@ public class CSSCIAnanlysisController {
                 List<Token> tokens = yt.getValue();
                 for (int i = 0; i < tokens.size(); i++) {
                     Token token = tokens.get(i);
-                    fileWriter.write(yt.getKey() + "\t" + token.getWord() + "\t" + token.getWeight() + "\t" + token.getFreq() + "\r\n");
-                    if (token.getWord().equals("情感分析")) {
-                        LogRecod.print(yt.getKey() + "\t" + token.getWord() + "\t" + token.getFreq() + "\t" + token.getWeight());
+                    int in=tokenYearFreq.indexOf(token);
+                    Token y=tokenYearFreq.get(in);
+                    if(y.getFreq()>1) {
+                        fileWriter.write(yt.getKey() + "\t" + token.getWord() + "\t" + token.getWeight() + "\t" + token.getFreq() + "\r\n");
+                        if (token.getWord().equals("情感分析")) {
+                            LogRecod.print(yt.getKey() + "\t" + token.getWord() + "\t" + token.getFreq() + "\t" + token.getWeight());
+                        }
                     }
                 }
             }
@@ -129,7 +132,7 @@ public class CSSCIAnanlysisController {
     }
 
     @RequestMapping("compare")
-    public Response compare(Integer start, Integer end) throws IOException {
+    public Response compare(Integer start, Integer end,Integer num) throws IOException {
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(new File(filePath)), "utf-8")
         );
@@ -155,8 +158,42 @@ public class CSSCIAnanlysisController {
             }
 
         }
-        double result = computeDistance(yearTokens, start, end);
-        return Response.success(result);
+       List<Integer>result=null;
+        Map<Integer,LostPoint>r=new HashMap<>();
+//        for(int i=2;i<=end-start+1;i++){
+            LostPoint lostPoint=classify(yearTokens,start,end,num);
+            r.put(num,lostPoint);
+//        }
+//        double result = computeDistance(yearTokens, start, end);
+        return Response.success(r);
+    }
+
+    private LostPoint classify(Map<Integer, List<Token>> yearTokens, Integer start, Integer end, Integer num) {
+        LostPoint p=new LostPoint();
+        p.setIndex(end);
+        p.setScore(Double.MAX_VALUE);
+        if(num==1||(num==2&&end-start==1)){
+            p.setScore(computeDistance(yearTokens,start,end));
+            return p;
+        }
+
+        for(int e=end;e>=start+num-1;e--){
+
+            double temp=computeDistance(yearTokens,e,end);
+            LostPoint subPoint=classify(yearTokens,start,e-1,num-1);
+            temp+=subPoint.getScore();
+            if(p.getScore()>temp){
+                p.setScore(temp);
+                p.setIndex(e);
+                p.setLostPoint(subPoint);
+            }
+            if(p.getScore()==0){
+                break;
+            }
+        }
+        List<Integer>result=new ArrayList<>();
+        computeDistance(yearTokens, start, end);
+        return  p;
     }
 
     private double computeDistance(Map<Integer, List<Token>> yearTokens, int m, int n) {
