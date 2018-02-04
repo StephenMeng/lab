@@ -100,7 +100,7 @@ public class EntityController {
                 relationWithEntity.setRelationName(entityRelation.getRelationName());
                 relationWithEntity.setRelationType(entityRelation.getRelationType());
 
-                relationWithEntity.setEntities(ListUtil.oneItemToList(entityDtoB));
+                relationWithEntity.setEntities(ListUtil.newItemsToList(entityDtoB));
                 relationWithEntities.add(relationWithEntity);
             }
 
@@ -125,7 +125,7 @@ public class EntityController {
                 relationWithEntity.setRelationId(entityRelation.getRelationId());
                 relationWithEntity.setRelationName(entityRelation.getRelationNamePassive());
                 relationWithEntity.setRelationType(entityRelation.getRelationType());
-                relationWithEntity.setEntities(ListUtil.oneItemToList(temp));
+                relationWithEntity.setEntities(ListUtil.newItemsToList(temp));
                 relationWithEntities.add(relationWithEntity);
             }
 

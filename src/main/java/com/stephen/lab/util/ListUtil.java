@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListUtil {
-    public static <T> List<T> oneItemToList(T item) {
+    public static <T> List<T> newItemsToList(T item) {
         List<T> list = new ArrayList<>();
         list.add(item);
         return list;

@@ -1,6 +1,5 @@
 package com.stephen.lab.util;
 
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Created by stephen on 2017/10/29.
