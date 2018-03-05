@@ -10,4 +10,6 @@ public interface KivaService {
     List<Kiva> select(Kiva kiva);
 
     Kiva selectOne(Kiva kiva);
+
+    List<Kiva> selectAll();
 }

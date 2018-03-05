@@ -27,4 +27,9 @@ public class KivaServiceImpl implements KivaService {
     public Kiva selectOne(Kiva kiva) {
         return kivaDao.selectOne(kiva);
     }
+
+    @Override
+    public List<Kiva> selectAll() {
+        return kivaDao.selectAll();
+    }
 }

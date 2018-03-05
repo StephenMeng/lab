@@ -4,12 +4,15 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.google.common.base.Charsets;
+import com.stephen.lab.dto.analysis.Token;
 import com.stephen.lab.model.paper.Kiva;
+import com.stephen.lab.model.semantic.Paper;
 import com.stephen.lab.service.crawler.CrawlErrorService;
 import com.stephen.lab.service.paper.KivaService;
 import com.stephen.lab.util.HttpUtils;
 import com.stephen.lab.util.LogRecod;
 import com.stephen.lab.util.Response;
+import com.stephen.lab.util.StringUtils;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
@@ -22,10 +25,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.wltea.analyzer.lucene.IKAnalyzer;
+import weka.core.Instances;
+import weka.core.converters.CSVSaver;
+import weka.core.converters.DatabaseLoader;
 
 import java.io.*;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -147,5 +153,106 @@ public class KivaController {
         }
 
         return Response.success(result);
+    }
+
+    @RequestMapping("weka")
+    public Response weka() throws Exception {
+        DatabaseLoader loader = new DatabaseLoader();
+        loader.setUrl("jdbc:mysql://localhost:3306/lab?characterEncoding=utf-8&useSSL=false&serverTimezone=UTC");
+        loader.setUser("root");
+        loader.setPassword("016611sai");
+        loader.setQuery("select original_description from kiva limit 10");
+        Instances data1 = loader.getDataSet();
+        LogRecod.print(data1.size());
+        data1.forEach(d -> LogRecod.print(d));
+
+        if (data1.classIndex() == -1)
+            data1.setClassIndex(data1.numAttributes() - 1);
+//        System.out.println(data1);
+        CSVSaver saver = new CSVSaver();
+        saver.setInstances(data1);
+        saver.setFile(new File("c:/users/Stephen/desktop/csvsaver.csv"));
+        saver.writeBatch();
+        return Response.success("");
+    }
+
+
+    @RequestMapping("tfidf")
+    public  Response tfidf() throws IOException {
+        List<Kiva> kivaList = kivaService.selectAll();
+        List<KivaResult>kivaResults=new ArrayList<>();
+        Map<String, Integer> yearWordMap = new HashMap<>();
+        long cur=System.currentTimeMillis();
+        kivaList.forEach(kiva -> {
+            String description=kiva.getTranslatedDescription();
+            if(StringUtils.isNull(description)){
+                description=kiva.getOriginal_description();
+            }
+                List<String> words = cutwords(description);
+            Map<String, Integer> keywordsMap = parseKeywordMap(words);
+            for (Map.Entry<String, Integer> kwm : keywordsMap.entrySet()) {
+                if(yearWordMap.containsKey(kwm.getKey())){
+                    yearWordMap.put(kwm.getKey(),yearWordMap.get(kwm.getKey())+1);
+                }else {
+                    yearWordMap.put(kwm.getKey(),1);
+                }
+            }
+            KivaResult kivaResult=new KivaResult(kiva);
+            kivaResult.setWordMap(keywordsMap);
+            kivaResults.add(kivaResult);
+        });
+
+
+        LogRecod.print("计算关键词在年文档出现的频率" + (System.currentTimeMillis() - cur));
+        for(KivaResult r:kivaResults){
+            Map<String,Double>tfidfMap=new HashMap<>();
+        for (Map.Entry<String,Integer> yt : r.getWordMap().entrySet()) {
+            int count=yearWordMap.get(yt.getKey());
+            double weight=Math.log(yearWordMap.size() / (count + 0.0000001)) * yt.getValue();
+            tfidfMap.put(yt.getKey(),weight);
+        }
+        r.setWordTfIdf(tfidfMap);
+        }
+        LogRecod.print("计算TFIDF权重：" + (System.currentTimeMillis() - cur));
+        for(KivaResult r:kivaResults){
+            LogRecod.print(r.getKiva().getId()+"\t"+r.getWordTfIdf());
+        }
+//        try {
+//            FileWriter fileWriter = new FileWriter(new File("c:/users/Stephen/desktop/result-tfidf.txt"));
+//            for(KivaResult r:kivaResults){
+//                fileWriter.write(r.getKiva().getId() + "\t" + r.getWordMap() + "\t" + r.getWordTfIdf() + "\r\n");
+//            }
+//            fileWriter.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        return Response.success("");
+    }
+
+    private Map<String,Integer> parseKeywordMap(List<String> words) {
+        Map<String,Integer>map=new HashMap<>();
+        words.forEach(word->{
+            if(map.containsKey(word)){
+                map.put(word,map.get(word)+1);
+            }else {
+                map.put(word,1);
+            }
+        });
+        return map;
+    }
+
+    private List<String> cutwords(String description) {
+        return Arrays.asList(description.split(" "));
+    }
+    private void getKeywordCountMaps(Map<String, Integer> keywordsMap, List<String> keywordsList) {
+        for (String keyword : keywordsList) {
+            if (!keywordsMap.containsKey(keyword)) {
+                keywordsMap.put(keyword, 1);
+            } else {
+                int count = keywordsMap.get(keyword);
+                keywordsMap.put(keyword, ++count);
+            }
+        }
     }
 }
