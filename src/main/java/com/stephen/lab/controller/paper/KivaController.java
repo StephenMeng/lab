@@ -4,15 +4,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.google.common.base.Charsets;
+import com.hankcs.hanlp.HanLP;
 import com.stephen.lab.dto.analysis.Token;
 import com.stephen.lab.model.paper.Kiva;
 import com.stephen.lab.model.semantic.Paper;
 import com.stephen.lab.service.crawler.CrawlErrorService;
 import com.stephen.lab.service.paper.KivaService;
-import com.stephen.lab.util.HttpUtils;
-import com.stephen.lab.util.LogRecod;
-import com.stephen.lab.util.Response;
-import com.stephen.lab.util.StringUtils;
+import com.stephen.lab.util.*;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
@@ -24,6 +22,7 @@ import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 import weka.core.Instances;
@@ -41,6 +40,15 @@ import java.util.concurrent.Executors;
 @RestController
 @RequestMapping("kiva")
 public class KivaController {
+
+    private static Properties props;
+    private static StanfordCoreNLP pipeline;
+    static {
+        props  = new Properties();
+        props.put("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");    // 七种Annotators
+         pipeline = new StanfordCoreNLP(props);    // 依次处理
+
+    }
     @Autowired
     private KivaService kivaService;
     @Autowired
@@ -175,13 +183,25 @@ public class KivaController {
         saver.writeBatch();
         return Response.success("");
     }
-
+    @RequestMapping("textrank")
+    public  Response textrank(@RequestParam("num")int num) throws IOException {
+        Kiva condition=new Kiva();
+        condition.setId(85L);
+        Kiva kiva=kivaService.selectOne(condition);
+        String description =kiva.getTranslatedDescription();
+        if(StringUtils.isNull(description)){
+            description=kiva.getOriginal_description();
+        }
+        description=description.replaceAll("<.*?>","");
+        return Response.success(description+"\r\n"+HanLP.extractKeyword(description,num));
+    }
 
     @RequestMapping("tfidf")
     public  Response tfidf() throws IOException {
         List<Kiva> kivaList = kivaService.selectAll();
         List<KivaResult>kivaResults=new ArrayList<>();
         Map<String, Integer> yearWordMap = new HashMap<>();
+        LogRecod.print(kivaList.size());
         long cur=System.currentTimeMillis();
         kivaList.forEach(kiva -> {
             String description=kiva.getTranslatedDescription();
@@ -205,7 +225,7 @@ public class KivaController {
 
         LogRecod.print("计算关键词在年文档出现的频率" + (System.currentTimeMillis() - cur));
         for(KivaResult r:kivaResults){
-            Map<String,Double>tfidfMap=new HashMap<>();
+            Map<String,Double>tfidfMap=new TreeMap<>();
         for (Map.Entry<String,Integer> yt : r.getWordMap().entrySet()) {
             int count=yearWordMap.get(yt.getKey());
             double weight=Math.log(yearWordMap.size() / (count + 0.0000001)) * yt.getValue();
@@ -226,8 +246,9 @@ public class KivaController {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-
-        return Response.success("");
+        KivaResult kivaResult=kivaResults.get(0);
+        kivaResult.setWordTfIdf(MapUtils.sortMapByValue(kivaResult.getWordTfIdf()));
+        return Response.success(kivaResult);
     }
 
     private Map<String,Integer> parseKeywordMap(List<String> words) {
@@ -243,7 +264,23 @@ public class KivaController {
     }
 
     private List<String> cutwords(String description) {
-        return Arrays.asList(description.split(" "));
+
+        Annotation document = new Annotation(description);    // 利用text创建一个空的Annotation
+        pipeline.annotate(document);                   // 对text执行所有的Annotators（七种）
+        // 下面的sentences 中包含了所有分析结果，遍历即可获知结果。
+        List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
+        List<String>result=new ArrayList<>();
+        for(CoreMap sentence: sentences) {
+            for (CoreLabel token: sentence.get(CoreAnnotations.TokensAnnotation.class)) {
+
+                String word = token.get(CoreAnnotations.TextAnnotation.class);            // 获取分词
+//                String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);     // 获取词性标注
+//                String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);    // 获取命名实体识别结果
+                String lemma = token.get(CoreAnnotations.LemmaAnnotation.class);          // 获取词形还原结果
+                result.add(lemma);
+            }
+        }
+        return result;
     }
     private void getKeywordCountMaps(Map<String, Integer> keywordsMap, List<String> keywordsList) {
         for (String keyword : keywordsList) {
@@ -255,4 +292,6 @@ public class KivaController {
             }
         }
     }
+
+
 }
