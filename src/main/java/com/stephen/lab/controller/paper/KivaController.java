@@ -5,9 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.google.common.base.Charsets;
 import com.hankcs.hanlp.HanLP;
-import com.stephen.lab.dto.analysis.Token;
 import com.stephen.lab.model.paper.Kiva;
-import com.stephen.lab.model.semantic.Paper;
 import com.stephen.lab.service.crawler.CrawlErrorService;
 import com.stephen.lab.service.paper.KivaService;
 import com.stephen.lab.util.*;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.wltea.analyzer.lucene.IKAnalyzer;
 import weka.core.Instances;
 import weka.core.converters.CSVSaver;
 import weka.core.converters.DatabaseLoader;
@@ -293,5 +290,28 @@ public class KivaController {
         }
     }
 
+@RequestMapping("svm")
+    public Response svm(){
+    String[] arg = { "D:\\tmp\\traindata.txt", //训练集
+            "D:\\tmp\\model.txt" }; // 存放SVM训练模型
 
+
+    String[] parg = { "D:\\tmp\\testdata.txt", //测试数据
+            "D:\\tmp\\model.txt", // 调用训练模型
+            "D:\\tmp\\predict.txt" }; //预测结果
+    System.out.println("........SVM运行开始..........");
+    long start=System.currentTimeMillis();
+
+//    svm_train.main(arg); //训练
+//    System.out.println("用时:"+(System.currentTimeMillis()-start));
+//    预测
+//    svm_predict.main(parg);
+    return Response.success("");
+}
+
+    @RequestMapping("knn")
+    public Response knn() {
+
+    return  Response.success("");
+    }
 }

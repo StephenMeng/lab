@@ -8,7 +8,7 @@ import java.util.*;
 public class MapUtils {
     public static<V extends Comparable,T > Map<V, T > sortMapByKey(Map<V, T > oriMap) {
 
-        Map<V, T> sortMap = new TreeMap<V, T>((o1,o2)->o1.compareTo(o2));
+        Map<V, T> sortMap = new TreeMap<>((o1,o2)->o1.compareTo(o2));
 
         sortMap.putAll(oriMap);
         return sortMap;
