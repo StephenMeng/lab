@@ -1,6 +1,7 @@
 package com.stephen.lab.controller.paper;
 
 import com.stephen.lab.model.paper.Kiva;
+import com.stephen.lab.model.paper.KivaSimple;
 
 import java.util.Map;
 
@@ -14,6 +15,10 @@ public class KivaResult {
     public KivaResult(){}
     public KivaResult(Kiva k){
         setKiva(k);
+    }
+
+    public KivaResult(KivaSimple kivaSimple) {
+        setKiva(new Kiva(kivaSimple));
     }
 
     public Kiva getKiva() {

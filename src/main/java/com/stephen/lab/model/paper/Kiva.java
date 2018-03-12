@@ -75,6 +75,12 @@ public class Kiva implements Serializable {
     private String distributionModel;
     @Column(name = "borrowers")
     private String borrowers;
+    public Kiva(){}
+    public Kiva(KivaSimple kivaSimple) {
+        setId(kivaSimple.getId());
+        setOriginalLanguage(kivaSimple.getOriginalDescription());
+        setTags(kivaSimple.getTags());
+    }
 
     public Long getId() {
         return id;

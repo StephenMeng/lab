@@ -2,18 +2,17 @@ package com.stephen.lab.controller.paper;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageHelper;
 import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
+import com.google.common.io.Files;
 import com.hankcs.hanlp.HanLP;
 import com.stephen.lab.model.paper.Kiva;
+import com.stephen.lab.model.paper.KivaSimple;
 import com.stephen.lab.service.crawler.CrawlErrorService;
 import com.stephen.lab.service.paper.KivaService;
 import com.stephen.lab.util.*;
-import edu.stanford.nlp.ling.CoreAnnotations;
-import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import edu.stanford.nlp.util.CoreMap;
+import com.stephen.lab.util.svm.svm_predict;
+import com.stephen.lab.util.svm.SvmTrain;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
@@ -22,9 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import weka.core.Instances;
-import weka.core.converters.CSVSaver;
-import weka.core.converters.DatabaseLoader;
+import org.wltea.analyzer.cfg.Configuration;
+import org.wltea.analyzer.cfg.DefaultConfig;
+import org.wltea.analyzer.core.IKSegmenter;
+import org.wltea.analyzer.core.Lexeme;
 
 import java.io.*;
 import java.util.*;
@@ -39,13 +39,6 @@ import java.util.concurrent.Executors;
 public class KivaController {
 
     private static Properties props;
-    private static StanfordCoreNLP pipeline;
-    static {
-        props  = new Properties();
-        props.put("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");    // 七种Annotators
-         pipeline = new StanfordCoreNLP(props);    // 依次处理
-
-    }
     @Autowired
     private KivaService kivaService;
     @Autowired
@@ -128,111 +121,57 @@ public class KivaController {
         return Response.success("");
     }
 
-    @RequestMapping(value = "split", method = RequestMethod.GET)
-    public Response tokenWord() {
-        Kiva kiva = new Kiva();
-        kiva.setId(1334727L);
-        PageHelper.startPage(1, 1);
-        Kiva result = kivaService.selectOne(kiva);
-        String text = result.getTranslatedDescription();
-        LogRecod.print(text);
-        Properties props = new Properties();
-        props.put("annotators", "tokenize,ssplit,pos, lemma");
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-        Annotation document = new Annotation(text);
-        pipeline.annotate(document);
-        List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
-        for (CoreMap sentence : sentences) {
-            for (CoreLabel token : sentence.get(CoreAnnotations.TokensAnnotation.class)) {
-                //分词
-                String word = token.get(CoreAnnotations.TextAnnotation.class);
-                //词性标注
-                String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
-                //词性还原
-                String lema = token.get(CoreAnnotations.LemmaAnnotation.class);
-                //获取命名实体识别结果
-//                String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);
-
-                LogRecod.print(word + "\t" + pos + "\t" + lema);
-            }
-        }
-
-        return Response.success(result);
-    }
-
-    @RequestMapping("weka")
-    public Response weka() throws Exception {
-        DatabaseLoader loader = new DatabaseLoader();
-        loader.setUrl("jdbc:mysql://localhost:3306/lab?characterEncoding=utf-8&useSSL=false&serverTimezone=UTC");
-        loader.setUser("root");
-        loader.setPassword("016611sai");
-        loader.setQuery("select original_description from kiva limit 10");
-        Instances data1 = loader.getDataSet();
-        LogRecod.print(data1.size());
-        data1.forEach(d -> LogRecod.print(d));
-
-        if (data1.classIndex() == -1)
-            data1.setClassIndex(data1.numAttributes() - 1);
-//        System.out.println(data1);
-        CSVSaver saver = new CSVSaver();
-        saver.setInstances(data1);
-        saver.setFile(new File("c:/users/Stephen/desktop/csvsaver.csv"));
-        saver.writeBatch();
-        return Response.success("");
-    }
     @RequestMapping("textrank")
-    public  Response textrank(@RequestParam("num")int num) throws IOException {
-        Kiva condition=new Kiva();
-        condition.setId(85L);
-        Kiva kiva=kivaService.selectOne(condition);
-        String description =kiva.getTranslatedDescription();
-        if(StringUtils.isNull(description)){
-            description=kiva.getOriginal_description();
-        }
-        description=description.replaceAll("<.*?>","");
-        return Response.success(description+"\r\n"+HanLP.extractKeyword(description,num));
+    public Response textrank(@RequestParam("num") int num) throws IOException {
+        List<KivaSimple> kivaList = kivaService.selectAllSimple();
+
+        String description = kivaList.get(0).getStandardDescription();
+        description = description.replaceAll("<.*?>", "");
+        return Response.success(HanLP.extractKeyword(description, num));
     }
 
     @RequestMapping("tfidf")
-    public  Response tfidf() throws IOException {
-        List<Kiva> kivaList = kivaService.selectAll();
-        List<KivaResult>kivaResults=new ArrayList<>();
+    public Response tfidf() throws IOException {
+        List<KivaSimple> kivaList = kivaService.selectAllSimple();
+        List<KivaResult> kivaResults = new ArrayList<>();
         Map<String, Integer> yearWordMap = new HashMap<>();
         LogRecod.print(kivaList.size());
-        long cur=System.currentTimeMillis();
+        long cur = System.currentTimeMillis();
         kivaList.forEach(kiva -> {
-            String description=kiva.getTranslatedDescription();
-            if(StringUtils.isNull(description)){
-                description=kiva.getOriginal_description();
+            String description = kiva.getStandardDescription();
+            List<String> words = null;
+            try {
+                words = splitString(description);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-                List<String> words = cutwords(description);
             Map<String, Integer> keywordsMap = parseKeywordMap(words);
             for (Map.Entry<String, Integer> kwm : keywordsMap.entrySet()) {
-                if(yearWordMap.containsKey(kwm.getKey())){
-                    yearWordMap.put(kwm.getKey(),yearWordMap.get(kwm.getKey())+1);
-                }else {
-                    yearWordMap.put(kwm.getKey(),1);
+                if (yearWordMap.containsKey(kwm.getKey())) {
+                    yearWordMap.put(kwm.getKey(), yearWordMap.get(kwm.getKey()) + 1);
+                } else {
+                    yearWordMap.put(kwm.getKey(), 1);
                 }
             }
-            KivaResult kivaResult=new KivaResult(kiva);
+            KivaResult kivaResult = new KivaResult(kiva);
             kivaResult.setWordMap(keywordsMap);
             kivaResults.add(kivaResult);
         });
 
 
         LogRecod.print("计算关键词在年文档出现的频率" + (System.currentTimeMillis() - cur));
-        for(KivaResult r:kivaResults){
-            Map<String,Double>tfidfMap=new TreeMap<>();
-        for (Map.Entry<String,Integer> yt : r.getWordMap().entrySet()) {
-            int count=yearWordMap.get(yt.getKey());
-            double weight=Math.log(yearWordMap.size() / (count + 0.0000001)) * yt.getValue();
-            tfidfMap.put(yt.getKey(),weight);
-        }
-        r.setWordTfIdf(tfidfMap);
+        for (KivaResult r : kivaResults) {
+            Map<String, Double> tfidfMap = new TreeMap<>();
+            for (Map.Entry<String, Integer> yt : r.getWordMap().entrySet()) {
+                int count = yearWordMap.get(yt.getKey());
+                double weight = Math.log(yearWordMap.size() / (count + 0.0000001)) * yt.getValue();
+                tfidfMap.put(yt.getKey(), weight);
+            }
+            r.setWordTfIdf(tfidfMap);
         }
         LogRecod.print("计算TFIDF权重：" + (System.currentTimeMillis() - cur));
-        for(KivaResult r:kivaResults){
-            LogRecod.print(r.getKiva().getId()+"\t"+r.getWordTfIdf());
+        for (KivaResult r : kivaResults) {
+            LogRecod.print(r.getKiva().getId() + "\t" + r.getWordTfIdf());
         }
 //        try {
 //            FileWriter fileWriter = new FileWriter(new File("c:/users/Stephen/desktop/result-tfidf.txt"));
@@ -243,42 +182,66 @@ public class KivaController {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-        KivaResult kivaResult=kivaResults.get(0);
+        KivaResult kivaResult = kivaResults.get(0);
         kivaResult.setWordTfIdf(MapUtils.sortMapByValue(kivaResult.getWordTfIdf()));
         return Response.success(kivaResult);
     }
 
-    private Map<String,Integer> parseKeywordMap(List<String> words) {
-        Map<String,Integer>map=new HashMap<>();
-        words.forEach(word->{
-            if(map.containsKey(word)){
-                map.put(word,map.get(word)+1);
-            }else {
-                map.put(word,1);
+    private Map<String, Integer> parseKeywordMap(List<String> words) {
+        Map<String, Integer> map = new HashMap<>();
+        words.forEach(word -> {
+            if (map.containsKey(word)) {
+                map.put(word, map.get(word) + 1);
+            } else {
+                map.put(word, 1);
             }
         });
         return map;
     }
 
-    private List<String> cutwords(String description) {
-
-        Annotation document = new Annotation(description);    // 利用text创建一个空的Annotation
-        pipeline.annotate(document);                   // 对text执行所有的Annotators（七种）
-        // 下面的sentences 中包含了所有分析结果，遍历即可获知结果。
-        List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
-        List<String>result=new ArrayList<>();
-        for(CoreMap sentence: sentences) {
-            for (CoreLabel token: sentence.get(CoreAnnotations.TokensAnnotation.class)) {
-
-                String word = token.get(CoreAnnotations.TextAnnotation.class);            // 获取分词
-//                String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);     // 获取词性标注
-//                String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);    // 获取命名实体识别结果
-                String lemma = token.get(CoreAnnotations.LemmaAnnotation.class);          // 获取词形还原结果
-                result.add(lemma);
+    @RequestMapping("cutword")
+    public Response cutword() {
+        List<Kiva> kivaList = kivaService.selectAll();
+        kivaList.forEach(kiva -> {
+            KivaSimple simple = new KivaSimple(kiva);
+            try {
+                String des = kiva.getTranslatedDescription();
+                if (StringUtils.isNull(des)) {
+                    des = kiva.getOriginal_description();
+                }
+                List<String> ct = cutwords(des);
+                simple.setStandardDescription(Joiner.on(" ").join(ct));
+                kivaService.insertKivaSimple(simple);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        });
+        return Response.success("");
+    }
+
+    private List<String> splitString(String description) throws IOException {
+        if (StringUtils.isNull(description)) {
+            return new ArrayList<>();
+        }
+        return Arrays.asList(description.split(" "));
+    }
+
+    private List<String> cutwords(String description) throws IOException {
+        if (StringUtils.isNull(description)) {
+            return new ArrayList<>();
+        }
+        List<String> result = new ArrayList<>();
+        //创建分词对象
+        Configuration configuration = DefaultConfig.getInstance();
+        configuration.setUseSmart(true);
+        IKSegmenter ik = new IKSegmenter(new StringReader(description), configuration);
+        Lexeme lexeme = null;
+        while ((lexeme = ik.next()) != null) {
+            result.add(lexeme.getLexemeText());
         }
         return result;
     }
+
     private void getKeywordCountMaps(Map<String, Integer> keywordsMap, List<String> keywordsList) {
         for (String keyword : keywordsList) {
             if (!keywordsMap.containsKey(keyword)) {
@@ -290,28 +253,105 @@ public class KivaController {
         }
     }
 
-@RequestMapping("svm")
-    public Response svm(){
-    String[] arg = { "D:\\tmp\\traindata.txt", //训练集
-            "D:\\tmp\\model.txt" }; // 存放SVM训练模型
+    @RequestMapping("svm/train/file")
+    public Response trainSVM() {
+        List<KivaSimple> kivaSimples = kivaService.selectAllSimple();
+        List<String> allWords = new ArrayList<>();
+        int count = 0;
+        Map<String, Integer> map = new HashMap<>();
+        for (KivaSimple kivaSimple : kivaSimples) {
+            try {
+                List<String> stringList = splitString(kivaSimple.getOriginalDescription());
+                for (String s : stringList) {
+                    map.put(s, 1);
+                    if (map.size() > count) {
+                        count++;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        File file = new File("C:\\Users\\stephen\\Desktop\\allwords.txt");
+        int index = 0;
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            try {
+                Files.append(entry.getKey() + "\t" + index + "\r\n", file, Charsets.UTF_8);
+                index++;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return Response.success("");
+    }
 
+    @RequestMapping("svm/train/args")
+    public Response trainSVMArgs() throws IOException {
+        List<KivaSimple> kivaSimples = kivaService.selectAllSimple();
+        Map<String, Integer> map = new HashMap<>();
+        File file = new File("C:\\Users\\stephen\\Desktop\\allwords.txt");
+        List<String> strings = Files.readLines(file, Charsets.UTF_8);
+        for (String s : strings) {
+            String[] term = s.split("\t");
+            try {
+                map.put(term[0], Integer.parseInt(term[1]));
+            } catch (Exception e) {
+            }
+        }
+        String tag = "business";
+        File tagFile = new File("C:\\Users\\stephen\\Desktop\\svm\\bussiness.txt");
+        kivaSimples.forEach(kivaSimple -> {
+            StringBuilder stringBuilder = new StringBuilder();
+            try {
+                List<String> stringList = splitString(kivaSimple.getStandardDescription());
+                stringList.forEach(s -> {
+                    if (map.get(s) != null) {
+                        stringBuilder.append(" " + map.get(s) + ":1");
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (!StringUtils.isNull(stringBuilder.toString())) {
+                if (kivaSimple.getTags().contains(tag)) {
+                    try {
+                        Files.append("1" + stringBuilder.toString() + "\r\n", tagFile, Charsets.UTF_8);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        Files.append("0" + stringBuilder.toString() + "\r\n", tagFile, Charsets.UTF_8);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        return Response.success(map);
+    }
 
-    String[] parg = { "D:\\tmp\\testdata.txt", //测试数据
-            "D:\\tmp\\model.txt", // 调用训练模型
-            "D:\\tmp\\predict.txt" }; //预测结果
-    System.out.println("........SVM运行开始..........");
-    long start=System.currentTimeMillis();
+    @RequestMapping("svm/test")
+    public Response svm() throws IOException {
+        String[] arg = {"C:\\Users\\stephen\\Desktop\\svm\\bussiness.txt", //训练集
+                "C:\\Users\\stephen\\Desktop\\svm\\bussiness-model.txt"}; // 存放SVM训练模型
 
-//    svm_train.main(arg); //训练
-//    System.out.println("用时:"+(System.currentTimeMillis()-start));
-//    预测
-//    svm_predict.main(parg);
-    return Response.success("");
-}
+        String[] parg = {"C:\\Users\\stephen\\Desktop\\svm\\testdata.txt", //测试数据
+                "C:\\Users\\stephen\\Desktop\\svm\\bussiness-model.txt", // 调用训练模型
+                "C:\\Users\\stephen\\Desktop\\svm\\predict.txt"}; //预测结果
+        System.out.println("........SVM运行开始..........");
+//        long start = System.currentTimeMillis();
+
+        //创建一个预测或者分类的对象
+        SvmTrain t = new SvmTrain();
+        t.main(arg);   //调用
+        svm_predict.main(parg);  //调用
+        return Response.success("");
+    }
 
     @RequestMapping("knn")
     public Response knn() {
 
-    return  Response.success("");
+        return Response.success("");
     }
 }

@@ -1,3 +1,5 @@
+.
+:
 'd
 'll
 'm
@@ -116,6 +118,7 @@ beyond
 big
 biol
 both
+br
 brief
 briefly
 but

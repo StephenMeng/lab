@@ -1,6 +1,7 @@
 package com.stephen.lab.service.paper;
 
 import com.stephen.lab.model.paper.Kiva;
+import com.stephen.lab.model.paper.KivaSimple;
 
 import java.util.List;
 
@@ -12,4 +13,8 @@ public interface KivaService {
     Kiva selectOne(Kiva kiva);
 
     List<Kiva> selectAll();
+
+    int insertKivaSimple(KivaSimple simple);
+
+    List<KivaSimple> selectAllSimple();
 }
