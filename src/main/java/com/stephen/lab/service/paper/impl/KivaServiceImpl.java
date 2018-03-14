@@ -46,4 +46,14 @@ public class KivaServiceImpl implements KivaService {
     public List<KivaSimple> selectAllSimple() {
         return kivaSimpleDao.selectAll();
     }
+
+    @Override
+    public List<KivaSimple> select(KivaSimple condition) {
+        return kivaSimpleDao.select(condition);
+    }
+
+    @Override
+    public KivaSimple selectOne(KivaSimple condition) {
+        return kivaSimpleDao.selectOne(condition);
+    }
 }

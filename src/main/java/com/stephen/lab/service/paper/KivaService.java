@@ -17,4 +17,8 @@ public interface KivaService {
     int insertKivaSimple(KivaSimple simple);
 
     List<KivaSimple> selectAllSimple();
+
+    List<KivaSimple> select(KivaSimple condition);
+
+    KivaSimple selectOne(KivaSimple condition);
 }

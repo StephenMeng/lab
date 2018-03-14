@@ -121,7 +121,39 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>6.0.6</version>
         </dependency>
-
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>3.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>3.7.0</version>
+            <classifier>models</classifier>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>edu.stanford.nlp</groupId>-->
+            <!--<artifactId>stanford-corenlp</artifactId>-->
+            <!--<version>3.7.0</version>-->
+            <!--<classifier>models-chinese</classifier>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.7.12</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>edu.stanford.nlp</groupId>-->
+            <!--<artifactId>stanford-corenlp</artifactId>-->
+            <!--<version>3.7.0</version>-->
+            <!--<scope>compile</scope>-->
+        <!--</dependency>-->
         <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
@@ -139,6 +171,13 @@
             <artifactId>libsvm</artifactId>
             <version>3.17</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/weka-stable -->
+        <dependency>
+            <groupId>nz.ac.waikato.cms.weka</groupId>
+            <artifactId>weka-stable</artifactId>
+            <version>3.8.2</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>

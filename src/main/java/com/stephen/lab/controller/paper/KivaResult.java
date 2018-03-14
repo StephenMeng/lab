@@ -1,8 +1,11 @@
 package com.stephen.lab.controller.paper;
 
+import com.stephen.lab.dto.analysis.Token;
 import com.stephen.lab.model.paper.Kiva;
 import com.stephen.lab.model.paper.KivaSimple;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -10,10 +13,12 @@ import java.util.Map;
  */
 public class KivaResult {
     private Kiva kiva;
-    private Map<String,Integer>wordMap;
-    private Map<String,Double>wordTfIdf;
-    public KivaResult(){}
-    public KivaResult(Kiva k){
+    private List<Token> tokenList;
+    private Double distanceToOther;
+    public KivaResult() {
+    }
+
+    public KivaResult(Kiva k) {
         setKiva(k);
     }
 
@@ -29,19 +34,26 @@ public class KivaResult {
         this.kiva = kiva;
     }
 
-    public void setWordMap(Map<String, Integer> wordMap) {
-        this.wordMap = wordMap;
+    public List<Token> getTokenList() {
+        return tokenList;
     }
 
-    public Map<String, Integer> getWordMap() {
-        return wordMap;
+    public void setTokenList(List<Token> tokenList) {
+        this.tokenList = tokenList;
     }
 
-    public Map<String, Double> getWordTfIdf() {
-        return wordTfIdf;
+    public void addToken(Token token) {
+        if (tokenList == null) {
+            tokenList = new ArrayList<>();
+        }
+        tokenList.add(token);
     }
 
-    public void setWordTfIdf(Map<String, Double> wordTfIdf) {
-        this.wordTfIdf = wordTfIdf;
+    public Double getDistanceToOther() {
+        return distanceToOther;
+    }
+
+    public void setDistanceToOther(Double distanceToOther) {
+        this.distanceToOther = distanceToOther;
     }
 }

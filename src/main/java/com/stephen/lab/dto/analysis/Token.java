@@ -6,6 +6,7 @@ package com.stephen.lab.dto.analysis;
 public class Token {
     private String word;
     private int freq;
+    private int docCount;
     private double weight;
 
     public String getWord() {
@@ -53,5 +54,13 @@ public class Token {
         if (token.getWord().equals(getWord())) {
             setFreq(getFreq() + token.getFreq());
         }
+    }
+
+    public int getDocCount() {
+        return docCount;
+    }
+
+    public void setDocCount(int docCount) {
+        this.docCount = docCount;
     }
 }
