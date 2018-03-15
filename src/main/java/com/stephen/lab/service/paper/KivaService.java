@@ -21,4 +21,6 @@ public interface KivaService {
     List<KivaSimple> select(KivaSimple condition);
 
     KivaSimple selectOne(KivaSimple condition);
+
+    int updateSimpleSelective(KivaSimple simple);
 }

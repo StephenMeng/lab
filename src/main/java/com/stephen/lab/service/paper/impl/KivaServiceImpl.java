@@ -56,4 +56,9 @@ public class KivaServiceImpl implements KivaService {
     public KivaSimple selectOne(KivaSimple condition) {
         return kivaSimpleDao.selectOne(condition);
     }
+
+    @Override
+    public int updateSimpleSelective(KivaSimple simple) {
+        return kivaSimpleDao.updateByPrimaryKeySelective(simple);
+    }
 }

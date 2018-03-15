@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "kiva_simple")
@@ -15,19 +16,23 @@ public class KivaSimple implements Serializable {
     private Long id;
     @Column(name = "original_description")
     private String originalDescription;
-    @Column(name="standard_description")
+    @Column(name = "standard_description")
     private String standardDescription;
     @Column(name = "tags")
     private String tags;
+    @Column(name = "gen_tags")
+    private String genTags;
 
-    public KivaSimple(){
+    public KivaSimple() {
 
     }
-    public KivaSimple(Kiva kiva){
+
+    public KivaSimple(Kiva kiva) {
         setId(kiva.getId());
         setOriginalDescription(kiva.getOriginal_description());
         setTags(kiva.getTags());
     }
+
     public Long getId() {
         return id;
     }
@@ -58,5 +63,13 @@ public class KivaSimple implements Serializable {
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    public String getGenTags() {
+        return genTags;
+    }
+
+    public void setGenTags(String genTags) {
+        this.genTags = genTags;
     }
 }
