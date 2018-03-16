@@ -2,6 +2,9 @@ package com.stephen.lab.controller.paper;
 
 import com.github.pagehelper.PageHelper;
 import com.stephen.lab.constant.crawler.UrlConstant;
+import com.stephen.lab.model.paper.KeywordInfo;
+import com.stephen.lab.model.paper.LostPoint;
+import com.stephen.lab.model.paper.YearSortedClusterResult;
 import com.stephen.lab.dto.analysis.Token;
 import com.stephen.lab.model.semantic.Paper;
 import com.stephen.lab.service.semantic.PaperService;
@@ -212,7 +215,7 @@ public class CssciAnanlysisController {
         Map<Integer, ArrayList<Token>> yearTokens = getYearTokens();
 
         List<Token> tokenList = getTokenList();
-        List<WordResult> resultList = new ArrayList<>();
+        List<YearSortedClusterResult> resultList = new ArrayList<>();
         long cur = System.currentTimeMillis();
         for (int i = 1; i < tokenList.size(); i++) {
             Token token = tokenList.get(i);
@@ -235,7 +238,7 @@ public class CssciAnanlysisController {
 //                }
             }
             int totalFreq = getFreqCount(keywordInfoList);
-            WordResult result = getWordResult(keywordInfoList);
+            YearSortedClusterResult result = getWordResult(keywordInfoList);
             result.setWord(token.getWord());
             result.setFreq(totalFreq);
             resultList.add(result);
@@ -245,12 +248,12 @@ public class CssciAnanlysisController {
             }
         }
         FileWriter fileWriter = new FileWriter(new File(keywordPath));
-        resultList.forEach(wordResult -> {
+        resultList.forEach(YearSortedClusterResult -> {
             try {
-                fileWriter.write(wordResult.getWord() + "\t"
-                        + wordResult.getBreakPoint() + "\t" + wordResult.getBefore()
-                        + "\t" + wordResult.getAfter() + "\t" + wordResult.getFreq() + "\t" + wordResult.getScore() + "\t"
-                        + wordResult.getLost() + "\r\n");
+                fileWriter.write(YearSortedClusterResult.getWord() + "\t"
+                        + YearSortedClusterResult.getBreakPoint() + "\t" + YearSortedClusterResult.getBefore()
+                        + "\t" + YearSortedClusterResult.getAfter() + "\t" + YearSortedClusterResult.getFreq() + "\t" + YearSortedClusterResult.getScore() + "\t"
+                        + YearSortedClusterResult.getLost() + "\r\n");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -267,11 +270,11 @@ public class CssciAnanlysisController {
             keywordInfo.setYear(i);
             keywordInfoList.add(keywordInfo);
         }
-        WordResult result = getWordResult(keywordInfoList);
+        YearSortedClusterResult result = getWordResult(keywordInfoList);
     }
 
-    private WordResult getWordResult(List<KeywordInfo> keywordInfoList) {
-        WordResult result = new WordResult();
+    private YearSortedClusterResult getWordResult(List<KeywordInfo> keywordInfoList) {
+        YearSortedClusterResult result = new YearSortedClusterResult();
         int breakPoint = -1;
         int beforeNum = 0;
         int afterNum = 0;

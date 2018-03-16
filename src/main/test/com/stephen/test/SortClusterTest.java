@@ -1,8 +1,8 @@
 package com.stephen.test;
 
 import com.stephen.lab.Application;
-import com.stephen.lab.controller.paper.KeywordInfo;
-import com.stephen.lab.controller.paper.WordResult;
+import com.stephen.lab.model.paper.KeywordInfo;
+import com.stephen.lab.model.paper.YearSortedClusterResult;
 import com.stephen.lab.util.LogRecod;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,12 +24,12 @@ public class SortClusterTest {
             keywordInfo.setYear(i);
             keywordInfoList.add(keywordInfo);
         }
-        WordResult result = getWordResult(keywordInfoList);
+        YearSortedClusterResult result = getWordResult(keywordInfoList);
         LogRecod.print(result);
     }
 
-    private WordResult getWordResult(List<KeywordInfo> keywordInfoList) {
-        WordResult result = new WordResult();
+    private YearSortedClusterResult getWordResult(List<KeywordInfo> keywordInfoList) {
+        YearSortedClusterResult result = new YearSortedClusterResult();
         int breakPoint = -1;
         int beforeNum = 0;
         int afterNum = 0;

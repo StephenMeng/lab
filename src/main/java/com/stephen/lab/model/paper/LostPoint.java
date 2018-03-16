@@ -1,4 +1,4 @@
-package com.stephen.lab.controller.paper;
+package com.stephen.lab.model.paper;
 
 import java.util.List;
 

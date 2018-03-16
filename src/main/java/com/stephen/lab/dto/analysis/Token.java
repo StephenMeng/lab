@@ -3,18 +3,16 @@ package com.stephen.lab.dto.analysis;
 /**
  * Created by stephen on 2018/1/6.
  */
-public class Token {
-    private String word;
+public class Token extends BaseToken {
     private int freq;
     private int docCount;
-    private double weight;
 
-    public String getWord() {
-        return word;
+    public Token() {
+        super();
     }
 
-    public void setWord(String word) {
-        this.word = word;
+    public Token(String s) {
+        super(s);
     }
 
     public int getFreq() {
@@ -25,19 +23,12 @@ public class Token {
         this.freq = freq;
     }
 
-    public double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Token) {
             if (obj != null) {
-                if (((Token) obj).getWord().equals(word)) {
+                if (((Token) obj).getWord().equals(getWord())) {
                     return true;
                 }
             }
@@ -47,7 +38,7 @@ public class Token {
 
     @Override
     public int hashCode() {
-        return word.hashCode();
+        return getWord().hashCode();
     }
 
     public void add(Token token) {

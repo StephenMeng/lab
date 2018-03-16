@@ -1,5 +1,6 @@
 package com.stephen.lab.controller.paper;
 
+import com.stephen.lab.model.paper.KivaResult;
 import com.stephen.lab.model.paper.KivaSimple;
 import com.stephen.lab.service.paper.KivaService;
 import com.stephen.lab.util.Response;

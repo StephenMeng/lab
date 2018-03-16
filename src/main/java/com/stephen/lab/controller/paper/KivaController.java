@@ -10,12 +10,16 @@ import com.google.common.io.Files;
 import com.hankcs.hanlp.HanLP;
 import com.stephen.lab.constant.paper.TagType;
 import com.stephen.lab.constant.semantic.ResultEnum;
+import com.stephen.lab.model.paper.GenTag;
+import com.stephen.lab.model.paper.KivaResult;
 import com.stephen.lab.dto.analysis.Token;
 import com.stephen.lab.model.paper.Kiva;
 import com.stephen.lab.model.paper.KivaSimple;
 import com.stephen.lab.service.crawler.CrawlErrorService;
 import com.stephen.lab.service.paper.KivaService;
 import com.stephen.lab.util.*;
+import com.stephen.lab.util.nlp.ClusterUtils;
+import com.stephen.lab.util.nlp.KeywordExtractUtils;
 import com.stephen.lab.util.svm.SvmTrain;
 import com.stephen.lab.util.svm.svm_predict;
 import edu.stanford.nlp.ling.CoreAnnotations;
@@ -24,7 +28,6 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.CoreMap;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import sun.rmi.runtime.Log;
 
 import java.io.*;
 import java.util.*;
@@ -146,19 +148,13 @@ public class KivaController {
     }
 
     @RequestMapping("gen-textrank")
-    public Response textrank(@RequestParam("num") int num) throws IOException {
+    public Response genTagByTextRank(@RequestParam("num") int num) throws IOException {
         List<KivaSimple> kivaList = kivaService.selectAllSimple();
         kivaList.forEach(kivaSimple -> {
             String description = kivaSimple.getStandardDescription();
             description = description.replaceAll("#", " ");
-            List<String> result = HanLP.extractKeyword(description, num);
-            KivaSimple simple = new KivaSimple();
-            simple.setId(kivaSimple.getId());
-            KivaSimple s = kivaService.selectOne(simple);
-            GenTag genTag = getGenTags(s.getGenTags());
-            genTag.setTextRank(result);
-            simple.setGenTags(JSONObject.toJSONString(genTag));
-            kivaService.updateSimpleSelective(simple);
+            List<Token> result = KeywordExtractUtils.textrank(description, num);
+            updateDatabaseOfGenTag(kivaSimple.getId(), result, TagType.TEXTRANK);
         });
         return Response.success(true);
     }
@@ -172,21 +168,14 @@ public class KivaController {
     }
 
     @RequestMapping("gen-tfidf")
-    public Response genByTfIdf(int num) {
+    public Response genTagByTfIdf(int num) {
         List<KivaResult> kivaResults = getTFIDFResults();
         kivaResults.forEach(result -> {
             Collections.sort(result.getTokenList(), Comparator.comparing(Token::getWeight));
             Collections.reverse(result.getTokenList());
             List<Token> tokens = result.getTokenList().size() < num ? result.getTokenList() :
                     result.getTokenList().subList(0, num);
-            List<String> r = Lists.transform(tokens, Token::getWord);
-            KivaSimple simple = new KivaSimple();
-            simple.setId(result.getKiva().getId());
-            KivaSimple s = kivaService.selectOne(simple);
-            GenTag genTag = getGenTags(s.getGenTags());
-            genTag.setTfIdf(r);
-            simple.setGenTags(JSONObject.toJSONString(genTag));
-            kivaService.updateSimpleSelective(simple);
+            updateDatabaseOfGenTag(result.getKiva().getId(), tokens, TagType.TFIDF);
         });
         return Response.success("");
     }
@@ -218,20 +207,20 @@ public class KivaController {
     }
 
     @RequestMapping("gen-knn")
-    public Response tfidfKnn(@RequestParam("num") int num) throws IOException {
+    public Response genTagByKnn(@RequestParam("num") int num) throws IOException {
 
         List<KivaResult> kivaResults = getTFIDFResults();
         kivaResults.forEach(kivaResult -> {
             Collections.sort(kivaResult.getTokenList(), Comparator.comparing(Token::getWeight));
             List<KivaResult> selectResult = getKnnSimilarDoc(kivaResult, kivaResults, 5);
-            List<String> sortedTags = getSortedTags(selectResult);
-            updateDatabaseOfGenTag(kivaResult.getKiva().getId(), sortedTags, 3);
+            List<Token> sortedTags = getSortedTags(selectResult);
+            updateDatabaseOfGenTag(kivaResult.getKiva().getId(), sortedTags, TagType.KNN);
         });
         LogRecod.print("knn finished");
         return Response.success(true);
     }
 
-    private void updateDatabaseOfGenTag(long id, List<String> newTags, int type) {
+    private void updateDatabaseOfGenTag(long id, List<Token> newTags, int type) {
         KivaSimple simple = new KivaSimple();
         simple.setId(id);
         KivaSimple s = kivaService.selectOne(simple);
@@ -303,8 +292,8 @@ public class KivaController {
         return kivaService.selectAllSimple();
     }
 
-    private List<String> getSortedTags(List<KivaResult> selectResult) {
-        List<String> result = new ArrayList<>();
+    private List<Token> getSortedTags(List<KivaResult> selectResult) {
+        List<Token> result = new ArrayList<>();
         Map<String, Integer> map = new HashMap<>();
         selectResult.forEach(kivaResult -> {
             List<String> tags = Lists.newArrayList(Splitter.on("#").trimResults().split(kivaResult.getKiva().getTags()));
@@ -328,7 +317,10 @@ public class KivaController {
             return new ArrayList<>();
         }
         for (Map.Entry<String, Integer> m : sortedMap.entrySet()) {
-            result.add(m.getKey());
+            Token token = new Token();
+            token.setWord(m.getKey());
+            token.setWeight(m.getValue());
+            result.add(token);
         }
         return result;
     }
@@ -651,12 +643,12 @@ public class KivaController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            List<String> tags = JSONObject.parseObject(kivaSimple.getGenTags(), GenTag.class).getKnn();
-            List<String> svmTags = new ArrayList<>();
+            List<Token> tags = JSONObject.parseObject(kivaSimple.getGenTags(), GenTag.class).getKnn();
+            List<Token> svmTags = new ArrayList<>();
             tags.forEach(t -> {
                 try {
-                    svmClassify(t);
-                    boolean yes = genSvmResult(t);
+                    svmClassify(t.getWord());
+                    boolean yes = genSvmResult(t.getWord());
                     if (yes) {
                         svmTags.add(t);
                     }
@@ -735,8 +727,9 @@ public class KivaController {
         for (KivaSimple kivaSimple : simpleList) {
             GenTag genTag = JSONObject.parseObject(kivaSimple.getGenTags(), GenTag.class);
             List<String> originTags = splitString(kivaSimple.getTags());
-            List<String> genTags = getTagsByTagType(tagType, genTag);
-            precise += same(genTags, originTags);
+            List<Token> originalTokens = Lists.transform(originTags, Token::new);
+            List<Token> genTags = getTagsByTagType(tagType, genTag);
+            precise += same(genTags, originalTokens);
             all += genTags.size();
         }
         return precise / (double) all;
@@ -762,15 +755,16 @@ public class KivaController {
         for (KivaSimple kivaSimple : simpleList) {
             GenTag genTag = JSONObject.parseObject(kivaSimple.getGenTags(), GenTag.class);
             List<String> originTags = splitString(kivaSimple.getTags());
-            List<String> genTags = getTagsByTagType(tagType, genTag);
-            recall += same(genTags, originTags);
+            List<Token> originalTokens = Lists.transform(originTags, Token::new);
+            List<Token> genTags = getTagsByTagType(tagType, genTag);
+            recall += same(genTags, originalTokens);
             all += originTags.size();
         }
         return recall / (double) all;
     }
 
-    private List<String> getTagsByTagType(int tagType, GenTag genTag) {
-        List<String> genTags = null;
+    private List<Token> getTagsByTagType(int tagType, GenTag genTag) {
+        List<Token> genTags = null;
         switch (tagType) {
             case TagType.TFIDF:
                 genTags = genTag.getTfIdf();
@@ -791,12 +785,12 @@ public class KivaController {
         return genTags;
     }
 
-    private int same(List<String> ls, List<String> lb) {
+    private int same(List<Token> ls, List<Token> lb) {
         if (ls == null || lb == null || ls.size() == 0 || lb.size() == 0) {
             return 0;
         }
         int count = 0;
-        Iterator<String> it = ls.iterator();
+        Iterator<Token> it = ls.iterator();
         while (it.hasNext()) {
             if (lb.contains(it.next())) {
                 count++;
@@ -805,4 +799,22 @@ public class KivaController {
         return count;
     }
 
+    @RequestMapping("gen-tag")
+    public Response genTag(int type, int num) throws IOException {
+        Response response = Response.error(ResultEnum.FAIL_PARAM_WRONG);
+        switch (type) {
+            case TagType.TFIDF:
+                response = genTagByTfIdf(num);
+                break;
+            case TagType.TEXTRANK:
+                response = genTagByTextRank(num);
+                break;
+            case TagType.KNN:
+                response = genTagByKnn(num);
+                break;
+            case TagType.SVM:
+                break;
+        }
+        return response;
+    }
 }

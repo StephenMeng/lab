@@ -1,12 +1,9 @@
-package com.stephen.lab.controller.paper;
+package com.stephen.lab.model.paper;
 
-public class WordResult {
+public class SortedClusterResult {
     private String word;
     private double lost;
     private int breakPoint;
-    private int before;
-    private int after;
-    private double score;
     private int freq;
 
     public double getLost() {
@@ -25,29 +22,6 @@ public class WordResult {
         this.breakPoint = breakPoint;
     }
 
-    public int getBefore() {
-        return before;
-    }
-
-    public void setBefore(int before) {
-        this.before = before;
-    }
-
-    public int getAfter() {
-        return after;
-    }
-
-    public void setAfter(int after) {
-        this.after = after;
-    }
-
-    public double getScore() {
-        return score;
-    }
-
-    public void setScore(double score) {
-        this.score = score;
-    }
 
     public String getWord() {
         return word;
@@ -67,12 +41,9 @@ public class WordResult {
 
     @Override
     public String toString() {
-        return "WordResult{" +
+        return "SortedClusterResult{" +
                 "lost=" + lost +
                 ", breakPoint=" + breakPoint +
-                ", before=" + before +
-                ", after=" + after +
-                ", score=" + score +
                 '}';
     }
 }

@@ -1,6 +1,6 @@
 package com.stephen.lab.constant;
 
-import com.stephen.lab.controller.paper.LostPoint;
+import com.stephen.lab.model.paper.LostPoint;
 
 import java.util.ArrayList;
 import java.util.List;
