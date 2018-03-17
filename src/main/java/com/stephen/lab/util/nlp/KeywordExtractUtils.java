@@ -1,6 +1,5 @@
 package com.stephen.lab.util.nlp;
 
-import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.summary.TextRankKeyword;
 import com.stephen.lab.dto.analysis.Token;
 import com.stephen.lab.util.StringUtils;

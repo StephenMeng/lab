@@ -2,10 +2,10 @@ package com.stephen.lab.controller.paper;
 
 import com.github.pagehelper.PageHelper;
 import com.stephen.lab.constant.crawler.UrlConstant;
+import com.stephen.lab.dto.analysis.FreqToken;
 import com.stephen.lab.model.paper.KeywordInfo;
 import com.stephen.lab.model.paper.LostPoint;
 import com.stephen.lab.model.paper.YearSortedClusterResult;
-import com.stephen.lab.dto.analysis.Token;
 import com.stephen.lab.model.semantic.Paper;
 import com.stephen.lab.service.semantic.PaperService;
 import com.stephen.lab.util.*;
@@ -56,62 +56,62 @@ public class CssciAnanlysisController {
             }
         });
 
-        Map<Integer, List<Token>> yearTokens = new HashMap<>();
+        Map<Integer, List<FreqToken>> yearFreqTokens = new HashMap<>();
         int count = getMoreThanOneKeywordCount(keywordsMap);
         Map<String, String> result = new TreeMap<>();
 
         for (Map.Entry<Integer, List<Paper>> ym : yearMap.entrySet()) {
-            List<Token> tokens = getOneYearTokens(ym);
-            yearTokens.put(ym.getKey(), tokens);
-            result.put("year num" + ym.getKey(), tokens.size() + "");
+            List<FreqToken> FreqTokens = getOneYearFreqTokens(ym);
+            yearFreqTokens.put(ym.getKey(), FreqTokens);
+            result.put("year num" + ym.getKey(), FreqTokens.size() + "");
         }
         LogRecod.print("解析关键词列表和每年的map：" + (System.currentTimeMillis() - cur));
         cur = System.currentTimeMillis();
-        List<Token> tokenYearFreq = new ArrayList<>();
+        List<FreqToken> FreqTokenYearFreq = new ArrayList<>();
         for (Map.Entry<String, Integer> kwm : keywordsMap.entrySet()) {
             String k = kwm.getKey();
             if (kwm.getValue() > 1) {
-                Token token = new Token();
-                token.setWord(k);
+                FreqToken FreqToken = new FreqToken();
+                FreqToken.setWord(k);
                 int freq = 0;
-                for (Map.Entry<Integer, List<Token>> yt : yearTokens.entrySet()) {
-                    List<Token> tokens = yt.getValue();
-                    if (tokens.contains(token)) {
+                for (Map.Entry<Integer, List<FreqToken>> yt : yearFreqTokens.entrySet()) {
+                    List<FreqToken> FreqTokens = yt.getValue();
+                    if (FreqTokens.contains(FreqToken)) {
                         freq++;
                     }
                 }
-                token.setFreq(freq);
-                tokenYearFreq.add(token);
+                FreqToken.setFreq(freq);
+                FreqTokenYearFreq.add(FreqToken);
             }
         }
         LogRecod.print("计算关键词在年文档出现的频率" + (System.currentTimeMillis() - cur));
         cur = System.currentTimeMillis();
-        for (Map.Entry<Integer, List<Token>> yt : yearTokens.entrySet()) {
-            List<Token> tokens = yt.getValue();
-            tokens.forEach(token -> {
-                int index = tokenYearFreq.indexOf(token);
+        for (Map.Entry<Integer, List<FreqToken>> yt : yearFreqTokens.entrySet()) {
+            List<FreqToken> FreqTokens = yt.getValue();
+            FreqTokens.forEach(FreqToken -> {
+                int index = FreqTokenYearFreq.indexOf(FreqToken);
                 if (index != -1) {
-                    Token yearToken = tokenYearFreq.get(index);
+                    FreqToken yearFreqToken = FreqTokenYearFreq.get(index);
 
-                    token.setWeight(Math.log(yearMap.size() / (yearToken.getFreq() + 0.0000001)) * token.getFreq());
-                    if ("情感分析".equals(yearToken.getWord())) {
-                        LogRecod.print("年：" + yt.getKey() + "\t" + yearMap.size() + "\t" + (yearToken.getFreq() + 1) + "\t" + token.getFreq() + "\t" + token.getWeight());
+                    FreqToken.setWeight(Math.log(yearMap.size() / (yearFreqToken.getFreq() + 0.0000001)) * FreqToken.getFreq());
+                    if ("情感分析".equals(yearFreqToken.getWord())) {
+                        LogRecod.print("年：" + yt.getKey() + "\t" + yearMap.size() + "\t" + (yearFreqToken.getFreq() + 1) + "\t" + FreqToken.getFreq() + "\t" + FreqToken.getWeight());
                     }
                 }
             });
         }
         LogRecod.print("计算TFIDF权重：" + (System.currentTimeMillis() - cur));
         cur = System.currentTimeMillis();
-        for (Map.Entry<Integer, List<Token>> yt : yearTokens.entrySet()) {
-            List<Token> tokens = yt.getValue();
-            for (int i = 0; i < tokens.size(); i++) {
-                Token token = tokens.get(i);
+        for (Map.Entry<Integer, List<FreqToken>> yt : yearFreqTokens.entrySet()) {
+            List<FreqToken> FreqTokens = yt.getValue();
+            for (int i = 0; i < FreqTokens.size(); i++) {
+                FreqToken FreqToken = FreqTokens.get(i);
             }
         }
         try {
             FileWriter fileWriter = new FileWriter(new File(keywordFreqPath));
-            for (Token token : tokenYearFreq) {
-                fileWriter.write(token.getWord() + "\t" + token.getFreq() + "\t" + keywordsMap.get(token.getWord()) + "\r\n");
+            for (FreqToken FreqToken : FreqTokenYearFreq) {
+                fileWriter.write(FreqToken.getWord() + "\t" + FreqToken.getFreq() + "\t" + keywordsMap.get(FreqToken.getWord()) + "\r\n");
             }
             fileWriter.close();
         } catch (IOException e) {
@@ -119,16 +119,16 @@ public class CssciAnanlysisController {
         }
         try {
             FileWriter fileWriter = new FileWriter(new File(tfidfResultPath));
-            for (Map.Entry<Integer, List<Token>> yt : yearTokens.entrySet()) {
-                List<Token> tokens = yt.getValue();
-                for (int i = 0; i < tokens.size(); i++) {
-                    Token token = tokens.get(i);
-                    int in = tokenYearFreq.indexOf(token);
+            for (Map.Entry<Integer, List<FreqToken>> yt : yearFreqTokens.entrySet()) {
+                List<FreqToken> FreqTokens = yt.getValue();
+                for (int i = 0; i < FreqTokens.size(); i++) {
+                    FreqToken FreqToken = FreqTokens.get(i);
+                    int in = FreqTokenYearFreq.indexOf(FreqToken);
                     if (in != -1) {
-                        Token yearFreq = tokenYearFreq.get(in);
-                        fileWriter.write(yt.getKey() + "\t" + token.getWord() +
-                                "\t" + token.getWeight() + "\t" + token.getFreq() +
-                                "\t" + yearFreq.getFreq() + "\t" + keywordsMap.get(token.getWord()) + "\r\n");
+                        FreqToken yearFreq = FreqTokenYearFreq.get(in);
+                        fileWriter.write(yt.getKey() + "\t" + FreqToken.getWord() +
+                                "\t" + FreqToken.getWeight() + "\t" + FreqToken.getFreq() +
+                                "\t" + yearFreq.getFreq() + "\t" + keywordsMap.get(FreqToken.getWord()) + "\r\n");
                     }
                 }
             }
@@ -145,21 +145,21 @@ public class CssciAnanlysisController {
 
     @RequestMapping(value = "compare", method = RequestMethod.GET)
     public Response compare(Integer start, Integer end, Integer num, Integer type) throws IOException {
-        Map<Integer, ArrayList<Token>> yearTokens = getYearTokens();
+        Map<Integer, ArrayList<FreqToken>> yearFreqTokens = getYearFreqTokens();
         Map<Object, Object> r = new HashMap<>();
         if (type == 1) {
             //节点信息
             FileWriter fileWriter = new FileWriter(new File(nodePath));
             for (int i = 2; i <= end - start + 1; i++) {
 
-                LostPoint lostPoint = classify(yearTokens, start, end, i);
+                LostPoint lostPoint = classify(yearFreqTokens, start, end, i);
                 fileWriter.write(lostPoint.getPoints().toString() + "\r\n");
 //            r.put(i, lostPoint);
                 r.put(i, lostPoint.getStart() + "\t" + lostPoint.getEnd() + "\t" + lostPoint.getLost() + "\t" + lostPoint.getPoints());
             }
             fileWriter.close();
         } else if (type == 2) {
-            LostPoint lostPoint = classify(yearTokens, start, end, num);
+            LostPoint lostPoint = classify(yearFreqTokens, start, end, num);
 //            r.put(i, lostPoint);
             r.put(num, lostPoint.getStart() + "\t" + lostPoint.getEnd() + "\t" + lostPoint.getLost() + "\t" + lostPoint.getPoints());
         } else if (type == 3) {
@@ -168,7 +168,7 @@ public class CssciAnanlysisController {
             for (int i = start; i <= end; i++) {
                 fileWriter.write(i + "\t");
                 for (int j = 2; j <= num; j++) {
-                    LostPoint lostPoint = classify(yearTokens, start, i, j);
+                    LostPoint lostPoint = classify(yearFreqTokens, start, i, j);
 
                     //            r.put(i, lostPoint);
                     r.put(i + "-" + j, lostPoint);
@@ -192,54 +192,54 @@ public class CssciAnanlysisController {
             for (int i = start; i <= end; i++) {
                 fileWriter.write(i + "\t");
                 for (int j = start; j <= i; j++) {
-                    double re = computeDistance(yearTokens, j, i);
+                    double re = computeDistance(yearFreqTokens, j, i);
                     fileWriter.write(DoubleUtils.threeBit(re) + "\t");
                 }
                 fileWriter.write("\r\n");
             }
             fileWriter.close();
         } else if (type == 5) {
-            double year = computeDistance(yearTokens, start, end);
+            double year = computeDistance(yearFreqTokens, start, end);
 //            r.put(i, lostPoint);
             r.put(num, year);
         } else {
-            LostPoint lostPoint = classify(yearTokens, start, end, num);
+            LostPoint lostPoint = classify(yearFreqTokens, start, end, num);
             r.put(num, lostPoint);
         }
-//        double result = computeDistance(yearTokens, start, end);
+//        double result = computeDistance(yearFreqTokens, start, end);
         return Response.success(r);
     }
 
     @RequestMapping(value = "single_keyword", method = RequestMethod.GET)
     public Response single() throws IOException {
-        Map<Integer, ArrayList<Token>> yearTokens = getYearTokens();
+        Map<Integer, ArrayList<FreqToken>> yearFreqTokens = getYearFreqTokens();
 
-        List<Token> tokenList = getTokenList();
+        List<FreqToken> FreqTokenList = getFreqTokenList();
         List<YearSortedClusterResult> resultList = new ArrayList<>();
         long cur = System.currentTimeMillis();
-        for (int i = 1; i < tokenList.size(); i++) {
-            Token token = tokenList.get(i);
+        for (int i = 1; i < FreqTokenList.size(); i++) {
+            FreqToken FreqToken = FreqTokenList.get(i);
             List<KeywordInfo> keywordInfoList = new ArrayList<>();
 
-//            if (token.getWord().equals("LDA")) {
-            for (Map.Entry<Integer, ArrayList<Token>> map : yearTokens.entrySet()) {
+//            if (FreqToken.getWord().equals("LDA")) {
+            for (Map.Entry<Integer, ArrayList<FreqToken>> map : yearFreqTokens.entrySet()) {
 //                if (map.getKey() > 2012) {
                 KeywordInfo info = new KeywordInfo();
                 int year = map.getKey();
                 info.setYear(year);
-                List<Token> tokens = map.getValue();
-                int index = tokens.indexOf(token);
+                List<FreqToken> FreqTokens = map.getValue();
+                int index = FreqTokens.indexOf(FreqToken);
                 if (index == -1) {
                     info.setFreq(0);
                 } else {
-                    info.setFreq(tokens.get(index).getFreq());
+                    info.setFreq(FreqTokens.get(index).getFreq());
                 }
                 keywordInfoList.add(info);
 //                }
             }
             int totalFreq = getFreqCount(keywordInfoList);
             YearSortedClusterResult result = getWordResult(keywordInfoList);
-            result.setWord(token.getWord());
+            result.setWord(FreqToken.getWord());
             result.setFreq(totalFreq);
             resultList.add(result);
 //            }
@@ -346,26 +346,26 @@ public class CssciAnanlysisController {
         return result;
     }
 
-    private double compulateTokenDistance(Token a, Token b) {
+    private double compulateFreqTokenDistance(FreqToken a, FreqToken b) {
         int fa = a.getFreq();
         int fb = b.getFreq();
         return Math.pow(fa - fb, 2) / Math.pow(fa + fb, 2);
     }
 
-    private void printKeywordInfo(Map<Integer, List<Token>> yearTokens, String word) {
-        Token t = new Token();
+    private void printKeywordInfo(Map<Integer, List<FreqToken>> yearFreqTokens, String word) {
+        FreqToken t = new FreqToken();
         t.setWord(word);
-        for (Map.Entry<Integer, List<Token>> yt : yearTokens.entrySet()) {
-            List<Token> tokens = yt.getValue();
-            int index = tokens.indexOf(t);
-            Token tt = tokens.get(index);
+        for (Map.Entry<Integer, List<FreqToken>> yt : yearFreqTokens.entrySet()) {
+            List<FreqToken> FreqTokens = yt.getValue();
+            int index = FreqTokens.indexOf(t);
+            FreqToken tt = FreqTokens.get(index);
             LogRecod.print(yt.getKey() + "\t" + tt.getWord() + "\t" + tt.getFreq() + "\t" + DoubleUtils.threeBit(tt.getWeight()));
 
         }
     }
 
-    public List<Token> getTokenList() throws IOException {
-        List<Token> tokenList = new ArrayList<>();
+    public List<FreqToken> getFreqTokenList() throws IOException {
+        List<FreqToken> FreqTokenList = new ArrayList<>();
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(new File(keywordFreqPath)), "utf-8")
         );
@@ -373,19 +373,19 @@ public class CssciAnanlysisController {
         while ((line = reader.readLine()) != null) {
             String word = line.split("\t")[0];
             String freq = line.split("\t")[1];
-            Token token = new Token();
-            token.setWord(word);
-            token.setFreq(Integer.parseInt(freq));
-            tokenList.add(token);
+            FreqToken FreqToken = new FreqToken();
+            FreqToken.setWord(word);
+            FreqToken.setFreq(Integer.parseInt(freq));
+            FreqTokenList.add(FreqToken);
         }
-        return tokenList;
+        return FreqTokenList;
     }
 
-    private Map<Integer, ArrayList<Token>> getYearTokens() throws IOException {
+    private Map<Integer, ArrayList<FreqToken>> getYearFreqTokens() throws IOException {
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(new File(tfidfResultPath)), "utf-8")
         );
-        Map<Integer, ArrayList<Token>> yearTokens = new HashMap<>();
+        Map<Integer, ArrayList<FreqToken>> yearFreqTokens = new HashMap<>();
         String line;
         while ((line = reader.readLine()) != null) {
             String[] items = line.split("\t");
@@ -393,24 +393,24 @@ public class CssciAnanlysisController {
             String kw = items[1];
             Double weight = Double.parseDouble(items[2]);
             Integer freq = Integer.parseInt(items[3]);
-            Token token = new Token();
-            token.setWord(kw);
-            token.setWeight(weight);
-            token.setFreq(freq);
-            if (yearTokens.containsKey(year)) {
-                ArrayList<Token> tokens = yearTokens.get(year);
-                tokens.add(token);
+            FreqToken FreqToken = new FreqToken();
+            FreqToken.setWord(kw);
+            FreqToken.setWeight(weight);
+            FreqToken.setFreq(freq);
+            if (yearFreqTokens.containsKey(year)) {
+                ArrayList<FreqToken> FreqTokens = yearFreqTokens.get(year);
+                FreqTokens.add(FreqToken);
             } else {
-                ArrayList<Token> tokenList = new ArrayList<>();
-                token.add(token);
-                yearTokens.put(year, tokenList);
+                ArrayList<FreqToken> FreqTokenList = new ArrayList<>();
+                FreqToken.add(FreqToken);
+                yearFreqTokens.put(year, FreqTokenList);
             }
 
         }
-        return yearTokens;
+        return yearFreqTokens;
     }
 
-    private LostPoint classify(Map<Integer, ArrayList<Token>> yearTokens, Integer start, Integer end, Integer num) {
+    private LostPoint classify(Map<Integer, ArrayList<FreqToken>> yearFreqTokens, Integer start, Integer end, Integer num) {
         if (end - start + 1 < num) {
             return new LostPoint();
         }
@@ -418,7 +418,7 @@ public class CssciAnanlysisController {
         p.setStart(start);
         p.setEnd(end);
         if (num == 1) {
-            p.setLost(computeDistance(yearTokens, start, end));
+            p.setLost(computeDistance(yearFreqTokens, start, end));
             p.setNum(1);
         } else if (num == 2 && end - start == 1) {
             p.setNum(2);
@@ -431,8 +431,8 @@ public class CssciAnanlysisController {
             int lastIndex = -1;
             if (num == 2) {
                 for (int i = end; i > start; i--) {
-                    double result = computeDistance(yearTokens, i, end);
-                    double temp = computeDistance(yearTokens, start, i - 1);
+                    double result = computeDistance(yearFreqTokens, i, end);
+                    double temp = computeDistance(yearFreqTokens, start, i - 1);
                     LogRecod.print(num + "\t" + start + "\t" + end + "\t" + i + "\t" + result + "\t" + temp + "\t" + lost);
                     temp += result;
                     if (lost > temp) {
@@ -441,12 +441,12 @@ public class CssciAnanlysisController {
                     }
                 }
             } else {
-                List<LostPoint> prePoints = getPrePoints(yearTokens, start, end, num);
+                List<LostPoint> prePoints = getPrePoints(yearFreqTokens, start, end, num);
                 int index = -1;
                 for (int i = 0; i < prePoints.size(); i++) {
                     LostPoint pre = prePoints.get(i);
                     Integer e = pre.getEnd();
-                    double temp = computeDistance(yearTokens, e + 1, end);
+                    double temp = computeDistance(yearFreqTokens, e + 1, end);
                     LogRecod.print(num + "\t" + start + "\t" + end + "\t" + (e + 1) + "\t" + pre.getLost() + "\t" + temp + "\t" + lost);
                     temp += +pre.getLost();
                     if (lost > temp) {
@@ -469,7 +469,7 @@ public class CssciAnanlysisController {
         return p;
     }
 
-    private List<LostPoint> getPrePoints(Map<Integer, ArrayList<Token>> yearTokens, Integer startYear, Integer endYear, Integer num) {
+    private List<LostPoint> getPrePoints(Map<Integer, ArrayList<FreqToken>> yearFreqTokens, Integer startYear, Integer endYear, Integer num) {
         int start = startYear;
         int end = endYear - 1;
         int classifynum = num - 1;
@@ -478,7 +478,7 @@ public class CssciAnanlysisController {
 
             LostPoint p = select(pointList, start, i, classifynum);
             if (p == null) {
-                p = classify(yearTokens, start, i, classifynum);
+                p = classify(yearFreqTokens, start, i, classifynum);
             }
             if (p.getStart() != null) {
                 lp.add(p);
@@ -498,7 +498,7 @@ public class CssciAnanlysisController {
         return point;
     }
 
-    private double computeDistance(Map<Integer, ArrayList<Token>> yearTokens, int m, int n) {
+    private double computeDistance(Map<Integer, ArrayList<FreqToken>> yearFreqTokens, int m, int n) {
         if (m >= n || m < 0) {
             return 0;
         }
@@ -507,9 +507,9 @@ public class CssciAnanlysisController {
             return distance;
         }
         double result = 0;
-        ArrayList<List<Token>> listList = new ArrayList<>();
+        ArrayList<List<FreqToken>> listList = new ArrayList<>();
         for (int i = m; i <= n; i++) {
-            List<Token> ta = yearTokens.get(i);
+            List<FreqToken> ta = yearFreqTokens.get(i);
             listList.add(ta);
         }
         result = computeDistance(listList);
@@ -531,38 +531,38 @@ public class CssciAnanlysisController {
         return -1;
     }
 
-    private double computeDistance(List<List<Token>> listList) {
+    private double computeDistance(List<List<FreqToken>> listList) {
         double result = 0;
-        List<Token> avgTokens = getAvgTokens(listList);
-        for (List<Token> list : listList) {
-            result += computeDistance(list, avgTokens);
+        List<FreqToken> avgFreqTokens = getAvgFreqTokens(listList);
+        for (List<FreqToken> list : listList) {
+            result += computeDistance(list, avgFreqTokens);
         }
         return result;
     }
 
-    private List<Token> getAvgTokens(List<List<Token>> listList) {
-        List<Token> tokenList = new ArrayList<>();
+    private List<FreqToken> getAvgFreqTokens(List<List<FreqToken>> listList) {
+        List<FreqToken> FreqTokenList = new ArrayList<>();
         listList.forEach(list -> {
             list.forEach(item -> {
-                int index = tokenList.indexOf(item);
+                int index = FreqTokenList.indexOf(item);
                 if (index == -1) {
-                    Token token = new Token();
-                    token.setWord(item.getWord());
-                    token.setFreq(item.getFreq());
-                    token.setWeight(item.getWeight());
-                    tokenList.add(token);
+                    FreqToken FreqToken = new FreqToken();
+                    FreqToken.setWord(item.getWord());
+                    FreqToken.setFreq(item.getFreq());
+                    FreqToken.setWeight(item.getWeight());
+                    FreqTokenList.add(FreqToken);
                 } else {
-                    Token token = tokenList.get(index);
-                    token.setFreq(token.getFreq() + item.getFreq());
-                    token.setWeight(token.getWeight() + item.getWeight());
+                    FreqToken FreqToken = FreqTokenList.get(index);
+                    FreqToken.setFreq(FreqToken.getFreq() + item.getFreq());
+                    FreqToken.setWeight(FreqToken.getWeight() + item.getWeight());
                 }
             });
         });
-        tokenList.forEach(token -> {
-                    token.setWeight(token.getWeight() / listList.size());
+        FreqTokenList.forEach(FreqToken -> {
+                    FreqToken.setWeight(FreqToken.getWeight() / listList.size());
                 }
         );
-        return tokenList;
+        return FreqTokenList;
     }
 
     /**
@@ -572,7 +572,7 @@ public class CssciAnanlysisController {
      * @param tb
      * @return
      */
-    private double computeDistance(List<Token> ta, List<Token> tb) {
+    private double computeDistance(List<FreqToken> ta, List<FreqToken> tb) {
 //        return osDistance(ta, tb);
         return cosDistance(ta, tb);
 
@@ -585,18 +585,18 @@ public class CssciAnanlysisController {
      * @param tb
      * @return
      */
-    private double osDistance(List<Token> ta, List<Token> tb) {
+    private double osDistance(List<FreqToken> ta, List<FreqToken> tb) {
         double result = 0;
-        for (Token a : ta) {
+        for (FreqToken a : ta) {
             int index = tb.indexOf(a);
             if (index != -1) {
-                Token b = tb.get(index);
+                FreqToken b = tb.get(index);
                 result += Math.pow(b.getWeight() - a.getWeight(), 2);
             } else {
                 result += Math.pow(a.getWeight(), 2);
             }
         }
-        for (Token b : tb) {
+        for (FreqToken b : tb) {
             int index = ta.indexOf(b);
             if (index == -1) {
                 result += Math.pow(b.getWeight(), 2);
@@ -613,15 +613,15 @@ public class CssciAnanlysisController {
      * @param tb
      * @return
      */
-    private double cosDistance(List<Token> ta, List<Token> tb) {
+    private double cosDistance(List<FreqToken> ta, List<FreqToken> tb) {
         double result = 0;
         double fenzi = 0;
         double pa = getPow(ta);
         double pb = getPow(tb);
-        for (Token a : ta) {
+        for (FreqToken a : ta) {
             int index = tb.indexOf(a);
             if (index != -1) {
-                Token b = tb.get(index);
+                FreqToken b = tb.get(index);
                 fenzi += Math.abs(a.getWeight() * b.getWeight());
             }
         }
@@ -629,9 +629,9 @@ public class CssciAnanlysisController {
         return (1 / result) - 1;
     }
 
-    private double getPow(List<Token> ta) {
+    private double getPow(List<FreqToken> ta) {
         double result = 0;
-        for (Token t : ta) {
+        for (FreqToken t : ta) {
             result += Math.pow(t.getWeight(), 2);
         }
         return result;
@@ -670,25 +670,25 @@ public class CssciAnanlysisController {
         }
     }
 
-    private List<Token> getOneYearTokens(Map.Entry<Integer, List<Paper>> ym) {
+    private List<FreqToken> getOneYearFreqTokens(Map.Entry<Integer, List<Paper>> ym) {
         List<Paper> papers = ym.getValue();
-        List<Token> tokens = new ArrayList<>();
+        List<FreqToken> FreqTokens = new ArrayList<>();
         for (Paper paper : papers) {
             List<String> keyword = getKeywordList(paper.getKeyword());
             keyword.forEach(k -> {
-                Token token = new Token();
-                token.setWord(k);
-                token.setFreq(1);
-                int index = tokens.indexOf(token);
+                FreqToken FreqToken = new FreqToken();
+                FreqToken.setWord(k);
+                FreqToken.setFreq(1);
+                int index = FreqTokens.indexOf(FreqToken);
                 if (index != -1) {
-                    Token exist = tokens.get(index);
-                    exist.add(token);
+                    FreqToken exist = FreqTokens.get(index);
+                    exist.add(FreqToken);
                 } else {
-                    tokens.add(token);
+                    FreqTokens.add(FreqToken);
                 }
             });
         }
-        return tokens;
+        return FreqTokens;
     }
 
     private List<String> getKeywordList(String keyword) {

@@ -2,7 +2,6 @@ package com.stephen.lab.model.paper;
 
 import com.stephen.lab.dto.analysis.Token;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,7 +11,8 @@ public class GenTag {
     private List<Token> tfIdf;
     private List<Token> textRank;
     private List<Token> knn;
-    private List<Token> classify;
+    private List<Token> svm;
+    private List<Token> lda;
 
     public GenTag() {
     }
@@ -41,11 +41,19 @@ public class GenTag {
         this.knn = knn;
     }
 
-    public List<Token> getClassify() {
-        return classify;
+    public List<Token> getSvm() {
+        return svm;
     }
 
-    public void setClassify(List<Token> classify) {
-        this.classify = classify;
+    public void setSvm(List<Token> svm) {
+        this.svm = svm;
+    }
+
+    public List<Token> getLda() {
+        return lda;
+    }
+
+    public void setLda(List<Token> lda) {
+        this.lda = lda;
     }
 }

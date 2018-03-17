@@ -15,14 +15,14 @@ import java.util.List;
  * Created by stephen on 2017/7/18.
  */
 @Controller
-@RequestMapping("semantic")
-public class IndexController {
+@RequestMapping("/semantic")
+public class SemanticIndexController {
     @Autowired
     private DataSourceService dataSourceService;
 
-    @RequestMapping("")
-    public ModelAndView index() {
-        return new ModelAndView("index");
+    @RequestMapping("/index")
+    public String index() {
+        return "index";
     }
 
     @RequestMapping("/source")
@@ -31,6 +31,4 @@ public class IndexController {
         List<DataSource> sourceList = dataSourceService.getAllDataSources();
         return Response.success(sourceList);
     }
-
-
 }

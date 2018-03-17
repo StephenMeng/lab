@@ -1,7 +1,7 @@
 package com.stephen.lab.util.nlp;
 
-import com.stephen.lab.model.paper.SortedClusterResult;
 import com.stephen.lab.dto.analysis.Token;
+import com.stephen.lab.model.paper.SortedClusterResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public class ClusterUtils {
         list.forEach(item -> {
             info.setWeight(info.getWeight() + item.getWeight());
         });
-        info.setWeight(info.getFreq() / size);
+        info.setWeight(info.getWeight() / size);
         return info;
     }
 

@@ -61,4 +61,9 @@ public class KivaServiceImpl implements KivaService {
     public int updateSimpleSelective(KivaSimple simple) {
         return kivaSimpleDao.updateByPrimaryKeySelective(simple);
     }
+
+    @Override
+    public KivaSimple selectSimpleById(long id) {
+        return kivaSimpleDao.selectByPrimaryKey(id);
+    }
 }

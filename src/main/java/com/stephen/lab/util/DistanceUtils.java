@@ -3,7 +3,6 @@ package com.stephen.lab.util;
 import com.stephen.lab.dto.analysis.Token;
 
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * Created by stephen on 2018/3/13.
@@ -60,10 +59,33 @@ public class DistanceUtils {
         return (1 / result) - 1;
     }
 
-    private static  double getPow(List<Token> ta) {
+    private static double getPow(List<Token> ta) {
         double result = 0;
         for (Token t : ta) {
             result += Math.pow(t.getWeight(), 2);
+        }
+        return result;
+    }
+
+    public static double cosNumricDistance(List<Double> toCompareScore, List<Double> srcScore) {
+        if (toCompareScore.size() != srcScore.size()) {
+            return -1;
+        }
+        double result = 0;
+        double fenzi = 0;
+        double pa = getNumricPow(srcScore);
+        double pb = getNumricPow(toCompareScore);
+        for (int i = 0; i < toCompareScore.size(); i++) {
+            fenzi += toCompareScore.get(i) * srcScore.get(i);
+        }
+        result = fenzi / (Math.sqrt(pa) * Math.sqrt(pb));
+        return (1 / result) - 1;
+    }
+
+    private static double getNumricPow(List<Double> srcScore) {
+        double result = 0;
+        for (double t : srcScore) {
+            result += Math.pow(t, 2);
         }
         return result;
     }

@@ -1,20 +1,19 @@
 package com.stephen.lab.model.paper;
 
+import com.stephen.lab.dto.analysis.FreqToken;
 import com.stephen.lab.dto.analysis.Token;
-import com.stephen.lab.model.paper.Kiva;
-import com.stephen.lab.model.paper.KivaSimple;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by stephen on 2018/3/5.
  */
 public class KivaResult {
     private Kiva kiva;
-    private List<Token> tokenList;
+    private List<FreqToken> tokenList;
     private Double distanceToOther;
+
     public KivaResult() {
     }
 
@@ -34,15 +33,15 @@ public class KivaResult {
         this.kiva = kiva;
     }
 
-    public List<Token> getTokenList() {
+    public List<FreqToken> getTokenList() {
         return tokenList;
     }
 
-    public void setTokenList(List<Token> tokenList) {
+    public void setTokenList(List<FreqToken> tokenList) {
         this.tokenList = tokenList;
     }
 
-    public void addToken(Token token) {
+    public void addToken(FreqToken token) {
         if (tokenList == null) {
             tokenList = new ArrayList<>();
         }
@@ -56,4 +55,5 @@ public class KivaResult {
     public void setDistanceToOther(Double distanceToOther) {
         this.distanceToOther = distanceToOther;
     }
+
 }

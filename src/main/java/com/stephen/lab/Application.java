@@ -17,7 +17,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication
 @EnableScheduling
 @ServletComponentScan
-
 public class Application {
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
