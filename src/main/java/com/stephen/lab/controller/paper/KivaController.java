@@ -414,9 +414,8 @@ public class KivaController {
     @RequestMapping("tranformToSimple")
     public Response tranformToSimple(long id) {
         Kiva cond = new Kiva();
-        cond.setId(id);
-//        List<Kiva> kivaList = kivaService.select(cond);
-        List<Kiva> kivaList = kivaService.selectAll();
+        cond.setSector("Education");
+        List<Kiva> kivaList = kivaService.select(cond);
 
         kivaList.forEach(kiva -> {
             if (kiva != null) {
