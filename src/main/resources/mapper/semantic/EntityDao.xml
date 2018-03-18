@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.stephen.lab.dao.semantic.EntityDao">
+    <select id="selectRelations" resultType="com.stephen.lab.model.semantic.EntityRelation">
+        SELECT DISTINCT (r.*) from entity_relation r
+        left join  entity_map m on r.relation_id=m.relation_id
+        where m.entity_a=#{entityId}
+        UNION
+         SELECT DISTINCT (r.*) from entity_relation r
+        left join  entity_map m on r.relation_id=m.relation_id
+        where m.entity_b=#{entityId}
+    </select>
+    <insert id="insertReturnId" parameterType="com.stephen.lab.model.semantic.Entity"
+            useGeneratedKeys="true" keyProperty="entityId" keyColumn="entity_id">
+        INSERT INTO entity (entity_name, entity_type) VALUES (#{entityName},#{entityType});
+    </insert>
+    <resultMap id="entityResult" type="com.stephen.lab.model.semantic.Entity">
+        <id column="entity_id" property="entityId"/>
+        <result column="entity_name" property="entityName"/>
+        <result column="entity_type" property="entityType"/>
+    </resultMap>
+    <select id="selectByName" parameterType="java.lang.String" resultMap="entityResult">
+        SELECT * from entity where entity_name=#{entityName} limit 1
+    </select>
+</mapper>

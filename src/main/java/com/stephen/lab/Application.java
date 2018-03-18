@@ -2,19 +2,18 @@ package com.stephen.lab;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.PropertyConfigurator;
-import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * Created by stephen on 2017/7/14.
  */
+@EnableSwagger2
 @SpringBootApplication
 @EnableScheduling
 @ServletComponentScan

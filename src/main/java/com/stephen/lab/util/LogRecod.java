@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 public class LogRecod {
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
-    public static void info(Object object){
+    public static void info(Object object) {
         logger.info(object.toString());
     }
 
@@ -21,7 +21,11 @@ public class LogRecod {
 
     public static void print(Object object) {
         logger.info("************************************");
-        logger.info(object.toString());
+        if (object == null) {
+            logger.info("**** null object ! ****");
+        } else {
+            logger.info(object.toString());
+        }
         logger.info("************************************");
 
     }
