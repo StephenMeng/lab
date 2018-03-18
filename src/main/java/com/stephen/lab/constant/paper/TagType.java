@@ -11,5 +11,9 @@ public class TagType {
     public static final int SVM_KNN = 5;
     public static final int SVM_LDA = 6;
 
+    public static final int FILTER_KNN = 7;
+    public static final int FILTER_LDA = 8;
+
+
     public static final String TAG_SPLITTER = "#";
 }

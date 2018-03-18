@@ -16,7 +16,7 @@ public interface KivaService {
 
     int insertKivaSimple(KivaSimple simple);
 
-    List<KivaSimple> selectAllSimple();
+    List<KivaSimple> selectAllSimple(int docNum);
 
     List<KivaSimple> select(KivaSimple condition);
 
@@ -26,4 +26,5 @@ public interface KivaService {
 
     KivaSimple selectSimpleById(long id);
 
+    List<Long> selectSimpleIdLikeTag(String tag);
 }

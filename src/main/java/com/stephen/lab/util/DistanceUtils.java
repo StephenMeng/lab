@@ -59,6 +59,25 @@ public class DistanceUtils {
         return (1 / result) - 1;
     }
 
+    public static double cosDistanceMin(List<Token> ta, List<Token> tb) {
+        double result = 0;
+        double fenzi = 0;
+        for (Token a : ta) {
+            int index = tb.indexOf(a);
+            if (index != -1) {
+                Token b = tb.get(index);
+                fenzi += Math.abs(a.getWeight() * b.getWeight());
+            }
+        }
+        if (fenzi == 0) {
+            return 0;
+        }
+        double pa = getPow(ta);
+        double pb = getPow(tb);
+        result = fenzi / (Math.sqrt(pa) * Math.sqrt(pb));
+        return result;
+    }
+
     private static double getPow(List<Token> ta) {
         double result = 0;
         for (Token t : ta) {

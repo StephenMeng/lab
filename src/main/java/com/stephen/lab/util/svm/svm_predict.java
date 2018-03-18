@@ -130,7 +130,7 @@ public class svm_predict {
     }
 
     public static void main(String[] argv) throws IOException {
-        int predict_probability = 0;
+        int predict_probability = 1;
         svm_print_string = svm_print_stdout;
 
         int i;

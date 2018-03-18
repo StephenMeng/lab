@@ -45,7 +45,8 @@ public class KivaServiceImpl implements KivaService {
     }
 
     @Override
-    public List<KivaSimple> selectAllSimple() {
+    public List<KivaSimple> selectAllSimple(int docNum) {
+        PageHelper.startPage(1, docNum);
         return kivaSimpleDao.selectAll();
     }
 
@@ -67,6 +68,11 @@ public class KivaServiceImpl implements KivaService {
     @Override
     public KivaSimple selectSimpleById(long id) {
         return kivaSimpleDao.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public List<Long> selectSimpleIdLikeTag(String tag) {
+        return kivaSimpleDao.selectLikeTag(tag);
     }
 
 }

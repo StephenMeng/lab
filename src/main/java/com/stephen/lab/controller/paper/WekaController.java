@@ -26,7 +26,7 @@ public class WekaController {
     @RequestMapping("test")
     public Response getTFIDFResults() {
         List<KivaResult> kivaResults = new ArrayList<>();
-        List<KivaSimple> kivaList = kivaService.selectAllSimple();
+        List<KivaSimple> kivaList = kivaService.selectAllSimple(0);
         return Response.success("");
     }
 
