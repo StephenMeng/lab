@@ -901,9 +901,19 @@ public class KivaController {
                 response = genTagByLDA(num);
                 break;
             case TagType.SVM_KNN:
+                response = genTagBySvmKnn(num);
                 break;
         }
         return response;
+    }
+
+    private Response genTagBySvmKnn(int num) {
+        try {
+            return svmClassifyAll(TagType.SVM_KNN);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Response.error(ResultEnum.FAIL_PARAM_WRONG);
     }
 
     @RequestMapping("gen-tag-single")
