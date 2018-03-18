@@ -14,6 +14,8 @@ public class GenTag {
     private List<Token> svmKnn;
     private List<Token> svmLda;
     private List<Token> lda;
+    private List<Token>filterKnn;
+    private List<Token>filterLda;
 
     public GenTag() {
     }
@@ -64,5 +66,21 @@ public class GenTag {
 
     public void setSvmLda(List<Token> svmLda) {
         this.svmLda = svmLda;
+    }
+
+    public List<Token> getFilterKnn() {
+        return filterKnn;
+    }
+
+    public void setFilterKnn(List<Token> filterKnn) {
+        this.filterKnn = filterKnn;
+    }
+
+    public List<Token> getFilterLda() {
+        return filterLda;
+    }
+
+    public void setFilterLda(List<Token> filterLda) {
+        this.filterLda = filterLda;
     }
 }

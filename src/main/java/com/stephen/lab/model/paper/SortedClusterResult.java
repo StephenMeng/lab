@@ -5,7 +5,10 @@ public class SortedClusterResult {
     private double lost;
     private int breakPoint;
     private int freq;
-
+    public SortedClusterResult(){
+        setFreq(0);
+        setBreakPoint(-1);
+    }
     public double getLost() {
         return lost;
     }

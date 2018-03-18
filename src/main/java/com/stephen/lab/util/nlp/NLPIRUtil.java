@@ -62,9 +62,9 @@ public class NLPIRUtil {
 //                String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);    // 获取命名实体识别结果
                 // 获取词形还原结果
                 String lemma = token.get(CoreAnnotations.LemmaAnnotation.class);
-                if (!pos.startsWith("V")) {
+//                if (!pos.startsWith("V")) {
                     result.add(lemma);
-                }
+//                }
             }
         }
         return result;
