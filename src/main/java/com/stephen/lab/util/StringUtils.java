@@ -1,10 +1,11 @@
 package com.stephen.lab.util;
 
 public class StringUtils {
-    public  static  boolean isNull(String str){
-        return  str==null||str.equals("")||str.equals("null");
+    public static boolean isNull(String str) {
+        return str == null || str.equals("") || str.equals("null");
     }
-    public  static  boolean isBlank(String str){
-        return  str==null||str.equals("");
+
+    public static boolean isBlank(String str) {
+        return str == null || str.equals("");
     }
 }

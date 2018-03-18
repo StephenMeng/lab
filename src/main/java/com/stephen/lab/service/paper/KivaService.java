@@ -12,7 +12,7 @@ public interface KivaService {
 
     Kiva selectOne(Kiva kiva);
 
-    List<Kiva> selectAll();
+    List<Kiva> selectAll(int num);
 
     int insertKivaSimple(KivaSimple simple);
 
@@ -25,4 +25,5 @@ public interface KivaService {
     int updateSimpleSelective(KivaSimple simple);
 
     KivaSimple selectSimpleById(long id);
+
 }

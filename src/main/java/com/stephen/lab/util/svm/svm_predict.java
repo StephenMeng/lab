@@ -125,7 +125,7 @@ public class svm_predict {
     }
 
     private static void exit_with_help() {
-        System.err.print("usage: svm_predict [options] test_file model_file output_file\noptions:\n-b probability_estimates: whether to predict probability estimates, 0 or 1 (default 0); one-class SVM not supported yet\n-q : quiet mode (no outputs)\n");
+        System.err.print("usage: svm_predict [options] test_file model_file output_file\noptions:\n-b probability_estimates: whether to predict probability estimates, 0 or 1 (default 0); one-class SVM_KNN not supported yet\n-q : quiet mode (no outputs)\n");
         System.exit(1);
     }
 

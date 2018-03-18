@@ -1,9 +1,6 @@
 package com.stephen.lab.model.paper;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,69 +10,103 @@ public class Kiva implements Serializable {
     @Id
     @Column(name = "id")
     private Long id;
+    @Basic
     @Column(name = "user_name")
     private String name;
+    @Basic
     @Column(name = "original_language")
     private String originalLanguage;
+    @Basic
     @Column(name = "original_description")
     private String original_description;
+    @Basic
     @Column(name = "translated_description")
     private String translatedDescription;
+    @Basic
     @Column(name = "funded_amount")
     private Integer fundedAmount;
+    @Basic
     @Column(name = "loan_amount")
     private Integer loanAmount;
+    @Basic
     @Column(name = "status")
     private String status;
+    @Basic
     @Column(name = "image_id")
     private Long imageId;
+    @Basic
     @Column(name = "video_id")
     private Long videoId;
+    @Basic
     @Column(name = "activity")
     private String activity;
+    @Basic
     @Column(name = "sector")
     private String sector;
+    @Basic
     @Column(name = "to_use")
     private String use;
+    @Basic
     @Column(name = "country_code")
     private String countryCode;
+    @Basic
     @Column(name = "country_name")
     private String countryName;
+    @Basic
     @Column(name = "town")
     private String town;
+    @Basic
     @Column(name = "currency_policy")
     private String currencyPolicy;
+    @Basic
     @Column(name = "currency_exchange_coverage_rate")
     private Double currencyExchangeCoverageRate;
+    @Basic
     @Column(name = "currency")
     private String currency;
+    @Basic
     @Column(name = "partner_id")
     private Integer partnerId;
+    @Basic
     @Column(name = "posted_time")
     private Date postedTime;
+    @Basic
     @Column(name = "planned_expiration_time")
     private Date plannedExpirationTime;
+    @Basic
     @Column(name = "disbursed_time")
     private Date disbursedTime;
+    @Basic
     @Column(name = "funded_time")
     private Date fundedTime;
+    @Basic
     @Column(name = "term_in_months")
     private Integer termInMonths;
+    @Basic
     @Column(name = "lender_count")
     private Integer lenderCount;
+    @Basic
     @Column(name = "journal_entries_count")
     private Integer journalEntriesCount;
+    @Basic
     @Column(name = "bulk_journal_entries_count")
     private Integer bulkJournalEntriesCount;
+    @Basic
     @Column(name = "tags")
     private String tags;
+    @Basic
     @Column(name = "repayment_interval")
     private String repaymentInterval;
+    @Basic
     @Column(name = "distribution_model")
     private String distributionModel;
+    @Basic
     @Column(name = "borrowers")
     private String borrowers;
-    public Kiva(){}
+
+    public Kiva() {
+    }
+
     public Kiva(KivaSimple kivaSimple) {
         setId(kivaSimple.getId());
         setOriginalLanguage(kivaSimple.getOriginalDescription());

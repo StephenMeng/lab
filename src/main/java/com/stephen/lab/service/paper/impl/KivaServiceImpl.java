@@ -1,5 +1,6 @@
 package com.stephen.lab.service.paper.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.stephen.lab.dao.paper.KivaDao;
 import com.stephen.lab.dao.paper.KivaSimpleDao;
 import com.stephen.lab.model.paper.Kiva;
@@ -33,7 +34,8 @@ public class KivaServiceImpl implements KivaService {
     }
 
     @Override
-    public List<Kiva> selectAll() {
+    public List<Kiva> selectAll(int num) {
+        PageHelper.startPage(1, num);
         return kivaDao.selectAll();
     }
 
@@ -66,4 +68,5 @@ public class KivaServiceImpl implements KivaService {
     public KivaSimple selectSimpleById(long id) {
         return kivaSimpleDao.selectByPrimaryKey(id);
     }
+
 }

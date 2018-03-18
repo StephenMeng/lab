@@ -37,6 +37,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import static com.stephen.lab.util.nlp.lda.sample.main.LdaGibbsSampling.getParametersFromFile;
 
@@ -153,7 +154,9 @@ public class KivaController {
 
     @RequestMapping("gen-tfidf")
     public Response genTagByTfIdf(int num) {
+        LogRecod.print("tfidf 开始计算");
         List<KivaResult> kivaResults = getTFIDFResults(null);
+        LogRecod.print("tfidf 计算完毕");
         kivaResults.forEach(result -> {
             Collections.sort(result.getTokenList(), Comparator.comparing(Token::getWeight));
             Collections.reverse(result.getTokenList());
@@ -197,7 +200,7 @@ public class KivaController {
         List<KivaResult> kivaResults = getTFIDFResults(null);
         kivaResults.forEach(kivaResult -> {
             Collections.sort(kivaResult.getTokenList(), Comparator.comparing(Token::getWeight));
-            List<KivaResult> selectResult = getKnnSimilarDoc(kivaResult, kivaResults, 5);
+            List<KivaResult> selectResult = getKnnSimilarDoc(kivaResult, kivaResults, num);
             List<Token> sortedTags = getSortedTags(selectResult);
             updateDatabaseOfGenTag(kivaResult.getKiva().getId(), sortedTags, TagType.KNN);
         });
@@ -220,11 +223,14 @@ public class KivaController {
             case TagType.KNN:
                 genTag.setKnn(newTags);
                 break;
-            case TagType.SVM:
-                genTag.setSvm(newTags);
-                break;
             case TagType.LDA:
                 genTag.setLda(newTags);
+                break;
+            case TagType.SVM_KNN:
+                genTag.setSvmKnn(newTags);
+                break;
+            case TagType.SVM_LDA:
+                genTag.setSvmLda(newTags);
                 break;
             default:
         }
@@ -233,6 +239,7 @@ public class KivaController {
     }
 
     private List<KivaResult> getTFIDFResults(String newText) {
+        LogRecod.print("tfidf 开始计算");
         List<KivaResult> kivaResults = new ArrayList<>();
         List<KivaSimple> kivaList = getAllKivaSimpleResult();
         if (!StringUtils.isNull(newText)) {
@@ -268,12 +275,12 @@ public class KivaController {
                 } else {
                     yearWordMap.put(kwm.getKey(), 1);
                 }
-
             }
             KivaResult kivaResult = new KivaResult(kiva);
             kivaResult.setTokenList(tokens);
             kivaResults.add(kivaResult);
         });
+        LogRecod.print("tfidf 词汇频次计算完毕");
 
         for (KivaResult r : kivaResults) {
             for (FreqToken t : r.getTokenList()) {
@@ -283,6 +290,8 @@ public class KivaController {
                 t.setWeight(weight);
             }
         }
+        LogRecod.print("tfidf log值计算完毕");
+        LogRecod.print("tfidf 计算完毕");
         return kivaResults;
     }
 
@@ -412,27 +421,26 @@ public class KivaController {
     }
 
     @RequestMapping("tranformToSimple")
-    public Response tranformToSimple(long id) {
-        Kiva cond = new Kiva();
-        cond.setSector("Education");
-        List<Kiva> kivaList = kivaService.select(cond);
+    public Response tranformToSimple(int num) {
 
+        List<Kiva> kivaList = kivaService.selectAll(num);
+
+        kivaList = kivaList.stream().filter(kiva -> kiva.getTags().contains(TagType.TAG_SPLITTER)).collect(Collectors.toList());
+        LogRecod.print("Taking out data is ok");
         kivaList.forEach(kiva -> {
             if (kiva != null) {
                 KivaSimple simple = new KivaSimple(kiva);
-                try {
-                    String des = removeHtmlTag(kiva.getTranslatedDescription());
-                    if (StringUtils.isNull(des)) {
-                        des = removeHtmlTag(kiva.getOriginal_description());
-                    }
-                    List<String> ct = cutwords(des);
-                    simple.setOriginalDescription(des);
-                    simple.setStandardDescription(Joiner.on("#").join(ct));
-                    simple.setTags(normalizeTags(kiva.getTags()));
-                    kivaService.insertKivaSimple(simple);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                String des = kiva.getTranslatedDescription();
+                if (StringUtils.isNull(des)) {
+                    des = kiva.getOriginal_description();
                 }
+                des = removeHtmlTag(des);
+                List<String> ct = NLPIRUtil.cutwords(des);
+                ct = NLPIRUtil.removeStopwords(ct);
+                simple.setOriginalDescription(des);
+                simple.setStandardDescription(Joiner.on("#").join(ct));
+                simple.setTags(normalizeTags(kiva.getTags()));
+                kivaService.insertKivaSimple(simple);
             }
         });
         return Response.success("");
@@ -441,10 +449,18 @@ public class KivaController {
     private String normalizeTags(String tags) {
         StringBuilder result = new StringBuilder();
         String[] ts = tags.split(",");
+        Set<String> items = new HashSet<>();
         for (String t : ts) {
             if (t.contains("#")) {
-                result.append(t.toLowerCase());
+                if (t.startsWith(" ")) {
+                    t = t.substring(1);
+                }
+                items.add(t);
+
             }
+        }
+        for (String item : items) {
+            result.append(item.toLowerCase());
         }
         return result.toString();
     }
@@ -698,10 +714,8 @@ public class KivaController {
     }
 
     @RequestMapping("svm/classify/all")
-    public Response svmClassifyAll() throws IOException {
+    public Response svmClassifyAll(int type) throws IOException {
         List<KivaSimple> kivaSimples = getAllKivaSimpleResult();
-//        kivaSimples = kivaSimples.subList(0, 1);
-//        LogRecod.print(kivaSimples.get(0).getId());
         List<KivaResult> kivaResults = getNormalingTFIDFResults(null);
         Map<String, Integer> map = getAllWordMap();
         kivaSimples.forEach(kivaSimple -> {
@@ -710,7 +724,9 @@ public class KivaController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            List<Token> tags = JSONObject.parseObject(kivaSimple.getGenTags(), GenTag.class).getKnn();
+
+            GenTag g = JSONObject.parseObject(kivaSimple.getGenTags(), GenTag.class);
+            List<Token> tags = (type == TagType.SVM_KNN) ? g.getKnn() : g.getLda();
             List<Token> svmTags = new ArrayList<>();
             tags.forEach(t -> {
                 try {
@@ -723,7 +739,7 @@ public class KivaController {
                     e.printStackTrace();
                 }
             });
-            updateDatabaseOfGenTag(kivaSimple.getId(), svmTags, TagType.SVM);
+            updateDatabaseOfGenTag(kivaSimple.getId(), svmTags, type);
         });
         return Response.success("");
     }
@@ -838,11 +854,15 @@ public class KivaController {
             case TagType.KNN:
                 genFreqTags = genTag.getKnn();
                 break;
-            case TagType.SVM:
-                genFreqTags = genTag.getSvm();
-                break;
+
             case TagType.LDA:
                 genFreqTags = genTag.getLda();
+                break;
+            case TagType.SVM_KNN:
+                genFreqTags = genTag.getSvmKnn();
+                break;
+            case TagType.SVM_LDA:
+                genFreqTags = genTag.getSvmLda();
                 break;
             default:
                 genFreqTags = genTag.getTfIdf();
@@ -880,7 +900,7 @@ public class KivaController {
             case TagType.LDA:
                 response = genTagByLDA(num);
                 break;
-            case TagType.SVM:
+            case TagType.SVM_KNN:
                 break;
         }
         return response;
@@ -907,7 +927,9 @@ public class KivaController {
             case TagType.LDA:
                 result = genTagForNewTextByLda(text, endNum);
                 break;
-            case TagType.SVM:
+            case TagType.SVM_KNN:
+                break;
+            case TagType.SVM_LDA:
                 break;
         }
         SortedClusterResult clusterResult = getSortedClusterResult(startNum, endNum, result);
@@ -992,8 +1014,11 @@ public class KivaController {
             case TagType.KNN:
                 list = genTag.getKnn();
                 break;
-            case TagType.SVM:
-                list = genTag.getSvm();
+            case TagType.SVM_KNN:
+                list = genTag.getSvmKnn();
+                break;
+            case TagType.SVM_LDA:
+                list = genTag.getSvmLda();
                 break;
         }
         SortedClusterResult result = getSortedClusterResult(startNum, endNum, list);

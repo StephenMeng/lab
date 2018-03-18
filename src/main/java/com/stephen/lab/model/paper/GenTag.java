@@ -11,7 +11,8 @@ public class GenTag {
     private List<Token> tfIdf;
     private List<Token> textRank;
     private List<Token> knn;
-    private List<Token> svm;
+    private List<Token> svmKnn;
+    private List<Token> svmLda;
     private List<Token> lda;
 
     public GenTag() {
@@ -41,12 +42,12 @@ public class GenTag {
         this.knn = knn;
     }
 
-    public List<Token> getSvm() {
-        return svm;
+    public List<Token> getSvmKnn() {
+        return svmKnn;
     }
 
-    public void setSvm(List<Token> svm) {
-        this.svm = svm;
+    public void setSvmKnn(List<Token> svmKnn) {
+        this.svmKnn = svmKnn;
     }
 
     public List<Token> getLda() {
@@ -55,5 +56,13 @@ public class GenTag {
 
     public void setLda(List<Token> lda) {
         this.lda = lda;
+    }
+
+    public List<Token> getSvmLda() {
+        return svmLda;
+    }
+
+    public void setSvmLda(List<Token> svmLda) {
+        this.svmLda = svmLda;
     }
 }

@@ -24,7 +24,7 @@ public class NLPIRUtil {
     private static List<String> stopwordList;
     private static Properties props = new Properties();
     private static StanfordCoreNLP pipeline;    // 依次处理
-    private static String stopWordPath = "C:\\Users\\stephen\\Desktop\\svm\\stopword.txt";
+    private static String stopWordPath = "C:\\Users\\Stephen\\Desktop\\svm\\stopword.txt";
 
     static {
         try {
@@ -32,7 +32,8 @@ public class NLPIRUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        props.put("annotators", "tokenize, ssplit, pos, lemma,  parse");    // 七种Annotators
+        // 七种Annotators
+        props.put("annotators", "tokenize, ssplit, pos, lemma,  parse");
         pipeline = new StanfordCoreNLP(props);
     }
 
@@ -45,8 +46,10 @@ public class NLPIRUtil {
             return new ArrayList<>();
         }
         List<String> result = new ArrayList<>();
-        Annotation document = new Annotation(docContent);    // 利用text创建一个空的Annotation
-        pipeline.annotate(document);                   // 对text执行所有的Annotators（七种）
+        // 利用text创建一个空的Annotation
+        Annotation document = new Annotation(docContent);
+        // 对text执行所有的Annotators（七种）
+        pipeline.annotate(document);
 
         // 下面的sentences 中包含了所有分析结果，遍历即可获知结果。
         List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
@@ -54,9 +57,11 @@ public class NLPIRUtil {
         for (CoreMap sentence : sentences) {
             for (CoreLabel token : sentence.get(CoreAnnotations.TokensAnnotation.class)) {
 //                String word = token.get(CoreAnnotations.TextAnnotation.class);            // 获取分词
-                String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);     // 获取词性标注
+                // 获取词性标注
+                String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
 //                String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);    // 获取命名实体识别结果
-                String lemma = token.get(CoreAnnotations.LemmaAnnotation.class);          // 获取词形还原结果
+                // 获取词形还原结果
+                String lemma = token.get(CoreAnnotations.LemmaAnnotation.class);
                 if (!pos.startsWith("V")) {
                     result.add(lemma);
                 }
