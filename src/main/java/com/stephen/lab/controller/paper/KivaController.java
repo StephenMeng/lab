@@ -59,8 +59,8 @@ public class KivaController {
     private String trainFilePath = "C:\\Users\\stephen\\Desktop\\svm\\train\\train-%s.txt";
     private String modelFilePath = "C:\\Users\\stephen\\Desktop\\svm\\model\\model-%s.txt";
     private String testFilePath = "C:\\Users\\stephen\\Desktop\\svm\\test\\testdata.txt";
-    private String predictFilePath = "C:\\Users\\stephen\\Desktop\\svm\\predict\\predict-%s.txt";
     private static final int TAG_FREQ = 1;
+    private int F_VALUE_NUM = 6;
 
     @ApiOperation(value = "解析loans", notes = "将数据解析到数据库")
     @RequestMapping(value = "init", method = RequestMethod.GET)
@@ -203,7 +203,7 @@ public class KivaController {
             Collections.sort(kivaResult.getTokenList(), Comparator.comparing(Token::getWeight));
             List<KivaResult> selectResult = getKnnSimilarDoc(kivaResult, kivaResults, num);
             List<Token> sortedTags = getSortedTags(selectResult);
-            sortedTags=sublist(sortedTags,num);
+            sortedTags = sublist(sortedTags, num);
             updateDatabaseOfGenTag(kivaResult.getKiva().getId(), sortedTags, TagType.KNN);
         });
         LogRecod.print("knn finished");
@@ -448,7 +448,11 @@ public class KivaController {
                 simple.setOriginalDescription(des);
                 simple.setStandardDescription(Joiner.on("#").join(ct));
                 simple.setTags(normalizeTags(kiva.getTags()));
-                kivaService.insertKivaSimple(simple);
+                try {
+                    kivaService.insertKivaSimple(simple);
+                } catch (Exception e) {
+                    kivaService.updateSimpleSelective(simple);
+                }
             }
         });
         return Response.success("");
@@ -760,7 +764,7 @@ public class KivaController {
             GenTag genTag = JSONObject.parseObject(kivaSimple.getGenTags(), GenTag.class);
             List<String> originTags = splitString(kivaSimple.getTags());
             List<Token> originalTokens = Lists.transform(originTags, Token::new);
-            List<Token> genTags = getTagsByTagType(tagType, genTag);
+            List<Token> genTags = sublist(getTagsByTagType(tagType, genTag), F_VALUE_NUM);
             precise += same(genTags, originalTokens);
             all += genTags.size();
         }
@@ -788,7 +792,7 @@ public class KivaController {
             GenTag genTag = JSONObject.parseObject(kivaSimple.getGenTags(), GenTag.class);
             List<String> originTags = splitString(kivaSimple.getTags());
             List<Token> originalTokens = Lists.transform(originTags, Token::new);
-            List<Token> genTags = getTagsByTagType(tagType, genTag);
+            List<Token> genTags = sublist(getTagsByTagType(tagType, genTag), F_VALUE_NUM);
             recall += same(genTags, originalTokens);
             all += originTags.size();
         }
@@ -1129,7 +1133,7 @@ public class KivaController {
             KivaResult kivaResult = new KivaResult(kivaSimple);
             List<KivaResult> selectResult = getLDASimilarDoc(kivaResult, kivaList, score, docThetas, num);
             List<Token> sortedTags = getSortedTags(selectResult);
-            sortedTags=sublist(sortedTags,num);
+            sortedTags = sublist(sortedTags, num);
             updateDatabaseOfGenTag(kivaResult.getKiva().getId(), sortedTags, TagType.LDA);
         }
         return Response.success(docThetas);
@@ -1210,9 +1214,11 @@ public class KivaController {
             List<Long> validIds = simplesContainsTag(token.getWord());
             List<KivaResult> krs = filterValid(kivaResults, validIds);
             double score = computeToSimlerResult(krs, toCompare);
-            Token t = new Token(token.getWord());
-            t.setWeight(score);
-            result.add(t);
+            if(score>0.005) {
+//                Token t = new Token(token.getWord());
+//                t.setWeight(score);
+                result.add(token);
+            }
         }
         Collections.sort(result, Comparator.comparing(Token::getWeight).reversed());
 
