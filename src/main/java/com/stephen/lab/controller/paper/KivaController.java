@@ -15,6 +15,7 @@ import com.stephen.lab.model.paper.*;
 import com.stephen.lab.service.crawler.CrawlErrorService;
 import com.stephen.lab.service.paper.KivaService;
 import com.stephen.lab.util.*;
+import com.stephen.lab.util.Progress.Progress;
 import com.stephen.lab.util.nlp.ClusterUtils;
 import com.stephen.lab.util.nlp.KeywordExtractUtils;
 import com.stephen.lab.util.nlp.NLPIRUtil;
@@ -23,8 +24,6 @@ import com.stephen.lab.util.nlp.lda.sample.conf.ConstantConfig;
 import com.stephen.lab.util.nlp.lda.sample.main.Documents;
 import com.stephen.lab.util.nlp.lda.sample.main.LdaGibbsSampling;
 import com.stephen.lab.util.nlp.lda.sample.main.LdaModel;
-import com.stephen.lab.util.svm.SvmTrain;
-import com.stephen.lab.util.svm.svm_predict;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
@@ -249,7 +248,7 @@ public class KivaController {
     private List<KivaResult> getTFIDFResults(String newText, int docNum) {
         LogRecod.print("tfidf 开始计算");
         List<KivaResult> kivaResults = new ArrayList<>();
-        List<KivaSimple> kivaList = getAllKivaSimpleResult(docNum);
+        List<KivaSimple> kivaSimpleList = getAllKivaSimpleResult(docNum);
         if (!StringUtils.isNull(newText)) {
             KivaSimple simple = new KivaSimple();
             simple.setId(-1L);
@@ -259,11 +258,11 @@ public class KivaController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            kivaList.add(simple);
+            kivaSimpleList.add(simple);
         }
         Map<String, Integer> yearWordMap = new HashMap<>();
-        kivaList.forEach(kiva -> {
-            String description = kiva.getStandardDescription();
+        for (KivaSimple kivaSimple : kivaSimpleList) {
+            String description = kivaSimple.getStandardDescription();
             List<String> words = null;
             try {
                 words = splitString(description);
@@ -284,10 +283,10 @@ public class KivaController {
                     yearWordMap.put(kwm.getKey(), 1);
                 }
             }
-            KivaResult kivaResult = new KivaResult(kiva);
+            KivaResult kivaResult = new KivaResult(kivaSimple);
             kivaResult.setTokenList(tokens);
             kivaResults.add(kivaResult);
-        });
+        }
         LogRecod.print("tfidf 词汇频次计算完毕");
 
         for (KivaResult r : kivaResults) {
@@ -347,7 +346,10 @@ public class KivaController {
         for (int i = 0; i < score.length; i++) {
             score[i] = Double.MAX_VALUE;
         }
-        toCompare.forEach(to -> {
+        int size = toCompare.size();
+        double percent = 0.0;
+        for (int i = 0; i < size; i++) {
+            KivaResult to = toCompare.get(i);
             if (!to.getKiva().getId().equals(kivaResult.getKiva().getId())) {
                 List<Token> tokens = getTokenListFromFreqTokens(kivaResult.getTokenList());
                 List<Token> toTokens = getTokenListFromFreqTokens(to.getTokenList());
@@ -363,7 +365,9 @@ public class KivaController {
                     score[index] = distance;
                 }
             }
-        });
+            percent = (i / (double) size) * 0.5;
+            Progress.put(-1, 30 + Double.parseDouble(DoubleUtils.twoBit(percent)) * 100);
+        }
         Collections.sort(result, Comparator.comparing(KivaResult::getDistanceToOther));
         return result;
     }
@@ -757,14 +761,14 @@ public class KivaController {
         return result;
     }
 
-    private double pValue(List<KivaSimple> simpleList, int tagType) throws IOException {
+    private double pValue(List<KivaSimple> simpleList, int tagType, int num, double th) throws IOException {
         int all = 0;
         int precise = 0;
         for (KivaSimple kivaSimple : simpleList) {
             GenTag genTag = JSONObject.parseObject(kivaSimple.getGenTags(), GenTag.class);
             List<String> originTags = splitString(kivaSimple.getTags());
             List<Token> originalTokens = Lists.transform(originTags, Token::new);
-            List<Token> genTags = sublist(getTagsByTagType(tagType, genTag), F_VALUE_NUM);
+            List<Token> genTags = sublist(getTagsByTagType(tagType, genTag, th), num);
             precise += same(genTags, originalTokens);
             all += genTags.size();
         }
@@ -772,10 +776,11 @@ public class KivaController {
     }
 
     @RequestMapping("fValue")
-    public Response fvalue(int type) throws IOException {
+    public Response fvalue(int type, int num,
+                           @RequestParam(value = "threshold", required = false) double th) throws IOException {
         List<KivaSimple> kivaSimples = kivaService.selectAllSimple(0);
-        double p = pValue(kivaSimples, type);
-        double r = rValue(kivaSimples, type);
+        double p = pValue(kivaSimples, type, num, th);
+        double r = rValue(kivaSimples, type, num, th);
         double f = 2 * (p * r) / (p + r);
         Map<String, Object> result = new HashMap<>();
         result.put("p", p);
@@ -785,21 +790,21 @@ public class KivaController {
 
     }
 
-    private double rValue(List<KivaSimple> simpleList, int tagType) throws IOException {
+    private double rValue(List<KivaSimple> simpleList, int tagType, int num, double th) throws IOException {
         int all = 0;
         int recall = 0;
         for (KivaSimple kivaSimple : simpleList) {
             GenTag genTag = JSONObject.parseObject(kivaSimple.getGenTags(), GenTag.class);
             List<String> originTags = splitString(kivaSimple.getTags());
             List<Token> originalTokens = Lists.transform(originTags, Token::new);
-            List<Token> genTags = sublist(getTagsByTagType(tagType, genTag), F_VALUE_NUM);
+            List<Token> genTags = sublist(getTagsByTagType(tagType, genTag, th), num);
             recall += same(genTags, originalTokens);
             all += originTags.size();
         }
         return recall / (double) all;
     }
 
-    private List<Token> getTagsByTagType(int tagType, GenTag genTag) {
+    private List<Token> getTagsByTagType(int tagType, GenTag genTag, double v) {
         List<? extends Token> genFreqTags = null;
         switch (tagType) {
             case TagType.TFIDF:
@@ -811,7 +816,6 @@ public class KivaController {
             case TagType.KNN:
                 genFreqTags = genTag.getKnn();
                 break;
-
             case TagType.LDA:
                 genFreqTags = genTag.getLda();
                 break;
@@ -822,10 +826,20 @@ public class KivaController {
                 genFreqTags = genTag.getSvmLda();
                 break;
             case TagType.FILTER_KNN:
-                genFreqTags = genTag.getFilterKnn();
+                List<Token> knnTokens = genTag.getKnn();
+                List<Token> filterKnn = genTag.getFilterKnn();
+                genFreqTags = knnTokens.stream().filter(t -> {
+                    int index = filterKnn.indexOf(t);
+                    if (index != -1) {
+                        return filterKnn.get(filterKnn.indexOf(t)).getWeight() > v;
+                    }
+                    return false;
+                }).collect(Collectors.toList());
                 break;
             case TagType.FILTER_LDA:
-                genFreqTags = genTag.getFilterLda();
+                List<Token> ldaTokens = genTag.getKnn();
+                List<Token> filterLda = genTag.getFilterKnn();
+                genFreqTags = ldaTokens.stream().filter(t -> filterLda.get(filterLda.indexOf(t)).getWeight() > v).collect(Collectors.toList());
                 break;
             default:
                 genFreqTags = genTag.getTfIdf();
@@ -926,14 +940,8 @@ public class KivaController {
 
     @RequestMapping("gen-tag-single")
     public Response genTagSingle(String text, int type, int startNum, int endNum) throws IOException {
-        text = "Sokhoeurn is 36 years old and has three children, two under-age for schooling and one child in school.\n" +
-                "\n" +
-                "Her main sources of income are from rice farming, cassava farming, and a fish selling business. She has been involved in her current business for 16 years. With this new loan, she is in her fourth loan cycle with VisionFund (Kiva’s partner). She has paid back her past three loans with success and it has enabled her to support her business timely.\n" +
-                "\n" +
-                "Now she is seeking 4,000,000 KHR in order to renovate her house. She hopes that she can fix her house timely so that she does not need to worry about the upcoming rainy season.";
-
         List<Token> result = null;
-
+        Progress.put(-1, 5);
         switch (type) {
             case TagType.TFIDF:
                 result = genTagForNewTextByTfIdf(text, endNum);
@@ -963,10 +971,10 @@ public class KivaController {
         SortedClusterResult clusterResult = getSortedClusterResult(startNum, endNum, result);
         int bp = clusterResult.getBreakPoint();
         Map<String, Object> r = new HashMap<>();
-        r.put("knn", genTagForNewTextByKnn(text, endNum));
         r.put("statistics", clusterResult);
         r.put("list", result.subList(0, bp + startNum + 1));
         r.put("original_data", result);
+        Progress.put(-1, 100);
         return Response.success(r);
     }
 
@@ -1224,11 +1232,9 @@ public class KivaController {
             List<Long> validIds = simplesContainsTag(token.getWord());
             List<KivaResult> krs = filterValid(kivaResults, validIds);
             double score = computeToSimlerResult(krs, toCompare);
-            if (score > 0.005) {
-//                Token t = new Token(token.getWord());
-//                t.setWeight(score);
-                result.add(token);
-            }
+            Token t = new Token(token.getWord());
+            t.setWeight(score);
+            result.add(t);
         }
         Collections.sort(result, Comparator.comparing(Token::getWeight).reversed());
 
@@ -1253,5 +1259,10 @@ public class KivaController {
 
     public List<Long> simplesContainsTag(String tag) {
         return kivaService.selectSimpleIdLikeTag(tag);
+    }
+
+    @RequestMapping("progress")
+    public Response progress() {
+        return Response.success(Progress.get(-1));
     }
 }

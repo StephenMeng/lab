@@ -1,8 +1,8 @@
 package com.stephen.lab.controller.paper;
 
-import com.stephen.lab.controller.BaseController;
+import com.stephen.lab.util.Progress.Progress;
+import com.stephen.lab.util.Response;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -11,9 +11,9 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @RequestMapping("/tag")
 @Controller
-public class TagIndexController extends BaseController {
-    @RequestMapping("/index")
-    public String index() {
-        return "tag";
+public class TagIndexController {
+    @RequestMapping("")
+    public ModelAndView index() {
+        return new ModelAndView("tag");
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "kiva_simple")
-public class KivaSimple implements Serializable {
+public class KivaSimple {
     @Id
     @Column(name = "id")
     private Long id;
