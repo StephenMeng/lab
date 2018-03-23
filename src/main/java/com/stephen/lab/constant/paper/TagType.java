@@ -14,6 +14,8 @@ public class TagType {
     public static final int FILTER_KNN = 7;
     public static final int FILTER_LDA = 8;
 
+    public static final int MIXTURE = 10;
+
 
     public static final String TAG_SPLITTER = "#";
 }

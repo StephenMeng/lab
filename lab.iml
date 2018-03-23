@@ -141,7 +141,7 @@
     <orderEntry type="library" name="Maven: org.springframework.plugin:spring-plugin-metadata:1.2.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.mapstruct:mapstruct:1.2.0.Final" level="project" />
     <orderEntry type="library" name="Maven: io.springfox:springfox-swagger-ui:2.8.0" level="project" />
-    <orderEntry type="library" name="Maven: edu.stanford.nlp:stanford-corenlp:3.7.0" level="project" />
+    <orderEntry type="library" name="Maven: edu.stanford.nlp:stanford-corenlp:3.8.0" level="project" />
     <orderEntry type="library" name="Maven: com.apple:AppleJavaExtensions:1.4" level="project" />
     <orderEntry type="library" name="Maven: de.jollyday:jollyday:0.4.9" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-queryparser:4.10.3" level="project" />
@@ -157,7 +157,7 @@
     <orderEntry type="library" name="Maven: joda-time:joda-time:2.9.9" level="project" />
     <orderEntry type="library" name="Maven: com.googlecode.efficient-java-matrix-library:ejml:0.23" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish:javax.json:1.0.4" level="project" />
-    <orderEntry type="library" name="Maven: edu.stanford.nlp:stanford-corenlp:models:3.7.0" level="project" />
+    <orderEntry type="library" name="Maven: edu.stanford.nlp:stanford-corenlp:models:3.8.0" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-nop:1.7.12" level="project" />
     <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:3.1.0" level="project" />
     <orderEntry type="library" name="Maven: javax.xml.bind:jaxb-api:2.3.0" level="project" />

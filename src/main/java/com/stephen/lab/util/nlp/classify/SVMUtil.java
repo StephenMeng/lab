@@ -110,7 +110,11 @@ public class SVMUtil {
             Double r = Double.parseDouble(result.get(1).split(" ")[2]);
             return r;
         } catch (Exception e) {
-            e.printStackTrace();
+           try{
+               Double r = Double.parseDouble(result.get(1).split(" ")[1]);
+           }catch (Exception e2){
+               e2.printStackTrace();
+           }
         }
         return -1;
     }

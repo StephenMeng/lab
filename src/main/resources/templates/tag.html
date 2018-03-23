@@ -19,57 +19,62 @@
 <div class="layui-container">
 
     <div class="layui-row">
-        <div class="layui-col-xs3">
+        <div class="layui-col-xs2">
             <div class="grid-demo ">-</div>
         </div>
-        <div class="layui-col-xs6">
+        <div class="layui-col-xs8">
             <br>
             <form class="layui-form layui-form-pane" action="">
                 <div class="layui-form-item layui-form-text">
                     <label class="layui-form-label">文本内容</label>
                     <div class="layui-input-block">
-                        <textarea id="id-text" placeholder="请输入内容" class="layui-textarea"></textarea>
+                        <textarea id="id-text" placeholder="请输入内容" class="layui-textarea" rows="10"></textarea>
                     </div>
                 </div>
-
-                <div class="layui-form-item">
-                    <div class="layui-inline">
-                        <label class="layui-form-label">标签数量</label>
-                        <div class="layui-input-inline" style="width: 100px;">
-                            <input id="id-start" type="text" name="price_min" placeholder="最少" autocomplete="off"
-                                   class="layui-input">
+                <blockquote class="layui-elem-quote" style="height:30px">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">标签数量</label>
+                            <div class="layui-input-inline" style="width: 100px;">
+                                <input id="id-start" type="text" name="price_min" placeholder="最少" autocomplete="off"
+                                       class="layui-input">
+                            </div>
+                            <div class="layui-form-mid">-</div>
+                            <div class="layui-input-inline" style="width: 100px;">
+                                <input id="id-end" type="text" name="price_max" placeholder="最多" autocomplete="off"
+                                       class="layui-input">
+                            </div>
                         </div>
-                        <div class="layui-form-mid">-</div>
-                        <div class="layui-input-inline" style="width: 100px;">
-                            <input id="id-end" type="text" name="price_max" placeholder="最多" autocomplete="off"
-                                   class="layui-input">
+                    </div>
+                </blockquote>
+                <blockquote class="layui-elem-quote" style="height:30px">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">生成方式</label>
+                        <div class="layui-input-block">
+                            <select id="id-type" name="interest" lay-filter="aihao">
+                                <option value=""></option>
+                                <option value="1">TF-IDF</option>
+                                <option value="2" selected="">TEXT RANK</option>
+                                <option value="3">TOP-N</option>
+                                <option value="4">LDA</option>
+                                <option value="10">混合方式</option>
+                            </select>
                         </div>
                     </div>
-                </div>
+                </blockquote>
+                <blockquote class="layui-elem-quote" style="height:30px">
 
-                <div class="layui-form-item">
-                    <label class="layui-form-label">生成方式</label>
-                    <div class="layui-input-block">
-                        <select id="id-type" name="interest" lay-filter="aihao">
-                            <option value=""></option>
-                            <option value="0">TF-IDF</option>
-                            <option value="1" selected="">TEXT RANK</option>
-                            <option value="2">TOP-N</option>
-                            <option value="3">LDA</option>
-                            <option value="4">混合方式</option>
-                        </select>
+                    <div class="layui-form-item" pane="">
+                        <label class="layui-form-label">是否过滤</label>
+                        <div class="layui-input-block">
+                            <input id="id-filter" type="checkbox" checked="checked" value="false" name="open"
+                                   lay-skin="switch"
+                                   lay-filter="switchTest"
+                                   title="开关">
+                        </div>
                     </div>
-                </div>
-
-                <div class="layui-form-item" pane="">
-                    <label class="layui-form-label">是否过滤</label>
-                    <div class="layui-input-block">
-                        <input id="filter" type="checkbox" checked="" name="open" lay-skin="switch"
-                               lay-filter="switchTest"
-                               title="开关">
-                    </div>
-                </div>
-
+                </blockquote>
                 <div class="layui-form-item">
                     <!--<button class="layui-btn" lay-submit="" lay-filter="demo2">生成TAG</button>-->
                 </div>
@@ -86,9 +91,10 @@
             <br>
             <div id="show-result">
 
+
             </div>
         </div>
-        <div class="layui-col-xs3">
+        <div class="layui-col-xs2">
             <div class="grid-demo">-</div>
         </div>
     </div>
@@ -104,59 +110,61 @@
 
         //触发事件
         var active = {
-            setPercent: function () {
-                //设置50%进度
-                element.progress('demo', '50%')
+                loading: function (othis) {
+                    $('#show-result').html('');
+                    var DISABLED = 'layui-btn-disabled';
+                    if (othis.hasClass(DISABLED)) return;
+                    var text = $('#id-text').val();
+                    var type = $('#id-type').val();
+                    var startNum = $('#id-start').val();
+                    var endNum = $('#id-end').val();
+                    var filter = $('#id-filter').val();
+                    console.log(filter)
+                    $.post("kiva/gen-tag-single", {
+                            text: text,
+                            type: type,
+                            startNum: startNum,
+                            endNum: endNum,
+                            filter: filter,
+                            ratio:2
+                        }, function (result) {
+                            var html = '  <blockquote class="layui-elem-quote layui-quote-nm" style="height:30px">';
+                            $.each(result.data, function (index, value) {
+                                html += ' <button class="layui-btn layui-btn-primary  layui-btn-radius" title="权重：' + value.weight + '">' + value.word + '</button>'
+                            })
+                            html += '</blockquote>';
+                            $('#show-result').hide();
+                            $('#show-result').html(html);
+                            console.log(result);
+                        }
+                    );
+
+                    //模拟loading
+                    var n = 0, timer = setInterval(function () {
+                        $.get("kiva/progress", function (result) {
+                            n = result.data;
+                        });
+                        if (n >= 99) {
+                            n = 100;
+                            clearInterval(timer);
+                            othis.removeClass(DISABLED);
+                            $('#show-result').show();
+
+                        }
+                        element.progress('demo', n + '%');
+                    }, 300);
+
+                    othis.addClass(DISABLED);
+                }
             }
-            , loading: function (othis) {
-                $('#show-result').html('');
-                var DISABLED = 'layui-btn-disabled';
-                if (othis.hasClass(DISABLED)) return;
-                var text = $('#id-text').val();
-                var type = $('#id-type').val();
-                var startNum = $('#id-start').val();
-                var endNum = $('#id-end').val();
-
-                $.post("kiva/gen-tag-single", {
-                    text: text,
-                    type: type,
-                    startNum: startNum,
-                    endNum: endNum
-
-                }, function (result) {
-                    var html = '';
-                    $.each(result.data.list, function (index, value) {
-                        html += ' <button class="layui-btn layui-btn-normal">' + value.word + '</button>'
-                    })
-                    $('#show-result').hide();
-                    $('#show-result').html(html);
-                    console.log(result);
-                });
-
-                //模拟loading
-                var n = 0, timer = setInterval(function () {
-                    $.get("kiva/progress", function (result) {
-                        n = result.data;
-                    });
-                    if (n >= 99) {
-                        n = 100;
-                        clearInterval(timer);
-                        othis.removeClass(DISABLED);
-                        $('#show-result').show();
-
-                    }
-                    element.progress('demo', n + '%');
-                }, 300);
-
-                othis.addClass(DISABLED);
-            }
-        };
+        ;
 
         $('.site-demo-active').on('click', function () {
             var othis = $(this), type = $(this).data('type');
             active[type] ? active[type].call(this, othis) : '';
         });
-    });
+    })
+    ;
 </script>
 <script>
     layui.use(['form', 'layedit', 'laydate'], function () {
@@ -194,7 +202,7 @@
             layer.msg('开关checked：' + (this.checked ? 'true' : 'false'), {
                 offset: '6px'
             });
-            layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+            layer.tips('只有推荐来的标签才可以过滤呦', data.othis)
         });
 
         //监听提交

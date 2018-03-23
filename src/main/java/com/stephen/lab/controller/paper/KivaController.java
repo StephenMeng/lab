@@ -53,11 +53,11 @@ public class KivaController {
     private CrawlErrorService crawlErrorService;
     private static final int PAGE_TOTAL = 71270;
     private static final int BUFFER_SIZE = 1024;
-    private static final int TRAIN_DOC_NUM = 500;
-    private String allwordPath = "C:\\Users\\stephen\\Desktop\\svm\\allwords.txt";
-    private String trainFilePath = "C:\\Users\\stephen\\Desktop\\svm\\train\\train-%s.txt";
-    private String modelFilePath = "C:\\Users\\stephen\\Desktop\\svm\\model\\model-%s.txt";
-    private String testFilePath = "C:\\Users\\stephen\\Desktop\\svm\\test\\testdata.txt";
+    private static final int TRAIN_DOC_NUM = 1000;
+    private String allwordPath = "C:\\Users\\Stephen\\Desktop\\svm\\allwords.txt";
+    private String trainFilePath = "C:\\Users\\Stephen\\Desktop\\svm\\train\\train-%s.txt";
+    private String modelFilePath = "C:\\Users\\Stephen\\Desktop\\svm\\model\\model-%s.txt";
+    private String testFilePath = "C:\\Users\\Stephen\\Desktop\\svm\\test\\testdata.txt";
     private static final int TAG_FREQ = 1;
     private int F_VALUE_NUM = 6;
 
@@ -156,7 +156,7 @@ public class KivaController {
 
     @RequestMapping("gen-tfidf")
     public Response genTagByTfIdf(int num) {
-        List<KivaResult> kivaResults = getTFIDFResults(null, 0);
+        List<KivaResult> kivaResults = getTFIDFResults(null, 0, true);
         kivaResults.forEach(result -> {
             Collections.sort(result.getTokenList(), Comparator.comparing(Token::getWeight));
             Collections.reverse(result.getTokenList());
@@ -178,7 +178,7 @@ public class KivaController {
 
     @RequestMapping("tfidf")
     public Response tfidf(@RequestParam("id") long id, @RequestParam("num") int num) throws IOException {
-        List<KivaResult> kivaResults = getTFIDFResults(null, 0);
+        List<KivaResult> kivaResults = getTFIDFResults(null, 0, true);
         KivaResult result = null;
         int size = kivaResults.size();
         for (int i = 0; i < size; i++) {
@@ -197,7 +197,7 @@ public class KivaController {
     @RequestMapping("gen-knn")
     public Response genTagByKnn(@RequestParam("num") int num) throws IOException {
 
-        List<KivaResult> kivaResults = getTFIDFResults(null, 0);
+        List<KivaResult> kivaResults = getTFIDFResults(null, 0, true);
         kivaResults.forEach(kivaResult -> {
             Collections.sort(kivaResult.getTokenList(), Comparator.comparing(Token::getWeight));
             List<KivaResult> selectResult = getKnnSimilarDoc(kivaResult, kivaResults, num);
@@ -245,10 +245,13 @@ public class KivaController {
         kivaService.updateSimpleSelective(simple);
     }
 
-    private List<KivaResult> getTFIDFResults(String newText, int docNum) {
+    private List<KivaResult> getTFIDFResults(String newText, int docNum, boolean needProgress) {
         LogRecod.print("tfidf 开始计算");
         List<KivaResult> kivaResults = new ArrayList<>();
         List<KivaSimple> kivaSimpleList = getAllKivaSimpleResult(docNum);
+        if (needProgress) {
+            Progress.put(-1, 10);
+        }
         if (!StringUtils.isNull(newText)) {
             KivaSimple simple = new KivaSimple();
             simple.setId(-1L);
@@ -260,6 +263,7 @@ public class KivaController {
             }
             kivaSimpleList.add(simple);
         }
+
         Map<String, Integer> yearWordMap = new HashMap<>();
         for (KivaSimple kivaSimple : kivaSimpleList) {
             String description = kivaSimple.getStandardDescription();
@@ -286,9 +290,16 @@ public class KivaController {
             KivaResult kivaResult = new KivaResult(kivaSimple);
             kivaResult.setTokenList(tokens);
             kivaResults.add(kivaResult);
+            double percent = kivaResults.size() / (double) kivaSimpleList.size() * 0.15;
+            if (needProgress) {
+                Progress.put(-1, 15 + Double.parseDouble(DoubleUtils.twoBit(percent)) * 100);
+            }
         }
         LogRecod.print("tfidf 词汇频次计算完毕");
 
+        if (needProgress) {
+            Progress.put(-1, 25);
+        }
         for (KivaResult r : kivaResults) {
             for (FreqToken t : r.getTokenList()) {
                 int count = yearWordMap.get(t.getWord());
@@ -580,7 +591,7 @@ public class KivaController {
     }
 
     private List<KivaResult> getNormalingTFIDFResults(String text, int docNum) {
-        List<KivaResult> kivaResults = getTFIDFResults(text, docNum);
+        List<KivaResult> kivaResults = getTFIDFResults(text, docNum, false);
 
         for (int i = 0; i < kivaResults.size(); i++) {
             List<FreqToken> tokenLit = kivaResults.get(i).getTokenList();
@@ -637,7 +648,7 @@ public class KivaController {
         for (KivaResult kivaResult : kivaResults) {
             int classifyType = isTag(kivaResult.getKiva().getId(), tag);
             List<Token> tokenList = getTokenListFromFreqTokens(kivaResult.getTokenList());
-            SVMUtil.outPutSVMStandardData(map, trainFilePath, tokenList, false, classifyType);
+            SVMUtil.outPutSVMStandardData(map, String.format(trainFilePath, tag), tokenList, false, classifyType);
         }
         return Response.success(map);
     }
@@ -707,29 +718,30 @@ public class KivaController {
     @RequestMapping("svm/classify/all")
     public Response svmClassifyAll(int type) throws IOException {
         List<KivaSimple> kivaSimples = getAllKivaSimpleResult(0);
-        List<KivaResult> kivaResults = getNormalingTFIDFResults(null, TRAIN_DOC_NUM);
+        List<KivaResult> kivaResults = getNormalingTFIDFResults(null, TRAIN_DOC_NUM + 250);
         Map<String, Integer> map = getAllWordMap();
         //转化为svm文件
-        List<String> tagsList = getAllTags(TAG_FREQ);
-        for (String tag : tagsList) {
-            trainSVMFileSingle(tag, kivaResults, map);
-        }
+//        List<String> tagsList = getAllTags(TAG_FREQ);
+//        for (String tag : tagsList) {
+//            trainSVMFileSingle(tag, kivaResults, map);
+//        }
         //训练参数
-        svmTrainArgsAll();
+//        svmTrainArgsAll();
         //分类
-        kivaSimples.forEach(kivaSimple -> {
+        for (int i = TRAIN_DOC_NUM; i < TRAIN_DOC_NUM + 250; i++) {
+            KivaSimple kivaSimple = kivaSimples.get(i);
             try {
                 //产生测试文件
                 generatorTestData(kivaSimple.getId(), kivaResults, map);
 
                 GenTag g = JSONObject.parseObject(kivaSimple.getGenTags(), GenTag.class);
                 List<Token> tags = (type == TagType.SVM_KNN) ? g.getKnn() : g.getLda();
-                List<Token> svmTags = getSVMResultFromTokenList(tags, kivaResults, map);
+                List<Token> svmTags = getSVMResultFromTokenList(tags);
                 updateDatabaseOfGenTag(kivaSimple.getId(), svmTags, type);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        });
+        }
         return Response.success("");
     }
 
@@ -768,7 +780,7 @@ public class KivaController {
             GenTag genTag = JSONObject.parseObject(kivaSimple.getGenTags(), GenTag.class);
             List<String> originTags = splitString(kivaSimple.getTags());
             List<Token> originalTokens = Lists.transform(originTags, Token::new);
-            List<Token> genTags = sublist(getTagsByTagType(tagType, genTag, th), num);
+            List<Token> genTags = sublist(getTagsByTagType(tagType, genTag), num);
             precise += same(genTags, originalTokens);
             all += genTags.size();
         }
@@ -779,6 +791,9 @@ public class KivaController {
     public Response fvalue(int type, int num,
                            @RequestParam(value = "threshold", required = false) double th) throws IOException {
         List<KivaSimple> kivaSimples = kivaService.selectAllSimple(0);
+//        if(type==5){
+        kivaSimples = kivaSimples.stream().filter(kivaSimple -> kivaSimple.getGenTags().contains("svm")).collect(Collectors.toList());
+//        }
         double p = pValue(kivaSimples, type, num, th);
         double r = rValue(kivaSimples, type, num, th);
         double f = 2 * (p * r) / (p + r);
@@ -797,15 +812,15 @@ public class KivaController {
             GenTag genTag = JSONObject.parseObject(kivaSimple.getGenTags(), GenTag.class);
             List<String> originTags = splitString(kivaSimple.getTags());
             List<Token> originalTokens = Lists.transform(originTags, Token::new);
-            List<Token> genTags = sublist(getTagsByTagType(tagType, genTag, th), num);
+            List<Token> genTags = sublist(getTagsByTagType(tagType, genTag), num);
             recall += same(genTags, originalTokens);
             all += originTags.size();
         }
         return recall / (double) all;
     }
 
-    private List<Token> getTagsByTagType(int tagType, GenTag genTag, double v) {
-        List<? extends Token> genFreqTags = null;
+    private List<Token> getTagsByTagType(int tagType, GenTag genTag) {
+        List<? extends Token> genFreqTags;
         switch (tagType) {
             case TagType.TFIDF:
                 genFreqTags = genTag.getTfIdf();
@@ -820,26 +835,63 @@ public class KivaController {
                 genFreqTags = genTag.getLda();
                 break;
             case TagType.SVM_KNN:
-                genFreqTags = genTag.getSvmKnn();
+                List<Token> knTokens = genTag.getKnn();
+                List<Token> svmKnn = genTag.getSvmKnn();
+                knTokens.forEach(t -> {
+                    int index = svmKnn.indexOf(t);
+                    if (index != -1) {
+                        t.setWeight(t.getWeight() * svmKnn.get(index).getWeight());
+                    }
+                });
+                Collections.sort(knTokens, Comparator.comparing(Token::getWeight).reversed());
+                genFreqTags = knTokens;
+//                genFreqTags = knTokens.stream().filter(t -> svmKnn.get(svmKnn.indexOf(t)).getWeight() > v).collect(Collectors.toList());
                 break;
             case TagType.SVM_LDA:
-                genFreqTags = genTag.getSvmLda();
+                List<Token> lTokens = genTag.getLda();
+                List<Token> svmLda = genTag.getSvmLda();
+                lTokens.forEach(t -> {
+                    int index = svmLda.indexOf(t);
+                    if (index != -1) {
+                        t.setWeight(t.getWeight() * svmLda.get(index).getWeight());
+                    }
+                });
+                Collections.sort(lTokens, Comparator.comparing(Token::getWeight).reversed());
+                genFreqTags = lTokens;
                 break;
             case TagType.FILTER_KNN:
                 List<Token> knnTokens = genTag.getKnn();
                 List<Token> filterKnn = genTag.getFilterKnn();
-                genFreqTags = knnTokens.stream().filter(t -> {
+                knnTokens.forEach(t -> {
                     int index = filterKnn.indexOf(t);
                     if (index != -1) {
-                        return filterKnn.get(filterKnn.indexOf(t)).getWeight() > v;
+                        t.setWeight(t.getWeight() * filterKnn.get(index).getWeight());
                     }
-                    return false;
-                }).collect(Collectors.toList());
+                });
+                Collections.sort(knnTokens, Comparator.comparing(Token::getWeight).reversed());
+
+                genFreqTags = knnTokens;
+//                genFreqTags = knnTokens.stream().filter(t -> {
+//                    int index = filterKnn.indexOf(t);
+//                    if (index != -1) {
+//                        return filterKnn.get(filterKnn.indexOf(t)).getWeight() > v;
+//                    }
+//                    return false;
+//                }).collect(Collectors.toList());
                 break;
             case TagType.FILTER_LDA:
                 List<Token> ldaTokens = genTag.getKnn();
                 List<Token> filterLda = genTag.getFilterKnn();
-                genFreqTags = ldaTokens.stream().filter(t -> filterLda.get(filterLda.indexOf(t)).getWeight() > v).collect(Collectors.toList());
+                ldaTokens.forEach(t -> {
+                    int index = filterLda.indexOf(t);
+                    if (index != -1) {
+                        t.setWeight(t.getWeight() * filterLda.get(index).getWeight());
+                    }
+                });
+                Collections.sort(ldaTokens, Comparator.comparing(Token::getWeight).reversed());
+
+                genFreqTags = ldaTokens;
+//                genFreqTags = ldaTokens.stream().filter(t -> filterLda.get(filterLda.indexOf(t)).getWeight() > v).collect(Collectors.toList());
                 break;
             default:
                 genFreqTags = genTag.getTfIdf();
@@ -888,8 +940,49 @@ public class KivaController {
             case TagType.SVM_KNN:
                 response = genTagBySvmKnn(num);
                 break;
+            case TagType.SVM_LDA:
+                response = genTagBySvmLda(num);
+                break;
+            default:
+                break;
         }
         return response;
+    }
+
+    @RequestMapping("get-tag-num")
+    public Response genTagNum(int type) throws IOException {
+        List<KivaSimple> kivaSimples = getAllKivaSimpleResult(0);
+        kivaSimples = kivaSimples.stream().filter(kivaSimple -> kivaSimple.getGenTags().contains("svm")).collect(Collectors.toList());
+        List<List<Token>> listList = new ArrayList<>();
+        kivaSimples.forEach(kivaSimple -> {
+            GenTag genTag = JSONObject.parseObject(kivaSimple.getGenTags(), GenTag.class);
+            List<Token> tokenList = getTagsByTagType(type, genTag);
+            listList.add(tokenList);
+        });
+        Map<Integer, Integer> result = getSortedClusterNumResult(listList);
+        return Response.success(result);
+    }
+
+    private Map<Integer, Integer> getSortedClusterNumResult(List<List<Token>> listList) {
+        Map<Integer, Integer> result = new HashMap<>();
+        listList.forEach(list -> {
+            SortedClusterResult r = ClusterUtils.sortedCluster(list);
+            if (result.containsKey(r.getBreakPoint())) {
+                result.put(r.getBreakPoint(), result.get(r.getBreakPoint()) + 1);
+            } else {
+                result.put(r.getBreakPoint(), 1);
+            }
+        });
+        return result;
+    }
+
+    private Response genTagBySvmLda(int num) {
+        try {
+            return svmClassifyAll(TagType.SVM_LDA);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Response.success(true);
     }
 
     private Response genTagBySvmKnn(int num) {
@@ -903,7 +996,7 @@ public class KivaController {
 
     private Response genTagByFilterLda(int num) {
         List<KivaSimple> kivaList = kivaService.selectAllSimple(0);
-        List<KivaResult> kivaResults = getTFIDFResults(null, 0);
+        List<KivaResult> kivaResults = getTFIDFResults(null, 0, true);
         List<List<Double>> docThetas = getLdaScores(kivaList);
         for (int i = 0; i < kivaList.size(); i++) {
             KivaSimple kivaSimple = kivaList.get(i);
@@ -918,7 +1011,7 @@ public class KivaController {
     }
 
     private Response genTagByFilterKnn(int num) {
-        List<KivaResult> kivaResults = getTFIDFResults(null, 0);
+        List<KivaResult> kivaResults = getTFIDFResults(null, 0, true);
         kivaResults.forEach(kivaResult -> {
             Collections.sort(kivaResult.getTokenList(), Comparator.comparing(Token::getWeight));
             List<KivaResult> selectResult = getKnnSimilarDoc(kivaResult, kivaResults, num);
@@ -939,7 +1032,24 @@ public class KivaController {
     }
 
     @RequestMapping("gen-tag-single")
-    public Response genTagSingle(String text, int type, int startNum, int endNum) throws IOException {
+    public Response genTagSingle(@RequestParam(value = "text") String text,
+                                 @RequestParam(value = "type", defaultValue = "2") int type,
+                                 @RequestParam(value = "startNum", defaultValue = "2") int startNum,
+                                 @RequestParam(value = "endNum", defaultValue = "5") int endNum,
+                                 @RequestParam(value = "filter", defaultValue = "off") String filter,
+                                 @RequestParam(value = "ratio", defaultValue = "2") int ratio) throws IOException {
+        if (StringUtils.isNull(text)) {
+            Progress.put(-1, 100);
+            return Response.error(ResultEnum.FAIL_PARAM_WRONG);
+        }
+        if ("on".equals(filter)) {
+            if (type == TagType.KNN) {
+                type = TagType.SVM_KNN;
+            }
+            if (type == TagType.LDA) {
+                type = TagType.SVM_LDA;
+            }
+        }
         List<Token> result = null;
         Progress.put(-1, 5);
         switch (type) {
@@ -967,15 +1077,32 @@ public class KivaController {
             case TagType.FILTER_LDA:
                 result = genTagForNewTextByFilterLda(text, endNum);
                 break;
+            default:
+                break;
         }
-        SortedClusterResult clusterResult = getSortedClusterResult(startNum, endNum, result);
-        int bp = clusterResult.getBreakPoint();
-        Map<String, Object> r = new HashMap<>();
-        r.put("statistics", clusterResult);
-        r.put("list", result.subList(0, bp + startNum + 1));
-        r.put("original_data", result);
-        Progress.put(-1, 100);
-        return Response.success(r);
+        if (type != TagType.MIXTURE) {
+            Progress.put(-1, 80);
+            SortedClusterResult clusterResult = getSortedClusterResult(startNum, endNum, result);
+            int bp = clusterResult.getBreakPoint();
+            Progress.put(-1, 100);
+            return Response.success(result.subList(0, bp + startNum + 1));
+        } else {
+            int tStartNum = startNum / ratio;
+            int tEndNum=endNum/ratio;
+            List<Token> textRankList = genTagForNewTextByTextrank(text, tEndNum);
+            SortedClusterResult tClusterResult = getSortedClusterResult(tStartNum, tEndNum, textRankList);
+            result = textRankList.subList(0, tClusterResult.getBreakPoint() + tStartNum + 1);
+            int sStartNum = startNum-tStartNum;
+            int sEndNum=endNum-tEndNum;
+            List<Token> svmKnnList = genTagForNewTextBySVMKnn(text, sEndNum);
+            SortedClusterResult sClusterResult = getSortedClusterResult(sStartNum, sEndNum, svmKnnList);
+            if(svmKnnList.size()>0){
+                result.addAll(svmKnnList.subList(0, sClusterResult.getBreakPoint() + sStartNum + 1));
+            }
+            Progress.put(-1, 100);
+
+        }
+        return Response.success(result);
     }
 
     private List<Token> genTagForNewTextByFilterKnn(String text, int endNum) {
@@ -1000,30 +1127,29 @@ public class KivaController {
     private List<Token> genTagForNewTextBySVMKnn(String text, int endNum) {
         List<Token> knnResult = genTagForNewTextByKnn(text, endNum);
         List<Token> svmTags = getTokensFromSvmResult(text, knnResult);
+        Collections.sort(svmTags, Comparator.comparing(Token::getWeight).reversed());
         return svmTags;
     }
 
     private List<Token> getTokensFromSvmResult(String text, List<Token> knnResult) {
         List<KivaResult> kivaResults = getNormalingTFIDFResults(text, TRAIN_DOC_NUM);
         generatorTestData(text, kivaResults);
-        Map<String, Integer> map = getAllWordMap();
-        return getSVMResultFromTokenList(knnResult, kivaResults, map);
+        return getSVMResultFromTokenList(knnResult);
     }
 
-    private List<Token> getSVMResultFromTokenList(List<Token> knnResult, List<KivaResult> kivaResults,
-                                                  Map<String, Integer> map) {
+    private List<Token> getSVMResultFromTokenList(List<Token> knnResult) {
         List<Token> svmTags = new ArrayList<>();
         knnResult.forEach(t -> {
             try {
                 svmClassify(t.getWord());
                 double score = SVMUtil.genSvmResult(t.getWord());
-                if (score > 0.4) {
-                    svmTags.add(t);
-                }
+                t.setWeight(score * t.getWeight());
+                svmTags.add(t);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
+
         return svmTags;
     }
 
@@ -1047,7 +1173,7 @@ public class KivaController {
     }
 
     private List<Token> genTagForNewTextByKnn(String text, int endNum) {
-        List<KivaResult> kivaResults = getTFIDFResults(text, 0);
+        List<KivaResult> kivaResults = getTFIDFResults(text, 0, true);
         for (KivaResult kivaResult : kivaResults) {
             if (kivaResult.getKiva().getId() == -1L) {
                 Collections.sort(kivaResult.getTokenList(), Comparator.comparing(Token::getWeight));
@@ -1072,7 +1198,8 @@ public class KivaController {
         if (StringUtils.isNull(text)) {
             return new ArrayList<>();
         }
-        List<KivaResult> kivaResults = getTFIDFResults(text, 0);
+        Progress.put(-1, 5);
+        List<KivaResult> kivaResults = getTFIDFResults(text, 0, true);
         for (KivaResult kivaResult : kivaResults) {
             if (kivaResult.getKiva().getId() == -1L) {
                 Collections.sort(kivaResult.getTokenList(), Comparator.comparing(Token::getWeight));
@@ -1113,6 +1240,8 @@ public class KivaController {
             case TagType.FILTER_LDA:
                 list = genTag.getFilterLda();
                 break;
+            default:
+                break;
         }
         SortedClusterResult result = getSortedClusterResult(startNum, endNum, list);
         int bp = result.getBreakPoint();
@@ -1129,7 +1258,7 @@ public class KivaController {
         if (list.size() == 0) {
             return new SortedClusterResult();
         }
-        List<Token> sublist = null;
+        List<Token> sublist;
         if (list.size() < startNum - 1) {
             sublist = list;
         } else if (list.size() < endNum + 1) {
@@ -1165,15 +1294,18 @@ public class KivaController {
         Documents docSet = new Documents();
         docSet.readDocs(contents);
         System.out.println("wordMap size " + docSet.termToIndexMap.size());
+        Progress.put(-1, 20);
         LdaModel model = new LdaModel(ldaparameters);
         System.out.println("1 Initialize the model ...");
         model.initializeModel(docSet);
+        Progress.put(-1, 40);
         System.out.println("2 Learning and Saving the model ...");
         try {
             model.inferenceModel(docSet);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Progress.put(-1, 60);
         System.out.println("3 Output the final model ...");
         return getThetaResultLists(ldaparameters, docSet, model);
     }
@@ -1190,6 +1322,7 @@ public class KivaController {
             }
             docThetas.add(item);
         }
+        Progress.put(-1, 75);
         return docThetas;
     }
 
@@ -1224,7 +1357,7 @@ public class KivaController {
 
     private List<Token> getSimlarDocTokens(String text, List<Token> toCompare, List<KivaResult> kivaResults) {
         if (kivaResults == null) {
-            kivaResults = getTFIDFResults(text, 0);
+            kivaResults = getTFIDFResults(text, 0, true);
         }
 
         List<Token> result = new ArrayList<>();
@@ -1263,6 +1396,31 @@ public class KivaController {
 
     @RequestMapping("progress")
     public Response progress() {
+        Object obj = Progress.get(-1);
+        try {
+            if (obj != null && Double.parseDouble( obj.toString() )>= 100) {
+                Progress.remove(-1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Response.success(obj);
+    }
+
+    @RequestMapping("filter-word")
+    public Response filterword() throws IOException {
+        List<String> words = Files.readLines(new File(allwordPath), Charsets.UTF_8);
+        List<String> line = new ArrayList<>();
+        List<String> filter = Lists.newArrayList("VA", "VC", "VE", "VV", "NR", "NT", "NN", "LC", "PN", "AD", "P", "CC", "CS");
+        words.forEach(word -> {
+            if (NLPIRUtil.cutwords(word.split("\t")[0], filter)) {
+                try {
+                    Files.append(word + "\r\n", new File(allwordPath + "t"), Charsets.UTF_8);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         return Response.success(Progress.get(-1));
     }
 }

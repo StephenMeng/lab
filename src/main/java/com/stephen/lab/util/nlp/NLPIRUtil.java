@@ -63,17 +63,43 @@ public class NLPIRUtil {
                 // 获取词形还原结果
                 String lemma = token.get(CoreAnnotations.LemmaAnnotation.class);
 //                if (!pos.startsWith("V")) {
-                    result.add(lemma);
+                result.add(lemma);
 //                }
             }
         }
         return result;
     }
 
+    public static boolean cutwords(String docContent, List<String> filterList) {
+        if (StringUtils.isNull(docContent)) {
+            return false;
+        }
+        List<String> result = new ArrayList<>();
+        // 利用text创建一个空的Annotation
+        Annotation document = new Annotation(docContent);
+        // 对text执行所有的Annotators（七种）
+        pipeline.annotate(document);
+
+        // 下面的sentences 中包含了所有分析结果，遍历即可获知结果。
+        List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
+
+        for (CoreMap sentence : sentences) {
+            for (CoreLabel token : sentence.get(CoreAnnotations.TokensAnnotation.class)) {
+                String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
+                if (filterList.contains(pos)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static List<String> removeStopwords(List<String> words) {
         List<String> result = new ArrayList<>();
         words.forEach(word -> {
-                    if (!stopwordList.contains(word)) {
+                    word = word.replaceAll("[\\pP‘’“”]", "");
+
+                    if (!StringUtils.isNull(word)&&!stopwordList.contains(word)) {
                         result.add(word);
                     }
                 }

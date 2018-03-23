@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by stephen on 2018/3/16.
+ *
+ * @author stephen
+ * @date 2018/3/16
  */
 public class ClusterUtils {
     public static SortedClusterResult sortedCluster(List<Token> tokenList) {
