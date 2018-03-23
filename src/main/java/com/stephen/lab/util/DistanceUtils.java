@@ -57,7 +57,7 @@ public class DistanceUtils {
         }
         result = fenzi / (Math.sqrt(pa) * Math.sqrt(pb));
         if(result<=0){
-            return Integer.MAX_VALUE;
+            return 100000;
         }
         return (1 / result) - 1;
     }
