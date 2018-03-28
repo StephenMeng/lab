@@ -16,7 +16,7 @@ public class GenTag {
     private List<Token> lda;
     private List<Token>filterKnn;
     private List<Token>filterLda;
-
+    private List<Token>expandRank;
     public GenTag() {
     }
 
@@ -82,5 +82,13 @@ public class GenTag {
 
     public void setFilterLda(List<Token> filterLda) {
         this.filterLda = filterLda;
+    }
+
+    public List<Token> getExpandRank() {
+        return expandRank;
+    }
+
+    public void setExpandRank(List<Token> expandRank) {
+        this.expandRank = expandRank;
     }
 }

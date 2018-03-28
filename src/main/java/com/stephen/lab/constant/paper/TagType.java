@@ -10,6 +10,7 @@ public class TagType {
     public static final int LDA = 4;
     public static final int SVM_KNN = 5;
     public static final int SVM_LDA = 6;
+    public static final int EXPANDRANK = 9;
 
     public static final int FILTER_KNN = 7;
     public static final int FILTER_LDA = 8;

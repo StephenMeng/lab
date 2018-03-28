@@ -221,6 +221,9 @@ public class KivaController {
             case TagType.TEXTRANK:
                 genTag.setTextRank(newTags);
                 break;
+            case TagType.EXPANDRANK:
+                genTag.setExpandRank(newTags);
+                break;
             case TagType.KNN:
                 genTag.setKnn(newTags);
                 break;
@@ -828,6 +831,9 @@ public class KivaController {
             case TagType.TEXTRANK:
                 genFreqTags = genTag.getTextRank();
                 break;
+            case TagType.EXPANDRANK:
+                genFreqTags = genTag.getExpandRank();
+                break;
             case TagType.KNN:
                 genFreqTags = genTag.getKnn();
                 break;
@@ -923,6 +929,9 @@ public class KivaController {
             case TagType.TEXTRANK:
                 response = genTagByTextRank(num);
                 break;
+            case TagType.EXPANDRANK:
+                response = genTagByExpandRank(num);
+                break;
             case TagType.KNN:
                 response = genTagByKnn(num);
                 break;
@@ -947,6 +956,27 @@ public class KivaController {
                 break;
         }
         return response;
+    }
+
+    private Response genTagByExpandRank(int num) {
+        List<KivaResult> kivaResults = getTFIDFResults(null, 0, true);
+        kivaResults.forEach(kivaResult -> {
+            Collections.sort(kivaResult.getTokenList(), Comparator.comparing(Token::getWeight));
+            List<KivaResult> selectResult = getKnnSimilarDoc(kivaResult, kivaResults, 5);
+            KivaSimple simple = kivaService.selectSimpleById(kivaResult.getKiva().getId());
+            StringBuilder sb = new StringBuilder();
+            sb.append(simple.getStandardDescription() + "#");
+            selectResult.forEach(sr -> {
+                KivaSimple s = kivaService.selectSimpleById(sr.getKiva().getId());
+                sb.append(s.getStandardDescription() + "#");
+
+            });
+            String description = sb.toString().replaceAll("#", " ");
+            List<Token> result = KeywordExtractUtils.textrank(description, num);
+            updateDatabaseOfGenTag(kivaResult.getKiva().getId(), result, TagType.EXPANDRANK);
+        });
+        return Response.success(true);
+
     }
 
     @RequestMapping("get-tag-num")
@@ -1059,6 +1089,9 @@ public class KivaController {
             case TagType.TEXTRANK:
                 result = genTagForNewTextByTextrank(text, endNum);
                 break;
+            case TagType.EXPANDRANK:
+                result = genTagForNewTextByExpandrank(text, endNum);
+                break;
             case TagType.KNN:
                 result = genTagForNewTextByKnn(text, endNum);
                 break;
@@ -1088,21 +1121,42 @@ public class KivaController {
             return Response.success(result.subList(0, bp + startNum + 1));
         } else {
             int tStartNum = startNum / ratio;
-            int tEndNum=endNum/ratio;
+            int tEndNum = endNum / ratio;
             List<Token> textRankList = genTagForNewTextByTextrank(text, tEndNum);
             SortedClusterResult tClusterResult = getSortedClusterResult(tStartNum, tEndNum, textRankList);
             result = textRankList.subList(0, tClusterResult.getBreakPoint() + tStartNum + 1);
-            int sStartNum = startNum-tStartNum;
-            int sEndNum=endNum-tEndNum;
+            int sStartNum = startNum - tStartNum;
+            int sEndNum = endNum - tEndNum;
             List<Token> svmKnnList = genTagForNewTextBySVMKnn(text, sEndNum);
             SortedClusterResult sClusterResult = getSortedClusterResult(sStartNum, sEndNum, svmKnnList);
-            if(svmKnnList.size()>0){
+            if (svmKnnList.size() > 0) {
                 result.addAll(svmKnnList.subList(0, sClusterResult.getBreakPoint() + sStartNum + 1));
             }
             Progress.put(-1, 100);
 
         }
         return Response.success(result);
+    }
+
+    private List<Token> genTagForNewTextByExpandrank(String text, int endNum) {
+        List<KivaResult> kivaResults = getTFIDFResults(text, 0, true);
+        for (KivaResult kivaResult : kivaResults) {
+            if (kivaResult.getKiva().getId() == -1L) {
+                Collections.sort(kivaResult.getTokenList(), Comparator.comparing(Token::getWeight));
+                List<KivaResult> selectResult = getKnnSimilarDoc(kivaResult, kivaResults, 5);
+                StringBuilder sb = new StringBuilder();
+                sb.append(text + "#");
+                selectResult.forEach(sr -> {
+                    KivaSimple s = kivaService.selectSimpleById(sr.getKiva().getId());
+                    sb.append(s.getStandardDescription() + "#");
+
+                });
+                String description = sb.toString().replaceAll("#", " ");
+                List<Token> result = KeywordExtractUtils.textrank(description, endNum);
+                return result;
+            }
+        }
+        return null;
     }
 
     private List<Token> genTagForNewTextByFilterKnn(String text, int endNum) {
@@ -1224,6 +1278,9 @@ public class KivaController {
                 break;
             case TagType.TEXTRANK:
                 list = genTag.getTextRank();
+                break;
+            case TagType.EXPANDRANK:
+                list = genTag.getExpandRank();
                 break;
             case TagType.KNN:
                 list = genTag.getKnn();
@@ -1398,7 +1455,7 @@ public class KivaController {
     public Response progress() {
         Object obj = Progress.get(-1);
         try {
-            if (obj != null && Double.parseDouble( obj.toString() )>= 100) {
+            if (obj != null && Double.parseDouble(obj.toString()) >= 100) {
                 Progress.remove(-1);
             }
         } catch (Exception e) {
