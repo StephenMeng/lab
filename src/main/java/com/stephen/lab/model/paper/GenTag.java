@@ -14,9 +14,11 @@ public class GenTag {
     private List<Token> svmKnn;
     private List<Token> svmLda;
     private List<Token> lda;
-    private List<Token>filterKnn;
-    private List<Token>filterLda;
-    private List<Token>expandRank;
+    private List<Token> filterKnn;
+    private List<Token> filterLda;
+    private List<Token> expandRank;
+    private List<Token> mixture;
+
     public GenTag() {
     }
 
@@ -90,5 +92,13 @@ public class GenTag {
 
     public void setExpandRank(List<Token> expandRank) {
         this.expandRank = expandRank;
+    }
+
+    public List<Token> getMixture() {
+        return mixture;
+    }
+
+    public void setMixture(List<Token> mixture) {
+        this.mixture = mixture;
     }
 }

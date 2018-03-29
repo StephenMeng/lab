@@ -104,7 +104,7 @@ public class SVMUtil {
             result = Files.readLines(new File(String.format(predictFilePath, tag)), Charsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
-            return -1;
+            return 1;
         }
         try {
             Double r = Double.parseDouble(result.get(1).split(" ")[2]);

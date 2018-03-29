@@ -33,6 +33,12 @@ public class KivaSimple {
         setTags(kiva.getTags());
     }
 
+    public KivaSimple(KivaResult kivaResult) {
+        setId(kivaResult.getKiva().getId());
+        setOriginalDescription(kivaResult.getKiva().getOriginal_description());
+        setTags(kivaResult.getKiva().getTags());
+    }
+
     public Long getId() {
         return id;
     }
