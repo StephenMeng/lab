@@ -46,7 +46,7 @@ import static com.stephen.lab.util.nlp.lda.sample.main.LdaGibbsSampling.getParam
  * @author Stephen
  */
 @RestController
-@RequestMapping("kiva2")
+@RequestMapping("kiva-opt")
 public class OptimitalKivaController {
     @Autowired
     private KivaService kivaService;

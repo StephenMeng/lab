@@ -200,6 +200,7 @@ public class LdaModel {
         //lda.theta M*K
         writer = new BufferedWriter(new FileWriter(resPath + modelName + ".theta"));
         for (int i = 0; i < M; i++) {
+            writer.write(docSet.docs.get(i).getDocName() + "\t");
             for (int j = 0; j < K; j++) {
                 writer.write(theta[i][j] + "\t");
             }
@@ -228,7 +229,11 @@ public class LdaModel {
             Collections.sort(tWordsIndexArray, new LdaModel.TwordsComparable(phi[i]));
             writer.write("topic " + i + "\t:\t");
             for (int t = 0; t < topNum; t++) {
-                writer.write(docSet.indexToTermMap.get(tWordsIndexArray.get(t)) + " " + phi[i][tWordsIndexArray.get(t)] + "\t");
+                try{
+                    writer.write(docSet.indexToTermMap.get(tWordsIndexArray.get(t)) + " " + phi[i][tWordsIndexArray.get(t)] + "\t");
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
             writer.write("\n");
         }

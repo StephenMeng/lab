@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import com.google.common.collect.Lists;
 import com.stephen.lab.constant.paper.TagType;
+import com.stephen.lab.util.LogRecod;
 import com.stephen.lab.util.nlp.NLPIRUtil;
 import com.stephen.lab.util.nlp.lda.sample.com.FileUtil;
 import com.stephen.lab.util.nlp.lda.sample.com.Stopwords;
@@ -45,6 +48,24 @@ public class Documents {
     public void readDocs(List<String> strings) {
         for (int i = 0; i < strings.size(); i++) {
             List<String> words = NLPIRUtil.split(strings.get(i), TagType.TAG_SPLITTER);
+            Document doc = new Document(i, words, termToIndexMap, indexToTermMap, termCountMap);
+            docs.add(doc);
+        }
+    }
+
+    public void readDocs(List<String> contents, String splitter) {
+        for (int i = 0; i < contents.size(); i++) {
+            List<String> words;
+            if (splitter.equals("")) {
+//                words = NLPIRUtil.cutwords(contents.get(i));
+                words=Lists.newArrayList(contents.get(i).split(" "));
+                words=NLPIRUtil.removeStopwords(words);
+
+            } else {
+                words = Lists.newArrayList(contents.get(i).split(splitter));
+            }
+            words = words.stream().map(String::toLowerCase).collect(Collectors.toList());
+            LogRecod.print(words);
             Document doc = new Document(i, words, termToIndexMap, indexToTermMap, termCountMap);
             docs.add(doc);
         }
@@ -132,5 +153,8 @@ public class Documents {
                 return false;
         }
 
+        public String getDocName() {
+            return docName;
+        }
     }
 }
