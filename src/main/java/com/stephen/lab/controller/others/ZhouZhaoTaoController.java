@@ -4,10 +4,13 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.huaban.analysis.jieba.WordDictionary;
 import com.stephen.lab.model.paper.KivaSimple;
+import com.stephen.lab.util.LogRecod;
 import com.stephen.lab.util.MapUtils;
 import com.stephen.lab.util.Response;
 import com.stephen.lab.util.StringUtils;
+import com.stephen.lab.util.nlp.NLPIRUtil;
 import com.stephen.lab.util.nlp.lda.sample.com.FileUtil;
 import com.stephen.lab.util.nlp.lda.sample.conf.ConstantConfig;
 import com.stephen.lab.util.nlp.lda.sample.conf.PathConfig;
@@ -21,10 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.stephen.lab.util.nlp.lda.sample.main.LdaGibbsSampling.getParametersFromFile;
@@ -36,6 +36,7 @@ import static com.stephen.lab.util.nlp.lda.sample.main.LdaGibbsSampling.getParam
 @RequestMapping("zzt")
 public class ZhouZhaoTaoController {
     private String testFilePath = "C:\\Users\\Stephen\\Desktop\\lda\\test.txt";
+    private String kwFilePath = "C:\\Users\\Stephen\\Desktop\\lda\\kw.txt";
     private String yearData = "C:\\Users\\Stephen\\Desktop\\lda\\year.txt";
 
     @RequestMapping("high-freq")
@@ -76,7 +77,7 @@ public class ZhouZhaoTaoController {
 
         List<String> contents = readData(testData);
         Documents docSet = new Documents();
-        docSet.readDocs(contents, ";");
+        docSet.readDocs(contents, "");
         System.out.println("wordMap size " + docSet.termToIndexMap.size());
         FileUtil.mkdir(new File(resultPath));
         LdaModel model = new LdaModel(ldaparameters);
@@ -117,5 +118,42 @@ public class ZhouZhaoTaoController {
         }
         writer.close();
         return contents;
+    }
+
+    @RequestMapping("jieba")
+    public Response jiebafenci() {
+        String content = "在做结巴分词的时候，其中他有提供一个函数是获取一段文本的关键词，然后我想知道要让这些关键词过滤掉一些停用词呢？比如过滤掉一些量词";
+        LogRecod.print(NLPIRUtil.ikFenci(content));
+        LogRecod.print(NLPIRUtil.jiebaFenci(content));
+        return Response.success(true);
+    }
+
+    @RequestMapping("kw")
+    public Response kw() {
+        try {
+            List<String> kws = Files.readLines(new File(testFilePath), Charsets.UTF_8);
+            BufferedWriter writer = Files.newWriter(new File(kwFilePath), Charsets.UTF_8);
+            Set<String> kw = new HashSet<>();
+            kws.forEach(k -> {
+                try {
+                    String[] tmps = k.toLowerCase().split("\t")[0].split(";");
+                    kw.addAll(Lists.newArrayList(tmps));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            kw.forEach(k -> {
+                try {
+                    writer.write((k.startsWith(" ") ? k.substring(1) : k) + "\r\n");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return Response.success(true);
     }
 }

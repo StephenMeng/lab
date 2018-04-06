@@ -4,15 +4,22 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.huaban.analysis.jieba.JiebaSegmenter;
+import com.huaban.analysis.jieba.SegToken;
 import com.stephen.lab.util.StringUtils;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.CoreMap;
+import org.wltea.analyzer.cfg.Configuration;
+import org.wltea.analyzer.cfg.DefaultConfig;
+import org.wltea.analyzer.core.IKSegmenter;
+import org.wltea.analyzer.core.Lexeme;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -25,6 +32,7 @@ public class NLPIRUtil {
     private static Properties props = new Properties();
     private static StanfordCoreNLP pipeline;    // 依次处理
     private static String stopWordPath = "C:\\Users\\Stephen\\Desktop\\svm\\stopword.txt";
+    private static JiebaSegmenter segmenter = new JiebaSegmenter();
 
     static {
         try {
@@ -39,6 +47,36 @@ public class NLPIRUtil {
 
     public static List<String> getStopwords() throws IOException {
         return Files.readLines(new File(stopWordPath), Charsets.UTF_8);
+    }
+
+    public static List<String> jiebaFenci(String docContent) {
+        if (true) {
+            return segmenter.sentenceProcess(docContent);
+        }
+        List<String> result = new ArrayList<>();
+        List<SegToken> tokens = segmenter.process(docContent, JiebaSegmenter.SegMode.INDEX);
+        tokens.forEach(token -> {
+            result.add(token.word);
+        });
+        return result;
+    }
+
+    public static List<String> ikFenci(String docContent) {
+        Configuration cfg = DefaultConfig.getInstance();
+        System.out.println(cfg.getMainDictionary()); // 系统默认词库
+        System.out.println(cfg.getQuantifierDicionary());
+        List<String> list = new ArrayList<>();
+        StringReader input = new StringReader(docContent);
+        IKSegmenter ikSeg = new IKSegmenter(input, false);   // true 用智能分词 ，false细粒度
+        try {
+            for (Lexeme lexeme = ikSeg.next(); lexeme != null; lexeme = ikSeg.next()) {
+                System.out.print(lexeme.getLexemeText() + "|");
+                list.add(lexeme.getLexemeText());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
     public static List<String> cutwords(String docContent) {
@@ -99,7 +137,7 @@ public class NLPIRUtil {
         words.forEach(word -> {
                     word = word.replaceAll("[\\pP‘’“”]", "");
 
-                    if (!StringUtils.isNull(word)&&!stopwordList.contains(word)) {
+                    if (!StringUtils.isNull(word) && !stopwordList.contains(word)) {
                         result.add(word);
                     }
                 }

@@ -57,15 +57,15 @@ public class Documents {
         for (int i = 0; i < contents.size(); i++) {
             List<String> words;
             if (splitter.equals("")) {
-//                words = NLPIRUtil.cutwords(contents.get(i));
-                words=Lists.newArrayList(contents.get(i).split(" "));
-                words=NLPIRUtil.removeStopwords(words);
-
+//                LogRecod.print(contents.get(i));
+                words = NLPIRUtil.ikFenci(contents.get(i));
             } else {
                 words = Lists.newArrayList(contents.get(i).split(splitter));
             }
+            if(words.contains("open government data")){
+                LogRecod.print("open government data ");
+            }
             words = words.stream().map(String::toLowerCase).collect(Collectors.toList());
-            LogRecod.print(words);
             Document doc = new Document(i, words, termToIndexMap, indexToTermMap, termCountMap);
             docs.add(doc);
         }
