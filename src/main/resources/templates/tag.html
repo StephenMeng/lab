@@ -125,7 +125,7 @@
                     var type = $('#id-type').val();
                     var startNum = $('#id-start').val();
                     var endNum = $('#id-end').val();
-                    var filter = $('#id-filter').val();
+                    var filter = $('#id-filter').prop("checked");
                     console.log(filter)
                     $.post("kiva/gen-tag-single", {
                             text: text,

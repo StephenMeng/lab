@@ -10,6 +10,7 @@ import com.google.common.io.Files;
 import com.stephen.lab.constant.paper.TagType;
 import com.stephen.lab.constant.semantic.ResultEnum;
 import com.stephen.lab.dto.analysis.FreqToken;
+import com.stephen.lab.dto.analysis.ShowToken;
 import com.stephen.lab.dto.analysis.Token;
 import com.stephen.lab.model.paper.*;
 import com.stephen.lab.service.crawler.CrawlErrorService;
@@ -1071,15 +1072,21 @@ public class KivaController {
     @RequestMapping("gen-tag-single")
     public Response genTagSingle(@RequestParam(value = "text") String text,
                                  @RequestParam(value = "type", defaultValue = "2") int type,
-                                 @RequestParam(value = "startNum", defaultValue = "2") int startNum,
+                                 @RequestParam(value = "startNum", defaultValue = "1") int startNum,
                                  @RequestParam(value = "endNum", defaultValue = "5") int endNum,
-                                 @RequestParam(value = "filter", defaultValue = "off") String filter,
+                                 @RequestParam(value = "filter", defaultValue = "false") Boolean filter,
                                  @RequestParam(value = "ratio", defaultValue = "2") int ratio) throws IOException {
+        if (startNum < 1) {
+            startNum = 1;
+        }
+        if (endNum < startNum) {
+            endNum = startNum;
+        }
         if (StringUtils.isNull(text)) {
             Progress.put(-1, 100);
             return Response.error(ResultEnum.FAIL_PARAM_WRONG);
         }
-        if ("on".equals(filter)) {
+        if (filter) {
             if (type == TagType.KNN) {
                 type = TagType.SVM_KNN;
             }
@@ -1120,30 +1127,39 @@ public class KivaController {
             default:
                 break;
         }
-        LogRecod.print(result);
         if (type != TagType.MIXTURE) {
             Progress.put(-1, 80);
             SortedClusterResult clusterResult = getSortedClusterResult(startNum, endNum, result);
             int bp = clusterResult.getBreakPoint();
             Progress.put(-1, 100);
-            return Response.success(result.subList(0, bp + startNum + 1));
+            return Response.success(subSortedResultList(result, startNum, bp));
         } else {
             int tStartNum = startNum / ratio;
             int tEndNum = endNum / ratio;
             List<Token> textRankList = genTagForNewTextByTextrank(text, tEndNum);
             SortedClusterResult tClusterResult = getSortedClusterResult(tStartNum, tEndNum, textRankList);
-            result = textRankList.subList(0, tClusterResult.getBreakPoint() + tStartNum + 1);
+            result = subSortedResultList(textRankList, startNum, tClusterResult.getBreakPoint());
             int sStartNum = startNum - tStartNum;
             int sEndNum = endNum - tEndNum;
             List<Token> svmKnnList = genTagForNewTextBySVMKnn(text, sEndNum);
             SortedClusterResult sClusterResult = getSortedClusterResult(sStartNum, sEndNum, svmKnnList);
             if (svmKnnList.size() > 0) {
-                result.addAll(svmKnnList.subList(0, sClusterResult.getBreakPoint() + sStartNum + 1));
+                result.addAll(subSortedResultList(svmKnnList, startNum, sClusterResult.getBreakPoint()));
             }
             Progress.put(-1, 100);
 
         }
         return Response.success(result);
+    }
+
+    private List<Token> subSortedResultList(List<Token> result, int startNum, int bp) {
+        if (result == null) {
+            return new ArrayList<>();
+        }
+        if (result.size() <= startNum || bp < startNum || result.size() < startNum + bp) {
+            return result;
+        }
+        return result.subList(0, startNum + bp);
     }
 
     private List<Token> genTagForNewTextByExpandrank(String text, int endNum) {
@@ -1323,12 +1339,12 @@ public class KivaController {
             return new SortedClusterResult();
         }
         List<Token> sublist;
-        if (list.size() < startNum - 1) {
+        if (list.size() <= startNum) {
             sublist = list;
-        } else if (list.size() < endNum + 1) {
-            sublist = list.subList(startNum < 1 ? 0 : startNum - 1, list.size() - 1);
+        } else if (list.size() <= endNum) {
+            sublist = list.subList(0, list.size() - 1);
         } else {
-            sublist = list.subList(startNum < 1 ? 0 : startNum - 1, endNum + 1);
+            sublist = list.subList(0, endNum + 1);
         }
         return ClusterUtils.sortedCluster(sublist);
     }

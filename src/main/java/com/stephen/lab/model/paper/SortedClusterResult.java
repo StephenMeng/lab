@@ -7,7 +7,7 @@ public class SortedClusterResult {
     private int freq;
     public SortedClusterResult(){
         setFreq(0);
-        setBreakPoint(-1);
+        setBreakPoint(0);
     }
     public double getLost() {
         return lost;
