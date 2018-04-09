@@ -6,7 +6,9 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.huaban.analysis.jieba.JiebaSegmenter;
 import com.huaban.analysis.jieba.SegToken;
+import com.stephen.lab.util.LogRecod;
 import com.stephen.lab.util.StringUtils;
+import com.sun.org.apache.regexp.internal.RE;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
@@ -16,13 +18,14 @@ import org.wltea.analyzer.cfg.Configuration;
 import org.wltea.analyzer.cfg.DefaultConfig;
 import org.wltea.analyzer.core.IKSegmenter;
 import org.wltea.analyzer.core.Lexeme;
+import org.wltea.analyzer.dic.*;
+import org.wltea.analyzer.dic.Dictionary;
+import sun.rmi.runtime.Log;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Created by stephen on 2018/3/17.
@@ -33,6 +36,45 @@ public class NLPIRUtil {
     private static StanfordCoreNLP pipeline;    // 依次处理
     private static String stopWordPath = "C:\\Users\\Stephen\\Desktop\\svm\\stopword.txt";
     private static JiebaSegmenter segmenter = new JiebaSegmenter();
+    private static Set<String> kw = new HashSet<>();
+
+    static {
+        Configuration cfg = DefaultConfig.getInstance();
+        System.out.println(cfg.getMainDictionary()); // 系统默认词库
+        System.out.println(cfg.getQuantifierDicionary());
+        org.wltea.analyzer.dic.Dictionary.initial(cfg);
+        Dictionary dic = Dictionary.getSingleton();
+        dic.addWords(getDict());
+
+        try {
+            List<String> ks = Files.readLines(new File("C:\\Users\\Stephen\\Desktop\\lda\\kw.txt"), Charsets.UTF_8);
+            ks.forEach(k -> {
+                        try {
+                            List<String> tmps = getAllWordComposition(k);
+                            kw.addAll(tmps);
+                        } catch (Exception e) {
+                    e.printStackTrace();
+                        }
+                    }
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static List<String> getAllWordComposition(String k) {
+        if (!k.contains(" ")) {
+            return Lists.newArrayList(k);
+        }
+        List<String> tmp = Lists.newArrayList(k.split(" "));
+        List<String> result = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        for (String s : tmp) {
+            sb.append(s).append(" ");
+            result.add(sb.toString().trim());
+        }
+        return result;
+    }
 
     static {
         try {
@@ -62,21 +104,49 @@ public class NLPIRUtil {
     }
 
     public static List<String> ikFenci(String docContent) {
-        Configuration cfg = DefaultConfig.getInstance();
-        System.out.println(cfg.getMainDictionary()); // 系统默认词库
-        System.out.println(cfg.getQuantifierDicionary());
         List<String> list = new ArrayList<>();
         StringReader input = new StringReader(docContent);
-        IKSegmenter ikSeg = new IKSegmenter(input, false);   // true 用智能分词 ，false细粒度
+        IKSegmenter ikSeg = new IKSegmenter(input, true);   // true 用智能分词 ，false细粒度
         try {
             for (Lexeme lexeme = ikSeg.next(); lexeme != null; lexeme = ikSeg.next()) {
-                System.out.print(lexeme.getLexemeText() + "|");
                 list.add(lexeme.getLexemeText());
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public static List<String> costumFenci(String docContent) {
+        List<String> tmp = ikFenci(docContent);
+        List<String> result = new ArrayList<>();
+        int size = tmp.size();
+        StringBuilder c = new StringBuilder();
+        String p = null;
+        boolean pre = false;
+
+        for (int i = 0; i < size; i++) {
+            if (pre) {
+                c.append(" ").append(tmp.get(i).toLowerCase());
+            } else {
+                c.append(tmp.get(i).toLowerCase());
+            }
+            if (!kw.contains(c.toString())) {
+                if (pre) {
+                    result.add(p);
+                    i--;
+                } else {
+                    result.add(c.toString());
+                }
+                c = new StringBuilder();
+                p = null;
+                pre = false;
+            } else {
+                pre = true;
+                p = c.toString();
+            }
+        }
+        return result;
     }
 
     public static List<String> cutwords(String docContent) {
@@ -149,5 +219,15 @@ public class NLPIRUtil {
         List<String> result = Lists.newArrayList(Splitter.on(spliter).trimResults().split(docContent));
         result.removeIf(StringUtils::isNull);
         return result;
+    }
+
+    private static List<String> getDict() {
+        try {
+            return Files.readLines(new File("C:\\Users\\stephen\\" +
+                    "IdeaProjects\\lab\\src\\main\\resources\\dict.dic"), Charsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

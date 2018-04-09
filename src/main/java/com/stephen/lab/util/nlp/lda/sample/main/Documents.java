@@ -1,6 +1,9 @@
 package com.stephen.lab.util.nlp.lda.sample.main;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +12,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 import com.stephen.lab.constant.paper.TagType;
 import com.stephen.lab.util.LogRecod;
 import com.stephen.lab.util.nlp.NLPIRUtil;
@@ -58,7 +63,24 @@ public class Documents {
             List<String> words;
             if (splitter.equals("")) {
 //                LogRecod.print(contents.get(i));
-                words = NLPIRUtil.ikFenci(contents.get(i));
+                words = NLPIRUtil.costumFenci(contents.get(i));
+                try {
+                    BufferedWriter writer= Files.newWriter(new File("C:\\Users\\Stephen\\Desktop\\lda\\kw-"+i+".txt"), Charsets.UTF_8);
+                    words.forEach(word->{
+                        try {
+                            writer.write(word+"\r\n");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    try {
+                        writer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             } else {
                 words = Lists.newArrayList(contents.get(i).split(splitter));
             }

@@ -66,6 +66,12 @@ public class LdaGibbsSampling {
         }
     }
 
+    public static void setTopicNum(modelparameters ldaparameters,
+                                   Integer num) {
+        ldaparameters.topicNum = num;
+
+    }
+
     public enum parameters {
         alpha, beta, topicNum, iteration, saveStep, beginSaveIters;
     }
