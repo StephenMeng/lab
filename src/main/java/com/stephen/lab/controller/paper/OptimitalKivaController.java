@@ -33,14 +33,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.json.Json;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import static com.stephen.lab.controller.others.ZhouZhaoTaoController.thetaFile;
+import static com.stephen.lab.controller.others.ZhouZhaoTaoController.twordsFile;
 import static com.stephen.lab.util.nlp.lda.sample.main.LdaGibbsSampling.getParametersFromFile;
+import static com.stephen.lab.util.nlp.lda.sample.main.LdaGibbsSampling.setTopicNum;
 
 /**
  * @author Stephen
@@ -936,7 +938,7 @@ public class OptimitalKivaController {
                 GenTag genTag = JSONObject.parseObject(kivaSimple.getGenTags(), GenTag.class);
                 List<Token> tokenList = getTagsByTagType(type, genTag);
                 listList.add(tokenList);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
@@ -1064,6 +1066,41 @@ public class OptimitalKivaController {
 
         }
         return Response.success(result);
+    }
+
+    @RequestMapping("tag-num-avg")
+    public Response tagNumByAvg(int type, double th, boolean useAvg) {
+        List<KivaSimple> kivaSimpleList = getAllKivaSimpleResult(0);
+        Map<Integer, Integer> numMap = new HashMap<>();
+        for (KivaSimple kivaSimple : kivaSimpleList) {
+            try {
+                GenTag genTag = JSONObject.parseObject(kivaSimple.getGenTags(), GenTag.class);
+                List<Token> list = getTokensFromGenTag(type, genTag);
+                if (list != null && list.size() > 0) {
+                    double sum = 0;
+                    for (Token token : list) {
+                        sum += token.getWeight();
+                    }
+                    double avg;
+                    if (useAvg) {
+                        avg = sum / list.size();
+                    } else {
+                        avg = th;
+                    }
+                    list = list.stream().filter(token -> token.getWeight() > avg).collect(Collectors.toList());
+                    int num = list.size();
+                    if (numMap.containsKey(num)) {
+                        numMap.put(num, numMap.get(num) + 1);
+                    } else {
+                        numMap.put(num, 1);
+                    }
+                }
+            } catch (Exception e) {
+                LogRecod.print(kivaSimple.getGenTags());
+            }
+        }
+        return Response.success(numMap);
+
     }
 
     private List<Token> getTagForNewTextByMixture(
@@ -1199,6 +1236,16 @@ public class OptimitalKivaController {
     public Response genBreakPoint(long id, int type, int startNum, int endNum) throws IOException {
         KivaSimple kivaSimple = kivaService.selectSimpleById(id);
         GenTag genTag = JSONObject.parseObject(kivaSimple.getGenTags(), GenTag.class);
+        List<Token> list = getTokensFromGenTag(type, genTag);
+        SortedClusterResult result = getSortedClusterResult(startNum, endNum, list);
+        int bp = result.getBreakPoint();
+        Map<String, Object> r = new HashMap<>();
+        r.put("statistics", result);
+        r.put("list", list != null ? list.subList(0, bp + startNum) : null);
+        return Response.success(r);
+    }
+
+    private List<Token> getTokensFromGenTag(int type, GenTag genTag) {
         List<Token> list = null;
         switch (type) {
             case TagType.TFIDF:
@@ -1225,15 +1272,13 @@ public class OptimitalKivaController {
             case TagType.FILTER_LDA:
                 list = genTag.getFilterLda();
                 break;
+            case TagType.LDA:
+                list = genTag.getLda();
+                break;
             default:
                 break;
         }
-        SortedClusterResult result = getSortedClusterResult(startNum, endNum, list);
-        int bp = result.getBreakPoint();
-        Map<String, Object> r = new HashMap<>();
-        r.put("statistics", result);
-        r.put("list", list != null ? list.subList(0, bp + startNum) : null);
-        return Response.success(r);
+        return list;
     }
 
     private SortedClusterResult getSortedClusterResult(int startNum, int endNum, List<Token> list) {
@@ -1267,7 +1312,53 @@ public class OptimitalKivaController {
         return Response.success(docThetas);
     }
 
+    @RequestMapping("lda-perplexcity")
+    public Response perplexity(int totalNum) {
+        if (totalNum < 1) {
+            return Response.error(ResultEnum.FAIL_PARAM_WRONG);
+        }
+        Map<Integer, Double> result = new HashMap<>(totalNum);
+        List<KivaSimple> kivaSimpleList = getAllKivaSimpleResult(0);
+//        for (int i = 1; i < totalNum; i++) {
+        trainAndSaveLdaModel(totalNum, kivaSimpleList);
+        double p = LdaModel.getPerplexity(totalNum, thetaFile, twordsFile);
+        LogRecod.print(totalNum + "\t" + p);
+        result.put(totalNum, p);
+//        }
+        return Response.success(result);
+    }
+
+    private void trainAndSaveLdaModel(Integer topicNum, List<KivaSimple> kivaList) {
+        String parameterFile = ConstantConfig.LDAPARAMETERFILE;
+
+        LdaGibbsSampling.modelparameters ldaparameters = new LdaGibbsSampling.modelparameters();
+        getParametersFromFile(ldaparameters, parameterFile);
+        if (topicNum != null) {
+            setTopicNum(ldaparameters, topicNum);
+        }
+        List<String> contents = Lists.transform(kivaList, KivaSimple::getStandardDescription);
+        Documents docSet = new Documents();
+        docSet.readDocs(contents);
+        System.out.println("wordMap size " + docSet.termToIndexMap.size());
+        Progress.put(-1, 20);
+        LdaModel model = new LdaModel(ldaparameters);
+        System.out.println("1 Initialize the model ...");
+        model.initializeModel(docSet);
+        Progress.put(-1, 40);
+        System.out.println("2 Learning and Saving the model ...");
+        try {
+            model.inferenceModel(docSet);
+            model.saveIteratedModel(ldaparameters.iteration, docSet);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Progress.put(-1, 60);
+        System.out.println("3 Output the final model ...");
+        System.out.println("Done!");
+    }
+
     private List<List<Double>> getLdaScores(List<KivaSimple> kivaList) {
+        trainAndSaveLdaModel(null, kivaList);
         String parameterFile = ConstantConfig.LDAPARAMETERFILE;
         LdaGibbsSampling.modelparameters ldaparameters = new LdaGibbsSampling.modelparameters();
         getParametersFromFile(ldaparameters, parameterFile);

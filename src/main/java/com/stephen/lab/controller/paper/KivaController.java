@@ -796,7 +796,7 @@ public class KivaController {
                            @RequestParam(value = "threshold", required = false) double th) throws IOException {
         List<KivaSimple> kivaSimples = kivaService.selectAllSimple(0);
 //        if(type==5){
-        kivaSimples = kivaSimples.stream().filter(kivaSimple -> kivaSimple.getGenTags().contains("expandRank")).collect(Collectors.toList());
+        kivaSimples = kivaSimples.stream().filter(kivaSimple -> kivaSimple.getGenTags().contains("mixture")).collect(Collectors.toList());
         LogRecod.print(kivaSimples.size());
 //        }
         double p = pValue(kivaSimples, type, num, th);

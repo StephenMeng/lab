@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.stephen.lab.constant.semantic.ResultEnum;
 import com.stephen.lab.util.*;
 import com.stephen.lab.util.nlp.NLPIRUtil;
 import com.stephen.lab.util.nlp.lda.sample.com.FileUtil;
@@ -12,6 +13,7 @@ import com.stephen.lab.util.nlp.lda.sample.conf.PathConfig;
 import com.stephen.lab.util.nlp.lda.sample.main.Documents;
 import com.stephen.lab.util.nlp.lda.sample.main.LdaGibbsSampling;
 import com.stephen.lab.util.nlp.lda.sample.main.LdaModel;
+import io.swagger.models.auth.In;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,8 +34,8 @@ public class ZhouZhaoTaoController {
     private String testFilePath = "C:\\Users\\Stephen\\Desktop\\lda\\test.txt";
     private String kwFilePath = "C:\\Users\\Stephen\\Desktop\\lda\\kw.txt";
     private String yearData = "C:\\Users\\Stephen\\Desktop\\lda\\year.txt";
-    private String twordsFile = "C:\\Users\\stephen\\Desktop\\lda\\LdaResults\\lda_100.phi";
-    private String thetaFile = "C:\\Users\\stephen\\Desktop\\lda\\LdaResults\\lda_100.theta";
+    public static String twordsFile = "C:\\Users\\stephen\\Desktop\\lda\\LdaResults\\lda_100.phi";
+    public static String thetaFile = "C:\\Users\\stephen\\Desktop\\lda\\LdaResults\\lda_100.theta";
 
     @RequestMapping("high-freq")
     public Response highFreq() throws IOException {
@@ -64,6 +66,12 @@ public class ZhouZhaoTaoController {
 
     @RequestMapping("lda")
     public Response ldaTest(int topicNum) throws IOException {
+        trainLdaModel(topicNum);
+        double perplexity = LdaModel.getPerplexity(topicNum, thetaFile, twordsFile);
+        return Response.success(perplexity);
+    }
+
+    private void trainLdaModel(int topicNum) throws IOException {
         String testData = testFilePath;
         String resultPath = PathConfig.LdaResultsPath;
         String parameterFile = ConstantConfig.LDAPARAMETERFILE;
@@ -84,7 +92,20 @@ public class ZhouZhaoTaoController {
         System.out.println("3 Output the final model ...");
         model.saveIteratedModel(ldaparameters.iteration, docSet);
         System.out.println("Done!");
-        return Response.success(getSimilarity(topicNum));
+    }
+
+    @RequestMapping("lda-p")
+    public Response ldaPro(int totalNum) throws IOException {
+        if (totalNum < 1) {
+            return Response.error(ResultEnum.FAIL_PARAM_WRONG);
+        }
+        Map<Integer, Double> result = new HashMap<>(totalNum);
+        for (int i = 1; i < totalNum; i++) {
+            trainLdaModel(i);
+            double p = LdaModel.getPerplexity(i, thetaFile, twordsFile);
+            result.put(i, p);
+        }
+        return Response.success(result);
     }
 
     private List<String> readData(String testData) throws IOException {
@@ -151,72 +172,5 @@ public class ZhouZhaoTaoController {
         }
 
         return Response.success(true);
-    }
-
-    public double getSimilarity(int topicNum) {
-        double[][] theta = getThetaArray(44, thetaFile);
-        double sum = 0;
-        for (int i = 0; i < theta.length; i++) {
-            for (int j = i + 1; j < theta.length; j++) {
-                sum += DistanceUtils.cosDistance(theta[i], theta[j]);
-            }
-        }
-        return sum;
-    }
-
-
-    public double getPerplexity(int topicNum) {
-        double[][] theta = getThetaArray(44, thetaFile);
-        double[][] twords = getThetaArray(topicNum, twordsFile);
-        double sum = 0;
-        for (int i = 0; i < theta.length; i++) {
-            for (int j = 0; j < theta[i].length; j++) {
-                for (int k = 0; k < twords[i].length; k++) {
-                    sum += theta[i][j] * twords[i][k];
-                }
-            }
-        }
-        int N = getTotalNum(twordsFile);
-        return 0;
-    }
-
-    private int getTotalNum(String twordsFile) {
-        int n = 0;
-        try {
-            List<String> words = Files.readLines(new File(twordsFile), Charsets.UTF_8);
-            for (String word : words) {
-                n += word.split("\t").length;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return n;
-    }
-
-    private double[][] getThetaArray(int num, String twordsFile) {
-
-        try {
-            List<String> theta = Files.readLines(new File(twordsFile), Charsets.UTF_8);
-            int n = getTotalNum(twordsFile);
-            double[][] thetaArray = new double[theta.size()][n];
-            for (int i = 0; i < thetaArray.length; i++) {
-                for (int j = 0; j < thetaArray[i].length; j++) {
-                    thetaArray[i][j] = 0;
-                }
-            }
-            for (int i = 0; i < theta.size(); i++) {
-                String item = theta.get(i);
-                String[] tmp = item.split("\t");
-                for (int j = 1; j < tmp.length; i++) {
-                    LogRecod.print(tmp[j]);
-                    thetaArray[i][j - 1] = Double.parseDouble(tmp[j]);
-                }
-            }
-            return thetaArray;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new double[44][];
     }
 }
