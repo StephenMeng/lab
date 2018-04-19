@@ -25,12 +25,12 @@
     <inspection_tool class="SpringFacetProgrammaticInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SpringFactoryMethodInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SpringHandlersSchemasHighlighting" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="SpringInactiveProfileHighlightingInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SpringIncorrectResourceTypeInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SpringInjectionValueConsistencyInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SpringIntegrationModel" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SpringJavaAutowiringInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SpringJavaConfigInconsistencyInspection" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="SpringJavaInjectionPointsAutowiringInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="SpringKotlinAutowiring" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SpringMVCInitBinder" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SpringMessageDispatcherWebXmlInspection" enabled="true" level="WARNING" enabled_by_default="true" />
