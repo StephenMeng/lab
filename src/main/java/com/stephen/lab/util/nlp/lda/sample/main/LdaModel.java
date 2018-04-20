@@ -9,13 +9,14 @@ package com.stephen.lab.util.nlp.lda.sample.main;
  */
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
+import com.stephen.lab.util.LogRecod;
 import com.stephen.lab.util.nlp.lda.sample.com.FileUtil;
 import com.stephen.lab.util.nlp.lda.sample.conf.PathConfig;
 
@@ -95,7 +96,7 @@ public class LdaModel {
             System.exit(0);
         }
         for (int i = 0; i < iterations; i++) {
-            System.out.println("Iteration " + i);
+//            System.out.println("Iteration " + i);
             if ((i >= beginSaveIters) && (((i - beginSaveIters) % saveStep) == 0)) {
                 //Saving the model
                 System.out.println("Saving model at iteration " + i + " ... ");
@@ -191,7 +192,7 @@ public class LdaModel {
         BufferedWriter writer = new BufferedWriter(new FileWriter(resPath + modelName + ".phi"));
         for (int i = 0; i < K; i++) {
             for (int j = 0; j < V; j++) {
-                writer.write(phi[i][j] + "\t");
+                writer.write(docSet.indexToTermMap.get(j) + ";" + phi[i][j] + "\t");
             }
             writer.write("\n");
         }
@@ -229,9 +230,9 @@ public class LdaModel {
             Collections.sort(tWordsIndexArray, new LdaModel.TwordsComparable(phi[i]));
             writer.write("topic " + i + "\t:\t");
             for (int t = 0; t < topNum; t++) {
-                try{
+                try {
                     writer.write(docSet.indexToTermMap.get(tWordsIndexArray.get(t)) + " " + phi[i][tWordsIndexArray.get(t)] + "\t");
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -269,4 +270,111 @@ public class LdaModel {
             else return 0;
         }
     }
+
+    public static double getPerplexity(int topicNum, String thetaFile, String twordsFile) {
+        double result;
+        double[][] theta = getThetaArray(topicNum, thetaFile);
+        Map<String, Map<Integer, Double>> twordsMap = getTwordsMap(topicNum, twordsFile);
+        Set<String> twords = getWordList(twordsFile);
+        LogRecod.print(twords.size());
+        double wordCount = countTotalWord(twordsFile);
+        double sum = 0;
+        for (String w : twords) {
+            double wSum = 0;
+            Map<Integer, Double> topicWeight = twordsMap.get(w);
+            for (Integer topicIndex : topicWeight.keySet()) {
+                for (int j = 0; j < theta.length; j++) {
+                    wSum += topicWeight.get(topicIndex) * theta[j][topicIndex];
+                }
+            }
+            double log = Math.log(wSum);
+            sum += log;
+        }
+        LogRecod.print(sum);
+        LogRecod.print(wordCount);
+        result = Math.pow(Math.E, -(sum / wordCount));
+        return result;
+    }
+
+    private static double[][] getThetaArray(int num, String twordsFile) {
+        try {
+            List<String> theta = Files.readLines(new File(twordsFile), Charsets.UTF_8);
+            double[][] thetaArray = new double[theta.size() + 1][num];
+            for (int i = 0; i < thetaArray.length; i++) {
+                for (int j = 0; j < thetaArray[i].length; j++) {
+                    thetaArray[i][j] = 0;
+                }
+            }
+            for (int i = 0; i < theta.size(); i++) {
+                String item = theta.get(i);
+                String[] tmp = item.split("\t");
+                for (int j = 1; j < tmp.length; j++) {
+                    thetaArray[i][j - 1] = Double.parseDouble(tmp[j]);
+                }
+            }
+            return thetaArray;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new double[0][num];
+    }
+
+    private static int countTotalWord(String twordsFile) {
+        int result = 0;
+        try {
+            List<String> lines = Files.readLines(new File(twordsFile), Charsets.UTF_8);
+            for (String line : lines) {
+                String[] items = line.split("\t");
+                result += items.length;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private static Set<String> getWordList(String twordsFile) {
+        Set<String> result = new HashSet<>();
+        try {
+            List<String> lines = Files.readLines(new File(twordsFile), Charsets.UTF_8);
+            lines.forEach(line -> {
+                String[] items = line.split("\t");
+                for (String item : items) {
+                    String[] wordWeight = item.split(";");
+                    result.add(wordWeight[0]);
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private static Map<String, Map<Integer, Double>> getTwordsMap(int topicNum, String twordsFile) {
+        Map<String, Map<Integer, Double>> result = new HashMap<>();
+        try {
+            List<String> lines = Files.readLines(new File(twordsFile), Charsets.UTF_8);
+            for (int i = 0; i < lines.size(); i++) {
+                String line = lines.get(i);
+                String[] items = line.split("\t");
+                for (String item : items) {
+                    String[] wordWeight = item.split(";");
+                    String word = wordWeight[0];
+                    Double weight = Double.valueOf(wordWeight[1]);
+                    if (result.containsKey(word)) {
+                        result.get(word).put(i, weight);
+                    } else {
+                        Map<Integer, Double> topicWordWeightMap = new HashMap<>();
+                        topicWordWeightMap.put(i, weight);
+                        result.put(word, topicWordWeightMap);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 }
