@@ -271,13 +271,17 @@ public class LdaModel {
         }
     }
 
-    public static double getPerplexity(int topicNum, String thetaFile, String twordsFile) {
+    public static double getPerplexity(int N, int topicNum, String thetaFile, String phiFile) {
         double result;
         double[][] theta = getThetaArray(topicNum, thetaFile);
-        Map<String, Map<Integer, Double>> twordsMap = getTwordsMap(topicNum, twordsFile);
-        Set<String> twords = getWordList(twordsFile);
-        LogRecod.print(twords.size());
-        double wordCount = countTotalWord(twordsFile);
+        Map<String, Map<Integer, Double>> twordsMap = getTwordsMap(phiFile);
+        Set<String> twords = getWordList(phiFile);
+        double wordCount = 0;
+        if (N == 0) {
+            countTotalWord(phiFile);
+        } else {
+            wordCount = N;
+        }
         double sum = 0;
         for (String w : twords) {
             double wSum = 0;
@@ -290,16 +294,14 @@ public class LdaModel {
             double log = Math.log(wSum);
             sum += log;
         }
-        LogRecod.print(sum);
-        LogRecod.print(wordCount);
         result = Math.pow(Math.E, -(sum / wordCount));
         return result;
     }
 
-    private static double[][] getThetaArray(int num, String twordsFile) {
+    private static double[][] getThetaArray(int num, String thetaFile) {
         try {
-            List<String> theta = Files.readLines(new File(twordsFile), Charsets.UTF_8);
-            double[][] thetaArray = new double[theta.size() + 1][num];
+            List<String> theta = Files.readLines(new File(thetaFile), Charsets.UTF_8);
+            double[][] thetaArray = new double[theta.size()][num];
             for (int i = 0; i < thetaArray.length; i++) {
                 for (int j = 0; j < thetaArray[i].length; j++) {
                     thetaArray[i][j] = 0;
@@ -351,7 +353,7 @@ public class LdaModel {
         return result;
     }
 
-    private static Map<String, Map<Integer, Double>> getTwordsMap(int topicNum, String twordsFile) {
+    private static Map<String, Map<Integer, Double>> getTwordsMap(String twordsFile) {
         Map<String, Map<Integer, Double>> result = new HashMap<>();
         try {
             List<String> lines = Files.readLines(new File(twordsFile), Charsets.UTF_8);

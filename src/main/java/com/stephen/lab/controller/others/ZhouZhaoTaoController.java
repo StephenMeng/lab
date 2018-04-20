@@ -13,7 +13,6 @@ import com.stephen.lab.util.nlp.lda.sample.conf.PathConfig;
 import com.stephen.lab.util.nlp.lda.sample.main.Documents;
 import com.stephen.lab.util.nlp.lda.sample.main.LdaGibbsSampling;
 import com.stephen.lab.util.nlp.lda.sample.main.LdaModel;
-import io.swagger.models.auth.In;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -67,7 +66,7 @@ public class ZhouZhaoTaoController {
     @RequestMapping("lda")
     public Response ldaTest(int topicNum) throws IOException {
         trainLdaModel(topicNum);
-        double perplexity = LdaModel.getPerplexity(topicNum, thetaFile, twordsFile);
+        double perplexity = LdaModel.getPerplexity(0, topicNum, thetaFile, twordsFile);
         return Response.success(perplexity);
     }
 
@@ -102,7 +101,7 @@ public class ZhouZhaoTaoController {
         Map<Integer, Double> result = new HashMap<>(totalNum);
         for (int i = 1; i < totalNum; i++) {
             trainLdaModel(i);
-            double p = LdaModel.getPerplexity(i, thetaFile, twordsFile);
+            double p = LdaModel.getPerplexity(0, i, thetaFile, twordsFile);
             result.put(i, p);
         }
         return Response.success(result);
