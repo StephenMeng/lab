@@ -1324,7 +1324,7 @@ public class OptimitalKivaController {
         for (String content : contents) {
             N += content.split("#").length;
         }
-        for (int i = 1; i < totalNum; i++) {
+        for (int i = 6; i < totalNum; i++) {
             int topicNum = i * 10;
             trainAndSaveLdaModel(topicNum, kivaSimpleList);
             double p = LdaModel.getPerplexity(N, topicNum, thetaFile, twordsFile);

@@ -1,4 +1,4 @@
-package com.stephen.lab.dao.others;
+package com.stephen.lab.dao.crawler;
 
 import com.stephen.lab.model.others.Bilibili;
 import com.stephen.lab.util.BaseDao;
