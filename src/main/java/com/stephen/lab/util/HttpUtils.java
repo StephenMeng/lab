@@ -1,5 +1,7 @@
 package com.stephen.lab.util;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -29,6 +31,14 @@ import java.util.Map;
 
 public class HttpUtils {
     public static final String DEFAULT_CHARSET = "utf-8";
+
+    public static String okrHttpGet(String url) throws IOException {
+        OkHttpClient httpClient = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        return httpClient.newCall(request).execute().body().string();
+    }
 
     public static HttpResponse httpGet(String url) throws IOException {
         return httpGet(url, null);
