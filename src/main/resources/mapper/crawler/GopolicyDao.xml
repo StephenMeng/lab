@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.stephen.lab.dao.crawler.GopolicyDao">
+    <select id="selectNullTitle" resultType="com.stephen.lab.model.crawler.Gopolicy">
+        SELECT * from crawl_gopolicy where title is null
+    </select>
+    <select id="selectNullFullText" resultType="com.stephen.lab.model.crawler.Gopolicy">
+        SELECT url,full_text_url from crawl_gopolicy where full_text_url is not null and content is null
+    </select>
+</mapper>
