@@ -1,33 +1,63 @@
 package com.stephen.lab.model.others;
 
-import org.apache.xpath.operations.Bool;
-
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
+@Entity
+@Table(name = "crawl_bilibili")
 public class Bilibili {
+    @Id
+    @Column(name = "aid")
     private Long aid;
+    @Column(name = "arcran")
     private String arcran;
+    @Column(name = "arcurl")
     private String arcurl;
+    @Column(name = "author")
     private String author;
+    @Column(name = "badgepay")
     private Boolean badgepay;
+    @Column(name = "description")
     private String description;
+    @Column(name = "duration")
     private String duration;
+    @Column(name = "favorites")
     private Integer favorites;
+    @Column(name = "hit_columns")
     private String hit_columns;
+    @Column(name = "id")
     private Long id;
+    @Column(name = "mid")
     private Long mid;
+    @Column(name = "pic")
     private String pic;
+    @Column(name = "play")
     private Long play;
+    @Column(name = "pubdate")
     private Date pubdate;
+    @Column(name = "rank_score")
     private Long rank_score;
+    @Column(name = "review")
     private Integer review;
+    @Column(name = "senddate")
     private Date senddate;
+    @Column(name = "tag")
     private String tag;
+    @Column(name = "title")
     private String title;
+    @Column(name = "type")
     private String type;
+    @Column(name = "typeid")
     private String typeid;
+    @Column(name = "typename")
     private String typename;
+    @Column(name = "video_review")
     private Integer video_review;
+    @Column(name = "cid")
+    private Long cid;
 
     public Long getAid() {
         return aid;
@@ -211,5 +241,13 @@ public class Bilibili {
 
     public void setVideo_review(Integer video_review) {
         this.video_review = video_review;
+    }
+
+    public Long getCid() {
+        return cid;
+    }
+
+    public void setCid(Long cid) {
+        this.cid = cid;
     }
 }

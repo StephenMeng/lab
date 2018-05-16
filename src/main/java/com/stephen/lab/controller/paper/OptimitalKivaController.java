@@ -1319,12 +1319,18 @@ public class OptimitalKivaController {
         }
         Map<Integer, Double> result = new HashMap<>(totalNum);
         List<KivaSimple> kivaSimpleList = getAllKivaSimpleResult(0);
-//        for (int i = 1; i < totalNum; i++) {
-        trainAndSaveLdaModel(totalNum, kivaSimpleList);
-        double p = LdaModel.getPerplexity(totalNum, thetaFile, twordsFile);
-        LogRecod.print(totalNum + "\t" + p);
-        result.put(totalNum, p);
-//        }
+        List<String> contents = Lists.transform(kivaSimpleList, KivaSimple::getStandardDescription);
+        int N = 0;
+        for (String content : contents) {
+            N += content.split("#").length;
+        }
+        for (int i = 6; i < totalNum; i++) {
+            int topicNum = i * 10;
+            trainAndSaveLdaModel(topicNum, kivaSimpleList);
+            double p = LdaModel.getPerplexity(N, topicNum, thetaFile, twordsFile);
+            LogRecod.print(topicNum + "\t" + p);
+            result.put(topicNum, p);
+        }
         return Response.success(result);
     }
 

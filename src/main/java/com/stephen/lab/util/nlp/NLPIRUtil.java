@@ -6,7 +6,6 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.huaban.analysis.jieba.JiebaSegmenter;
 import com.huaban.analysis.jieba.SegToken;
-import com.stephen.lab.util.LogRecod;
 import com.stephen.lab.util.StringUtils;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
