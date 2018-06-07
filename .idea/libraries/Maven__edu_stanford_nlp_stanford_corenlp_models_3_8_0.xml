@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="Maven: edu.stanford.nlp:stanford-corenlp:3.8.0">
+  <library name="Maven: edu.stanford.nlp:stanford-corenlp:models:3.8.0">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../maven/repository/edu/stanford/nlp/stanford-corenlp/3.8.0/stanford-corenlp-3.8.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../maven/repository/edu/stanford/nlp/stanford-corenlp/3.8.0/stanford-corenlp-3.8.0-models.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$PROJECT_DIR$/../../maven/repository/edu/stanford/nlp/stanford-corenlp/3.8.0/stanford-corenlp-3.8.0-javadoc.jar!/" />

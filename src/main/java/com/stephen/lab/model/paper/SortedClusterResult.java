@@ -1,14 +1,19 @@
 package com.stephen.lab.model.paper;
 
+import java.util.List;
+
 public class SortedClusterResult {
     private String word;
     private double lost;
     private int breakPoint;
+    private List<Integer> breakPoints;
     private int freq;
-    public SortedClusterResult(){
+
+    public SortedClusterResult() {
         setFreq(0);
         setBreakPoint(0);
     }
+
     public double getLost() {
         return lost;
     }
@@ -42,11 +47,22 @@ public class SortedClusterResult {
         this.freq = freq;
     }
 
+    public List<Integer> getBreakPoints() {
+        return breakPoints;
+    }
+
+    public void setBreakPoints(List<Integer> breakPoints) {
+        this.breakPoints = breakPoints;
+    }
+
     @Override
     public String toString() {
         return "SortedClusterResult{" +
-                "lost=" + lost +
+                "word='" + word + '\'' +
+                ", lost=" + lost +
                 ", breakPoint=" + breakPoint +
+                ", breakPoints=" + breakPoints +
+                ", freq=" + freq +
                 '}';
     }
 }

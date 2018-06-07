@@ -147,22 +147,22 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>edu.stanford.nlp</groupId>-->
-        <!--<artifactId>stanford-corenlp</artifactId>-->
-        <!--<version>3.8.0</version>-->
-        <!--<classifier>models</classifier>-->
-        <!--<exclusions>-->
-        <!--<exclusion>-->
-        <!--<artifactId>commons-lang3</artifactId>-->
-        <!--<groupId>org.apache.commons</groupId>-->
-        <!--</exclusion>-->
-        <!--<exclusion>-->
-        <!--<artifactId>protobuf-java</artifactId>-->
-        <!--<groupId>com.google.protobuf</groupId>-->
-        <!--</exclusion>-->
-        <!--</exclusions>-->
-        <!--</dependency>-->
+        <dependency>
+        <groupId>edu.stanford.nlp</groupId>
+        <artifactId>stanford-corenlp</artifactId>
+        <version>3.8.0</version>
+        <classifier>models</classifier>
+        <exclusions>
+        <exclusion>
+        <artifactId>commons-lang3</artifactId>
+        <groupId>org.apache.commons</groupId>
+        </exclusion>
+        <exclusion>
+        <artifactId>protobuf-java</artifactId>
+        <groupId>com.google.protobuf</groupId>
+        </exclusion>
+        </exclusions>
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
