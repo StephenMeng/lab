@@ -62,8 +62,9 @@ public class Documents {
         for (int i = 0; i < contents.size(); i++) {
             List<String> words;
             if (splitter.equals("")) {
-//                LogRecod.print(contents.get(i));
+                LogRecod.print(contents.get(i));
                 words = NLPIRUtil.costumFenci(contents.get(i));
+                LogRecod.print(words);
                 try {
                     BufferedWriter writer= Files.newWriter(new File("C:\\Users\\Stephen\\Desktop\\lda\\kw-"+i+".txt"), Charsets.UTF_8);
                     words.forEach(word->{

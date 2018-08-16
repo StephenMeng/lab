@@ -1,11 +1,13 @@
 package com.stephen.lab.util.nlp;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.huaban.analysis.jieba.JiebaSegmenter;
 import com.huaban.analysis.jieba.SegToken;
+import com.stephen.lab.util.LogRecod;
 import com.stephen.lab.util.StringUtils;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
@@ -22,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by stephen on 2018/3/17.
@@ -30,9 +33,10 @@ public class NLPIRUtil {
     private static List<String> stopwordList;
     private static Properties props = new Properties();
     private static StanfordCoreNLP pipeline;    // 依次处理
-    private static String stopWordPath = "C:\\Users\\Stephen\\Desktop\\svm\\stopword.txt";
+    private static String stopWordPath = "C:\\Users\\Stephen\\Desktop\\lda\\stopword.txt";
     private static JiebaSegmenter segmenter = new JiebaSegmenter();
     private static Set<String> kw = new HashSet<>();
+    private static List<String> stopword;
 
     static {
         Configuration cfg = DefaultConfig.getInstance();
@@ -41,6 +45,13 @@ public class NLPIRUtil {
         org.wltea.analyzer.dic.Dictionary.initial(cfg);
         Dictionary dic = Dictionary.getSingleton();
         dic.addWords(getDict());
+        try {
+            stopwordList = Files.readLines(new File(stopWordPath), Charsets.UTF_8);
+            stopwordList=stopwordList.stream().map(String::toLowerCase).collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+            stopwordList = new ArrayList<>(0);
+        }
 
         try {
             List<String> ks = Files.readLines(new File("C:\\Users\\Stephen\\Desktop\\lda\\kw.txt"), Charsets.UTF_8);
@@ -49,7 +60,7 @@ public class NLPIRUtil {
                             List<String> tmps = getAllWordComposition(k);
                             kw.addAll(tmps);
                         } catch (Exception e) {
-                    e.printStackTrace();
+                            e.printStackTrace();
                         }
                     }
             );
@@ -67,7 +78,7 @@ public class NLPIRUtil {
         StringBuilder sb = new StringBuilder();
         for (String s : tmp) {
             sb.append(s).append(" ");
-            result.add(sb.toString().trim());
+            result.add(sb.toString().trim().toLowerCase());
         }
         return result;
     }
@@ -84,7 +95,7 @@ public class NLPIRUtil {
     }
 
     public static List<String> getStopwords() throws IOException {
-        return Files.readLines(new File(stopWordPath), Charsets.UTF_8);
+        return stopwordList;
     }
 
     public static List<String> jiebaFenci(String docContent) {
@@ -114,7 +125,11 @@ public class NLPIRUtil {
     }
 
     public static List<String> costumFenci(String docContent) {
-        List<String> tmp = ikFenci(docContent);
+        docContent = docContent.replaceAll("[\\pP‘’“”]", "");
+        LogRecod.print(docContent);
+        List<String> tmp = Lists.newArrayList(Splitter.on(" ").split(docContent).iterator());
+//        List<String> tmp = cutwords(docContent);
+        LogRecod.print(tmp);
         List<String> result = new ArrayList<>();
         int size = tmp.size();
         StringBuilder c = new StringBuilder();
@@ -142,6 +157,8 @@ public class NLPIRUtil {
                 p = c.toString();
             }
         }
+        String r = Joiner.on(" ").join(result);
+        result = ikFenci(r);
         return result;
     }
 
@@ -162,7 +179,7 @@ public class NLPIRUtil {
             for (CoreLabel token : sentence.get(CoreAnnotations.TokensAnnotation.class)) {
 //                String word = token.get(CoreAnnotations.TextAnnotation.class);            // 获取分词
                 // 获取词性标注
-                String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
+//                String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
 //                String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);    // 获取命名实体识别结果
                 // 获取词形还原结果
                 String lemma = token.get(CoreAnnotations.LemmaAnnotation.class);
@@ -219,8 +236,7 @@ public class NLPIRUtil {
 
     private static List<String> getDict() {
         try {
-            return Files.readLines(new File("C:\\Users\\stephen\\" +
-                    "IdeaProjects\\lab\\src\\main\\resources\\dict.dic"), Charsets.UTF_8);
+            return Files.readLines(new File("C:\\Users\\Stephen\\Desktop\\lda\\kw.txt"), Charsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
         }

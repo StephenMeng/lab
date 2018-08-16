@@ -221,7 +221,7 @@ public class LdaModel {
 
         //lda.twords phi[][] K*V
         writer = new BufferedWriter(new FileWriter(resPath + modelName + ".twords"));
-        int topNum = 20; //Find the top 20 topic words in each topic
+        int topNum = 50 ; //Find the top 20 topic words in each topic
         for (int i = 0; i < K; i++) {
             List<Integer> tWordsIndexArray = new ArrayList<Integer>();
             for (int j = 0; j < V; j++) {
