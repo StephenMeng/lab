@@ -33,6 +33,7 @@ public class WeiboController {
     @Autowired
     private CrawlErrorService crawlErrorService;
 
+    private String cookie="YF-V5-G0=b1e3c8e8ad37eca95b65a6759b3fc219; _s_tentry=movie.kankan.com; Apache=7256170564393.524.1525878160642; SINAGLOBAL=7256170564393.524.1525878160642; ULV=1525878160649:1:1:1:7256170564393.524.1525878160642:; YF-Ugrow-G0=ea90f703b7694b74b62d38420b5273df; login_sid_t=fe72f64d0dbba7f7b0e63c5616fa15d4; cross_origin_proto=SSL; YF-Page-G0=00acf392ca0910c1098d285f7eb74a11; WBtopGlobal_register_version=cd58c0d338fe446e; SSOLoginState=1528313282; wvr=6; wb_view_log_3316155405=1920*10801; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WhHG.930Gf5fOgXqM.y_wER5JpX5KMhUgL.Foe0eKqpSK-Xeh-2dJLoIEBLxKBLB.eL122LxK.L1hzLB-2LxKnLBK2LBozLxK-LBozL1K5t; ALF=1571235405; SCF=ApWJpYkIBCSLvQa6VugVvlZ6e-DWM2_b7Y4Eih38-j3o3fSErtyGdfyrJpCo6fBDKWbf14w_nyop2iO0nEiLPok.; SUB=_2A252wYKfDeRhGeVN6lQQ9SvIyzmIHXVVtvNXrDV8PUNbmtBeLXLCkW9NTEdLmR4fFJfOSGMfZG0nrp4CgbF8c7mV; SUHB=0JvgsRbU4cRAfE; UOR=,,login.sina.com.cn";
     @RequestMapping("user")
     public void crawlSimple(@RequestParam("scriptUri") String scriptUri,
                             @RequestParam("id") String id,
@@ -41,7 +42,6 @@ public class WeiboController {
                             @RequestParam("end") int end) {
         scriptUri = normalizingScriptUri(scriptUri, hasU);
         for (int i = 1; i <= page; i++) {
-            String cookie = "YF-V5-G0=fec5de0eebb24ef556f426c61e53833b; YF-Page-G0=416186e6974c7d5349e42861f3303251; _s_tentry=weibo.com; login_sid_t=03fc48e9875be68669566f810ae42a36; YF-Ugrow-G0=ea90f703b7694b74b62d38420b5273df; UOR=www.baidu.com,weibo.com,www.baidu.com; Apache=4855100182428.531.1509249179926; SINAGLOBAL=4855100182428.531.1509249179926; ULV=1509249179947:1:1:1:4855100182428.531.1509249179926:; WBtopGlobal_register_version=b81eb8e02b10d728; SUB=_2A2508SFgDeRhGeVN6lQQ9SvIyzmIHXVXhxWorDV8PUNbmtBeLXTVkW8qOoRg6_2VEltLwq1b_fWUwqkVcg..; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WhHG.930Gf5fOgXqM.y_wER5JpX5KzhUgL.Foe0eKqpSK-Xeh-2dJLoIEBLxKBLB.eL122LxK.L1hzLB-2LxKnLBK2LBozLxK-LBozL1K5t; SUHB=0rr7s9yZ9aav43; ALF=1540785327; SSOLoginState=1509249328; wb_cusLike_3316155405=N";
             List<Weibo> weiboList = new ArrayList<>();
             weiboList.addAll(getFirstPage(i, scriptUri, cookie));
             weiboList.addAll(getBarPage(i, id, scriptUri, cookie));
@@ -80,13 +80,14 @@ public class WeiboController {
         List<Weibo> weiboList = new ArrayList<>();
         for (int k = 0; k < 2; k++) {
             String url = UrlConstant.WEI_BO + "/p/aj/v6/mblog/" +
-                    "mbloglist?ajwvr=6&domain=100206&is_search=0&visible=0&is_all=1&" +
+                    "mbloglist?ajwvr=6&domain=103505&is_search=0&visible=0&is_all=1&" +
                     "is_tag=0&profile_ftype=1&page=" + i +
                     "&pagebar=" + k +
                     "&pl_name=Pl_Official_MyProfileFeed__27&id=" + id +
                     "&script_uri=" + script_uri +
                     "&feed_type=0&pre_page=" + i +
                     "&domain_op=100206&__rnd=1509255368651";
+            LogRecod.print(url);
             Map<String, String> headers = new HashMap<>();
             headers.put("Cookie", cookie);
             weiboList.addAll(getBarPageWeibos(url, headers));
@@ -117,7 +118,7 @@ public class WeiboController {
     }
 
     private List<Weibo> getFirstPage(int i, String script_uri, String cookie) {
-        String url = UrlConstant.WEI_BO + script_uri + "/" +
+        String url = UrlConstant.WEI_BO + script_uri  +
                 "?is_search=0&visible=0" +
                 "&is_all=1&is_tag=0&profile_ftype=1&page=" + i;
         Map<String, String> headers = new HashMap<>();
@@ -139,9 +140,9 @@ public class WeiboController {
     }
 
     private String normalizingFirstPage(String html) {
-        int startIndex = html.lastIndexOf("Pl_Official_MyProfileFeed__27");
+        int startIndex = html.lastIndexOf("Pl_Official_MyProfileFeed__");
         int endIndex = html.indexOf("/script", startIndex);
-        html = html.substring(startIndex, endIndex);
+        html = html.substring(startIndex+2, endIndex);
         String htmlStr = html.substring(html.indexOf("<div"), html.lastIndexOf("div>") + 4);
         htmlStr = htmlStr.replaceAll("\"", "");
         htmlStr = htmlStr.replaceAll("\\\\", "");

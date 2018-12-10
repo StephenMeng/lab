@@ -18,7 +18,7 @@ import java.util.List;
 public class WeiboParser implements Parser {
     @Override
     public List parse(String html) {
-        List<Weibo> weiboList = new ArrayList<>();
+         List<Weibo> weiboList = new ArrayList<>();
         Document document = Jsoup.parse(html);
         Elements detail = document.select("div[tbinfo]");
         for (Element element : detail) {

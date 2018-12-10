@@ -3,14 +3,14 @@ package com.stephen.test;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.io.Files;
-import com.stephen.lab.Application;
+import com.stephen.lab.util.DocUtils;
 import com.stephen.lab.util.LogRecod;
+import com.stephen.lab.util.MapUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.wltea.analyzer.lucene.IKAnalyzer;
@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 //@SpringBootTest(classes = Application.class)
@@ -144,6 +145,58 @@ public class ZhengceFenciTest {
             List<String> tokens = cutword(m.getValue());
             Map<String, Integer> tokeCountMap = countMap(tokens);
             File of = new File(outPutPath + "\\quyu\\" + m.getKey() + ".txt");
+            BufferedWriter writer = Files.newWriter(of, Charsets.UTF_8);
+            for (Map.Entry<String, Integer> r : tokeCountMap.entrySet()) {
+                writer.write(r.getKey() + "\t" + r.getValue() + "\r\n");
+            }
+            writer.close();
+        }
+    }
+
+    @Test
+    public void testQuyuDocFenciWithCity() throws IOException {
+        Map<String, String> proAreaMap = new HashMap<>();
+
+//        String dirPath = "C:\\Users\\Stephen\\Desktop\\兆韬\\特色小镇政策文本\\特色小镇地级市文本库0816\\data";
+//        String outPutPath = "C:\\Users\\Stephen\\Desktop\\兆韬\\特色小镇政策文本\\特色小镇地级市文本库0816\\quyu";
+        String dirPath = "C:\\Users\\Stephen\\Desktop\\兆韬\\特色小镇政策文本\\特色小镇省级、地级市文本库0824\\data";
+        String outPutPath = "C:\\Users\\Stephen\\Desktop\\兆韬\\特色小镇政策文本\\特色小镇省级、地级市文本库0824\\quyu";
+        Map<String, String> textMap = new HashMap<>();
+        for (File af : new File(dirPath).listFiles()) {
+            for (File pf : af.listFiles()) {
+                if (!pf.isDirectory()) {
+                    continue;
+                }
+                proAreaMap.put(pf.getName(), af.getName());
+                for (File file : pf.listFiles()) {
+                    String text = DocUtils.readWordFromFile(file.getAbsolutePath());
+                    String area = pf.getName();
+                    String quyu = proAreaMap.get(area);
+                    if (textMap.containsKey(quyu)) {
+                        textMap.put(quyu, textMap.get(quyu) + " " + text);
+                    } else {
+                        textMap.put(quyu, text);
+                    }
+                }
+            }
+        }
+        for (Map.Entry<String, String> m : textMap.entrySet()) {
+            List<String> tokens = cutword(m.getValue());
+            tokens = tokens.stream().filter(token -> {
+                if (token.length() <= 1) {
+                    return false;
+                }
+                try {
+                    Double.parseDouble(token);
+                } catch (Exception e) {
+                    return true;
+                }
+
+                return false;
+            }).collect(Collectors.toList());
+            Map<String, Integer> tokeCountMap = countMap(tokens);
+            tokeCountMap = MapUtils.sortMapByValue(tokeCountMap, true);
+            File of = new File(outPutPath + "\\" + m.getKey() + ".txt");
             BufferedWriter writer = Files.newWriter(of, Charsets.UTF_8);
             for (Map.Entry<String, Integer> r : tokeCountMap.entrySet()) {
                 writer.write(r.getKey() + "\t" + r.getValue() + "\r\n");

@@ -16,7 +16,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.stephen.lab.controller.paper"))
+                .apis(RequestHandlerSelectors.basePackage("com.stephen.lab.controller.crawler"))
                 .paths(PathSelectors.any())
                 .build();
     }

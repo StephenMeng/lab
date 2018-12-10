@@ -99,7 +99,6 @@
     <orderEntry type="library" name="Maven: com.github.jsqlparser:jsqlparser:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.4" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-redis:unknown" level="project" />
     <orderEntry type="library" name="Maven: redis.clients:jedis:2.8.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-pool2:2.4.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.solr:solr-solrj:6.6.0" level="project" />
@@ -114,7 +113,6 @@
     <orderEntry type="library" name="Maven: org.noggit:noggit:0.6" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.25" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-velocity:unknown" level="project" />
     <orderEntry type="library" name="Maven: args4j:args4j:2.33" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.35" level="project" />
     <orderEntry type="library" name="Maven: org.jsoup:jsoup:1.10.3" level="project" />
@@ -163,6 +161,14 @@
     <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:3.1.0" level="project" />
     <orderEntry type="library" name="Maven: javax.xml.bind:jaxb-api:2.3.0" level="project" />
     <orderEntry type="library" name="Maven: com.hankcs:hanlp:portable-1.2.8" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi:3.17" level="project" />
+    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.10" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-collections4:4.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml:3.17" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml-schemas:3.17" level="project" />
+    <orderEntry type="library" name="Maven: com.github.virtuald:curvesapi:1.04" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi-scratchpad:3.17" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlbeans:xmlbeans:3.0.0" level="project" />
     <orderEntry type="library" name="Maven: tw.edu.ntu.csie:libsvm:3.17" level="project" />
     <orderEntry type="library" name="Maven: com.janeluo:ikanalyzer:2012_u6" level="project" />
     <orderEntry type="library" name="Maven: nz.ac.waikato.cms.weka:weka-stable:3.8.2" level="project" />
