@@ -1,11 +1,15 @@
 package com.stephen.lab.controller.others;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.stephen.lab.constant.semantic.ResultEnum;
-import com.stephen.lab.util.*;
+import com.stephen.lab.util.LogRecod;
+import com.stephen.lab.util.MapUtils;
+import com.stephen.lab.util.Response;
+import com.stephen.lab.util.StringUtils;
 import com.stephen.lab.util.nlp.NLPIRUtil;
 import com.stephen.lab.util.nlp.lda.sample.com.FileUtil;
 import com.stephen.lab.util.nlp.lda.sample.conf.ConstantConfig;
@@ -66,8 +70,9 @@ public class ZhouZhaoTaoController {
     @RequestMapping("lda")
     public Response ldaTest(int topicNum) throws IOException {
         trainLdaModel(topicNum);
-        double perplexity = LdaModel.getPerplexity(0, topicNum, thetaFile, twordsFile);
-        return Response.success(perplexity);
+//        double perplexity = LdaModel.getPerplexity(0, topicNum, thetaFile, twordsFile);
+//        return Response.success(perplexity);
+        return Response.success(true);
     }
 
     private void trainLdaModel(int topicNum) throws IOException {
@@ -114,7 +119,22 @@ public class ZhouZhaoTaoController {
         for (String keywords : stringList) {
             try {
                 String[] strings = keywords.split("\t");
-                String kw = strings[0];
+                String kw = strings[2];//0表示关键词，2表示摘要
+                kw = kw.replaceAll("\\(", " ");
+                kw = kw.replaceAll("\\)", " ");
+                kw = kw.toLowerCase();
+                LogRecod.print(kw);
+                List<String> t = NLPIRUtil.cutwords(kw);
+                LogRecod.print(t);
+//                t = t.stream().filter(tm -> {
+//                    try {
+//                        return !NLPIRUtil.getStopwords().contains(tm);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    return true;
+//                }).collect(Collectors.toList());
+                kw = Joiner.on(" ").join(t);
                 Integer year = Integer.parseInt(strings[1]);
                 int index = yearList.indexOf(year);
                 if (index != -1) {
@@ -171,5 +191,61 @@ public class ZhouZhaoTaoController {
         }
 
         return Response.success(true);
+    }
+
+    @RequestMapping("word_count")
+    public Response fun(int start, int end, int th) {
+        Map<String, Map<String, Map<String, Double>>> map = new HashMap<>();
+        for (int i = start; i <= end; i++) {
+            String filePath = PathConfig.LdaResultsPath + "demo" + i + "\\lda_500.twords";
+            LogRecod.print(filePath);
+            try {
+                List<String> lines = Files.readLines(new File(filePath), Charsets.UTF_8);
+                LogRecod.print(lines.size());
+                for (int index = 0; index < lines.size(); index++) {
+                    String line = lines.get(index);
+                    LogRecod.print(line);
+                    String[] kws = line.split("\t");
+                    for (int m = 2; m < kws.length && m <= th + 2; m++) {
+                        String[] seg = kws[m].split(" ");
+                        String word = seg[0];
+                        if (word.equals("assess")) {
+                            int a = 1;
+                        }
+                        Double weight = (double) (m - 1);
+                        if (map.containsKey(word)) {
+                            Map<String, Map<String, Double>> demoMap = map.get(word);
+                            if (demoMap.containsKey("demo" + i)) {
+                                Map<String, Double> topicMap = demoMap.get("demo" + i);
+                                topicMap.put("topic" + index, weight);
+                            } else {
+                                Map<String, Double> topicMap = new HashMap<>(1);
+                                topicMap.put("topic" + index, weight);
+                                demoMap.put("demo" + i, topicMap);
+                            }
+                        } else {
+                            Map<String, Map<String, Double>> demoMap = new HashMap<>();
+                            Map<String, Double> topicMap = new HashMap<>(1);
+                            topicMap.put("topic" + index, weight);
+                            demoMap.put("demo" + i, topicMap);
+                            map.put(word, demoMap);
+                        }
+                    }
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        Map<String, Integer> countMap = new HashMap<>();
+        for (Map.Entry<String, Map<String, Map<String, Double>>> m : map.entrySet()) {
+            countMap.put(m.getKey(), m.getValue().size());
+        }
+        Map treeMap = MapUtils.sortMapByValue(countMap, true);
+        LogRecod.print(treeMap);
+        Map<String, Object> result = new HashMap<>();
+        result.put("detail", map);
+        result.put("simplify", treeMap);
+        return Response.success(result);
     }
 }
